@@ -11,9 +11,11 @@
     "clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\""
   },
   "dependencies": {
+    "@commerceflow/api-client": "workspace:*",
     "@commerceflow/types": "workspace:*",
     "@commerceflow/utils": "workspace:*",
     "@commerceflow/validation": "workspace:*",
+    "jose": "^6.2.3",
     "next": "16.2.10",
     "react": "19.2.4",
     "react-dom": "19.2.4"
