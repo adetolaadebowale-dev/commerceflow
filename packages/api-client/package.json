@@ -1,0 +1,25 @@
+{
+  "name": "@commerceflow/api-client",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" }
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit",
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\""
+  },
+  "dependencies": {
+    "@commerceflow/types": "workspace:*",
+    "@commerceflow/validation": "workspace:*"
+  },
+  "devDependencies": {
+    "@commerceflow/config": "workspace:*",
+    "eslint": "^8.57.1",
+    "typescript": "^5.8.3"
+  }
+}

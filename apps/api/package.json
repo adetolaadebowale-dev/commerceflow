@@ -1,0 +1,30 @@
+{
+  "name": "api",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3000",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit",
+    "clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\""
+  },
+  "dependencies": {
+    "@commerceflow/types": "workspace:*",
+    "@commerceflow/utils": "workspace:*",
+    "@commerceflow/validation": "workspace:*",
+    "next": "16.2.10",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@commerceflow/config": "workspace:*",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "16.2.10",
+    "typescript": "^5.8.3"
+  }
+}

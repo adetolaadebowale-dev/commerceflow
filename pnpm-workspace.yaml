@@ -1,0 +1,9 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+allowBuilds:
+  sharp: true
+  unrs-resolver: true
+fetchRetries: 10
+fetchTimeout: 600000
+networkConcurrency: 1
