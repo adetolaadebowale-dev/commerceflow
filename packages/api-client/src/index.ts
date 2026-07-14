@@ -61,6 +61,18 @@ export type {
 } from "./orders/contracts";
 export { createOrderClient, type OrderClient } from "./orders/order-client";
 export type {
+  ListOrderReservationsParams,
+  ListOrderReservationsResponse,
+  ReleaseReservationRequest,
+  ReleaseReservationResponse,
+  ReserveOrderRequest,
+  ReserveOrderResponse,
+} from "./reservations/contracts";
+export {
+  createReservationClient,
+  type ReservationClient,
+} from "./reservations/reservation-client";
+export type {
   CreateInventoryItemRequest,
   CreateInventoryItemResponse,
   CreateStockMovementRequest,

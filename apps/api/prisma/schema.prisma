@@ -52,6 +52,12 @@ enum OrderStatus {
   cancelled
 }
 
+/// Mirrors ReservationStatus from @commerceflow/types.
+enum ReservationStatus {
+  active
+  released
+}
+
 /// Persists User contract fields plus passwordHash (API-internal).
 model User {
   id              String        @id @default(uuid()) @db.Uuid
@@ -123,6 +129,7 @@ model Store {
   inventoryItems InventoryItem[]
   stockMovements StockMovement[]
   orders         Order[]
+  inventoryReservations InventoryReservation[]
 
   @@unique([organizationId, slug])
   @@index([organizationId])
@@ -260,6 +267,7 @@ model InventoryItem {
   updatedAt        DateTime        @updatedAt @map("updated_at")
   deletedAt        DateTime?       @map("deleted_at")
   stockMovements   StockMovement[]
+  inventoryReservations InventoryReservation[]
 
   @@unique([storeId, productVariantId])
   @@index([storeId])
@@ -306,6 +314,7 @@ model Order {
   createdAt   DateTime    @default(now()) @map("created_at")
   updatedAt   DateTime    @updatedAt @map("updated_at")
   items       OrderItem[]
+  inventoryReservations InventoryReservation[]
 
   @@unique([storeId, orderNumber])
   @@index([storeId])
@@ -331,8 +340,34 @@ model OrderItem {
   quantity         Int
   lineSubtotal     Decimal        @map("line_subtotal") @db.Decimal(12, 2)
   createdAt        DateTime       @default(now()) @map("created_at")
+  inventoryReservation InventoryReservation?
 
   @@index([orderId])
   @@index([productVariantId])
   @@map("order_items")
+}
+
+/// Soft reservation of on-hand stock for a confirmed order line item.
+model InventoryReservation {
+  id               String            @id @default(uuid()) @db.Uuid
+  storeId          String            @map("store_id") @db.Uuid
+  store            Store             @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  orderId          String            @map("order_id") @db.Uuid
+  order            Order             @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  orderItemId      String            @unique @map("order_item_id") @db.Uuid
+  orderItem        OrderItem         @relation(fields: [orderItemId], references: [id], onDelete: Restrict)
+  inventoryItemId  String            @map("inventory_item_id") @db.Uuid
+  inventoryItem    InventoryItem     @relation(fields: [inventoryItemId], references: [id], onDelete: Restrict)
+  reservedQuantity Int               @map("reserved_quantity")
+  status           ReservationStatus @default(active)
+  createdAt        DateTime          @default(now()) @map("created_at")
+  releasedAt       DateTime?         @map("released_at")
+
+  @@index([storeId])
+  @@index([orderId])
+  @@index([inventoryItemId])
+  @@index([storeId, orderId])
+  @@index([storeId, inventoryItemId, status])
+  @@index([status])
+  @@map("inventory_reservations")
 }

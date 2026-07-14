@@ -25,3 +25,8 @@ export {
 } from "./inventory";
 export type { Order, OrderItem, OrderStatus } from "./orders";
 export { ORDER_STATUSES } from "./orders";
+export type {
+  InventoryReservation,
+  ReservationStatus,
+} from "./reservations";
+export { RESERVATION_STATUSES } from "./reservations";

@@ -59,3 +59,11 @@ export {
   type ListOrdersQuery,
   type OrderStoreActionQuery,
 } from "./orders";
+export {
+  listOrderReservationsQuerySchema,
+  orderReservationActionSchema,
+  reservationIdActionSchema,
+  type ListOrderReservationsQuery,
+  type OrderReservationActionQuery,
+  type ReservationIdActionQuery,
+} from "./reservations";
