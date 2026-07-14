@@ -31,3 +31,14 @@ export {
   type UpdateCategoryInput,
   type UpdateProductInput,
 } from "./catalogue";
+export {
+  createInventoryItemSchema,
+  createStockMovementSchema,
+  inventoryItemIdQuerySchema,
+  listInventoryItemsQuerySchema,
+  listStockMovementsQuerySchema,
+  type CreateInventoryItemInput,
+  type CreateStockMovementInput,
+  type ListInventoryItemsQuery,
+  type ListStockMovementsQuery,
+} from "./inventory";

@@ -13,3 +13,13 @@ export type {
   ProductStatus,
 } from "./catalogue";
 export { buildCatalogueListResult, PRODUCT_STATUSES } from "./catalogue";
+export type {
+  AdjustmentStockMovementReason,
+  InventoryItem,
+  StockMovement,
+  StockMovementReason,
+} from "./inventory";
+export {
+  ADJUSTMENT_STOCK_MOVEMENT_REASONS,
+  STOCK_MOVEMENT_REASONS,
+} from "./inventory";

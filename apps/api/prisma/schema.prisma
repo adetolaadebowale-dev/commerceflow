@@ -38,6 +38,13 @@ enum ProductStatus {
   archived
 }
 
+/// Mirrors StockMovementReason from @commerceflow/types.
+enum StockMovementReason {
+  initial
+  manual_adjustment
+  sale_reserved_ready
+}
+
 /// Persists User contract fields plus passwordHash (API-internal).
 model User {
   id              String        @id @default(uuid()) @db.Uuid
@@ -105,6 +112,8 @@ model Store {
   categories     Category[]
   products       Product[]
   productVariants ProductVariant[]
+  inventoryItems InventoryItem[]
+  stockMovements StockMovement[]
 
   @@unique([organizationId, slug])
   @@index([organizationId])
@@ -220,6 +229,7 @@ model ProductVariant {
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
   deletedAt  DateTime? @map("deleted_at")
+  inventoryItem InventoryItem?
 
   @@unique([storeId, sku])
   @@index([storeId])
@@ -227,4 +237,46 @@ model ProductVariant {
   @@index([deletedAt])
   @@index([storeId, deletedAt])
   @@map("product_variants")
+}
+
+/// Current on-hand stock for a product variant within a store.
+model InventoryItem {
+  id               String          @id @default(uuid()) @db.Uuid
+  storeId          String          @map("store_id") @db.Uuid
+  store            Store           @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  productVariantId String          @unique @map("product_variant_id") @db.Uuid
+  productVariant   ProductVariant  @relation(fields: [productVariantId], references: [id], onDelete: Restrict)
+  quantityOnHand   Int             @map("quantity_on_hand")
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
+  deletedAt        DateTime?       @map("deleted_at")
+  stockMovements   StockMovement[]
+
+  @@unique([storeId, productVariantId])
+  @@index([storeId])
+  @@index([deletedAt])
+  @@index([storeId, deletedAt])
+  @@map("inventory_items")
+}
+
+/// Immutable ledger entry for an inventory quantity change.
+model StockMovement {
+  id               String              @id @default(uuid()) @db.Uuid
+  storeId          String              @map("store_id") @db.Uuid
+  store            Store               @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  inventoryItemId  String              @map("inventory_item_id") @db.Uuid
+  inventoryItem    InventoryItem       @relation(fields: [inventoryItemId], references: [id], onDelete: Restrict)
+  productVariantId String              @map("product_variant_id") @db.Uuid
+  quantityChange   Int                 @map("quantity_change")
+  quantityAfter    Int                 @map("quantity_after")
+  reason           StockMovementReason
+  createdAt        DateTime            @default(now()) @map("created_at")
+
+  @@index([storeId])
+  @@index([inventoryItemId])
+  @@index([productVariantId])
+  @@index([storeId, inventoryItemId])
+  @@index([storeId, productVariantId])
+  @@index([createdAt])
+  @@map("stock_movements")
 }

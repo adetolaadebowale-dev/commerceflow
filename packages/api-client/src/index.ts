@@ -42,5 +42,20 @@ export type {
 } from "./auth/contracts";
 
 export { createAuthClient, type AuthClient } from "./auth/auth-client";
+export type {
+  CreateInventoryItemRequest,
+  CreateInventoryItemResponse,
+  CreateStockMovementRequest,
+  CreateStockMovementResponse,
+  GetInventoryItemResponse,
+  ListInventoryItemsParams,
+  ListInventoryItemsResponse,
+  ListStockMovementsParams,
+  ListStockMovementsResponse,
+} from "./inventory/contracts";
+export {
+  createInventoryClient,
+  type InventoryClient,
+} from "./inventory/inventory-client";
 export { ApiClientError } from "./http/api-error";
 export { apiRequest, type ApiClientConfig } from "./http/request";
