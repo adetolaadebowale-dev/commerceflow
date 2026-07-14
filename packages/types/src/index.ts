@@ -32,6 +32,11 @@ export type {
 export { RESERVATION_STATUSES } from "./reservations";
 export type { OrderFulfillmentResult } from "./fulfillment";
 export {
+  CUSTOMER_STATUSES,
+  type Customer,
+  type CustomerStatus,
+} from "./customers";
+export {
   STORE_PERMISSIONS,
   STORE_ROLES,
   type AuthorizedStoreContext,
@@ -52,6 +57,8 @@ export {
   type DomainAggregateType,
   type DomainEvent,
   type DomainEventType,
+  type CustomerCreatedPayload,
+  type CustomerUpdatedPayload,
   type InventoryReleasedPayload,
   type InventoryReservedPayload,
   type OrderCancelledPayload,

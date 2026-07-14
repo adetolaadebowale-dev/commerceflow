@@ -10,6 +10,8 @@ export const STORE_PERMISSIONS = [
   "orders:fulfill",
   "reservations:manage",
   "audit:read",
+  "customers:read",
+  "customers:write",
 ] as const;
 
 export type StorePermissionCode = (typeof STORE_PERMISSIONS)[number];

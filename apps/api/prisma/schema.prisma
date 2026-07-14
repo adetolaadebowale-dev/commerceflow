@@ -62,6 +62,12 @@ enum ReservationStatus {
   fulfilled
 }
 
+/// Mirrors CustomerStatus from @commerceflow/types.
+enum CustomerStatus {
+  active
+  inactive
+}
+
 /// Persists User contract fields plus passwordHash (API-internal).
 model User {
   id              String        @id @default(uuid()) @db.Uuid
@@ -137,6 +143,7 @@ model Store {
   orders         Order[]
   inventoryReservations InventoryReservation[]
   auditLogs             AuditLog[]
+  customers             Customer[]
 
   @@unique([organizationId, slug])
   @@index([organizationId])
@@ -404,4 +411,25 @@ model AuditLog {
   @@index([action])
   @@index([createdAt])
   @@map("audit_logs")
+}
+
+/// Store-scoped customer profile independent of platform User identity.
+model Customer {
+  id        String         @id @default(uuid()) @db.Uuid
+  storeId   String         @map("store_id") @db.Uuid
+  store     Store          @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  email     String
+  firstName String         @map("first_name")
+  lastName  String         @map("last_name")
+  phone     String?
+  status    CustomerStatus @default(active)
+  createdAt DateTime       @default(now()) @map("created_at")
+  updatedAt DateTime       @updatedAt @map("updated_at")
+  deletedAt DateTime?      @map("deleted_at")
+
+  @@index([storeId])
+  @@index([deletedAt])
+  @@index([storeId, deletedAt])
+  @@index([storeId, status])
+  @@map("customers")
 }

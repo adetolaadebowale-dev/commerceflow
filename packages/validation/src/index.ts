@@ -76,3 +76,12 @@ export {
   listAuditLogsQuerySchema,
   type ListAuditLogsQuery,
 } from "./audit";
+export {
+  createCustomerSchema,
+  customerIdQuerySchema,
+  listCustomersQuerySchema,
+  updateCustomerSchema,
+  type CreateCustomerInput,
+  type ListCustomersQuery,
+  type UpdateCustomerInput,
+} from "./customers";

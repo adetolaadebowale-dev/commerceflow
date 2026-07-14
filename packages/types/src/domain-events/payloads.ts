@@ -3,6 +3,8 @@ import type { OrderStatus } from "../orders/order-status";
 import type { OrderFulfillmentResult } from "../fulfillment/order-fulfillment-result";
 import type { InventoryReservation } from "../reservations/inventory-reservation";
 
+import type { Customer } from "../customers/customer";
+
 export interface OrderConfirmedPayload {
   readonly orderId: string;
   readonly orderNumber: string;
@@ -50,4 +52,22 @@ export interface InventoryReleasedPayload {
   readonly reservedQuantity: number;
   readonly releasedAt?: string;
   readonly reservation: InventoryReservation;
+}
+
+export interface CustomerCreatedPayload {
+  readonly customerId: string;
+  readonly email: string;
+  readonly firstName: string;
+  readonly lastName: string;
+  readonly status: Customer["status"];
+  readonly customer: Customer;
+}
+
+export interface CustomerUpdatedPayload {
+  readonly customerId: string;
+  readonly email: string;
+  readonly firstName: string;
+  readonly lastName: string;
+  readonly status: Customer["status"];
+  readonly customer: Customer;
 }

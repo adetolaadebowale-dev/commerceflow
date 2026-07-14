@@ -55,4 +55,19 @@ describe("StorePermissionPolicy", () => {
       true,
     );
   });
+
+  it("grants staff customer read but not write access", () => {
+    expect(StorePermissionPolicy.hasPermission("staff", "customers:read")).toBe(
+      true,
+    );
+    expect(
+      StorePermissionPolicy.hasPermission("staff", "customers:write"),
+    ).toBe(false);
+  });
+
+  it("grants owners customer write access", () => {
+    expect(StorePermissionPolicy.hasPermission("owner", "customers:write")).toBe(
+      true,
+    );
+  });
 });

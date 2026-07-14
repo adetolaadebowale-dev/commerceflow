@@ -5,6 +5,9 @@ import type {
   InventoryReleasedPayload,
   InventoryReservedPayload,
   InventoryReservation,
+  Customer,
+  CustomerCreatedPayload,
+  CustomerUpdatedPayload,
   Order,
   OrderCancelledPayload,
   OrderConfirmedPayload,
@@ -130,6 +133,44 @@ export function buildInventoryReleasedEvent(
       reservedQuantity: reservation.reservedQuantity,
       releasedAt: reservation.releasedAt,
       reservation,
+    },
+  });
+}
+
+export function buildCustomerCreatedEvent(
+  customer: Customer,
+): DomainEvent<CustomerCreatedPayload> {
+  return createDomainEvent({
+    eventType: "customer.created",
+    aggregateType: "customer",
+    aggregateId: customer.id,
+    storeId: customer.storeId,
+    payload: {
+      customerId: customer.id,
+      email: customer.email,
+      firstName: customer.firstName,
+      lastName: customer.lastName,
+      status: customer.status,
+      customer,
+    },
+  });
+}
+
+export function buildCustomerUpdatedEvent(
+  customer: Customer,
+): DomainEvent<CustomerUpdatedPayload> {
+  return createDomainEvent({
+    eventType: "customer.updated",
+    aggregateType: "customer",
+    aggregateId: customer.id,
+    storeId: customer.storeId,
+    payload: {
+      customerId: customer.id,
+      email: customer.email,
+      firstName: customer.firstName,
+      lastName: customer.lastName,
+      status: customer.status,
+      customer,
     },
   });
 }

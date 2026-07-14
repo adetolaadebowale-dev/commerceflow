@@ -101,5 +101,15 @@ export type {
   ListAuditLogsResponse,
 } from "./audit/contracts";
 export { createAuditClient, type AuditClient } from "./audit/audit-client";
+export type {
+  CreateCustomerRequest,
+  CreateCustomerResponse,
+  GetCustomerResponse,
+  ListCustomersParams,
+  ListCustomersResponse,
+  UpdateCustomerRequest,
+  UpdateCustomerResponse,
+} from "./customers/contracts";
+export { createCustomerClient, type CustomerClient } from "./customers/customer-client";
 export { ApiClientError } from "./http/api-error";
 export { apiRequest, type ApiClientConfig } from "./http/request";
