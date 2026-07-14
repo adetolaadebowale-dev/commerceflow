@@ -3,6 +3,10 @@ import { Prisma, type PrismaClient, type Session as PrismaSession } from "@prism
 import type { CreateSessionInput, StoredSession } from "../types";
 import type { SessionRepository } from "./session.repository";
 
+function isRevokedStatus(status: PrismaSession["status"]): boolean {
+  return status === "revoked" || status === "expired";
+}
+
 function toStoredSession(record: PrismaSession): StoredSession {
   return {
     id: record.id,
@@ -13,7 +17,7 @@ function toStoredSession(record: PrismaSession): StoredSession {
     ipAddress: record.ipAddress ?? undefined,
     userAgent: record.userAgent ?? undefined,
     refreshTokenId: record.refreshTokenId,
-    revoked: record.revoked,
+    revoked: isRevokedStatus(record.status),
   };
 }
 
@@ -37,7 +41,7 @@ export class PrismaSessionRepository implements SessionRepository {
         ipAddress: input.ipAddress,
         userAgent: input.userAgent,
         refreshTokenId: input.refreshTokenId,
-        revoked: false,
+        status: "active",
       },
     });
 
@@ -95,7 +99,7 @@ export class PrismaSessionRepository implements SessionRepository {
   async revoke(id: string): Promise<void> {
     await this.db.session.updateMany({
       where: { id },
-      data: { revoked: true },
+      data: { status: "revoked" },
     });
   }
 }

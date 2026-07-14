@@ -21,14 +21,16 @@ export class PrismaUserRepository implements UserRepository {
   constructor(private readonly db: PrismaClient) {}
 
   async findById(id: string): Promise<StoredUser | null> {
-    const record = await this.db.user.findUnique({ where: { id } });
+    const record = await this.db.user.findFirst({
+      where: { id, deletedAt: null },
+    });
     return record ? toStoredUser(record) : null;
   }
 
   async findByEmail(email: string): Promise<StoredUser | null> {
     const normalizedEmail = email.trim().toLowerCase();
-    const record = await this.db.user.findUnique({
-      where: { email: normalizedEmail },
+    const record = await this.db.user.findFirst({
+      where: { email: normalizedEmail, deletedAt: null },
     });
 
     return record ? toStoredUser(record) : null;

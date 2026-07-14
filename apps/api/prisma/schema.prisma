@@ -1,5 +1,6 @@
-// CommerceFlow identity schema — aligned with @commerceflow/types User and Session contracts.
-// StoredUser/StoredSession persistence fields (passwordHash, refreshTokenId, revoked) are API-internal.
+// CommerceFlow production schema — Identity and Organization domains.
+// User/Session fields align with @commerceflow/types contracts.
+// Organization models are persistence-only until shared contracts are introduced.
 
 generator client {
   provider = "prisma-client-js"
@@ -18,35 +19,102 @@ enum UserRole {
   super_admin
 }
 
+enum SessionStatus {
+  active
+  revoked
+  expired
+}
+
+enum StoreRole {
+  owner
+  manager
+  staff
+}
+
 /// Persists User contract fields plus passwordHash (API-internal).
 model User {
-  id            String   @id @default(uuid()) @db.Uuid
-  email         String   @unique
-  emailVerified Boolean  @default(false) @map("email_verified")
-  firstName     String   @map("first_name")
-  lastName      String   @map("last_name")
-  role          UserRole @default(customer)
-  passwordHash  String   @map("password_hash")
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
-  sessions      Session[]
+  id              String        @id @default(uuid()) @db.Uuid
+  email           String        @unique
+  emailVerified   Boolean       @default(false) @map("email_verified")
+  firstName       String        @map("first_name")
+  lastName        String        @map("last_name")
+  role            UserRole      @default(customer)
+  passwordHash    String        @map("password_hash")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+  deletedAt       DateTime?     @map("deleted_at")
+  sessions        Session[]
+  storeMemberships StoreMember[]
 
+  @@index([deletedAt])
   @@map("users")
 }
 
-/// Persists Session contract fields plus refreshTokenId and revoked (API-internal).
+/// Persists Session contract fields plus refreshTokenId and status (API-internal).
 model Session {
-  id             String   @id @default(uuid()) @db.Uuid
-  userId         String   @map("user_id") @db.Uuid
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  expiresAt      DateTime @map("expires_at")
-  createdAt      DateTime @default(now()) @map("created_at")
-  lastActiveAt   DateTime @map("last_active_at")
-  ipAddress      String?  @map("ip_address")
-  userAgent      String?  @map("user_agent")
-  refreshTokenId String   @map("refresh_token_id")
-  revoked        Boolean  @default(false)
+  id             String        @id @default(uuid()) @db.Uuid
+  userId         String        @map("user_id") @db.Uuid
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status         SessionStatus @default(active)
+  expiresAt      DateTime      @map("expires_at")
+  createdAt      DateTime      @default(now()) @map("created_at")
+  lastActiveAt   DateTime      @map("last_active_at")
+  ipAddress      String?       @map("ip_address")
+  userAgent      String?       @map("user_agent")
+  refreshTokenId String        @map("refresh_token_id")
 
   @@index([userId])
+  @@index([status])
+  @@index([expiresAt])
   @@map("sessions")
+}
+
+/// Tenant boundary for multi-store commerce operations.
+model Organization {
+  id        String    @id @default(uuid()) @db.Uuid
+  name      String
+  slug      String    @unique
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  stores    Store[]
+
+  @@index([deletedAt])
+  @@map("organizations")
+}
+
+/// Physical or logical storefront belonging to an organization.
+model Store {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @map("organization_id") @db.Uuid
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  name           String
+  slug           String
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+  deletedAt      DateTime?    @map("deleted_at")
+  members        StoreMember[]
+
+  @@unique([organizationId, slug])
+  @@index([organizationId])
+  @@index([deletedAt])
+  @@map("stores")
+}
+
+/// Links a user to a store with a store-scoped role.
+model StoreMember {
+  id        String     @id @default(uuid()) @db.Uuid
+  storeId   String     @map("store_id") @db.Uuid
+  store     Store      @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  userId    String     @map("user_id") @db.Uuid
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      StoreRole
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  deletedAt DateTime?  @map("deleted_at")
+
+  @@unique([storeId, userId])
+  @@index([userId])
+  @@index([deletedAt])
+  @@map("store_members")
 }

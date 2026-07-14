@@ -6,8 +6,7 @@ import type { SessionRepository } from "./session.repository";
 import type { UserRepository } from "./user.repository";
 import { prisma } from "@/lib/prisma";
 
-const useMemoryRepositories =
-  process.env.VITEST === "true" || !process.env.DATABASE_URL;
+const useMemoryRepositories = process.env.VITEST === "true";
 
 const userRepository: UserRepository = useMemoryRepositories
   ? new MemoryUserRepository()
