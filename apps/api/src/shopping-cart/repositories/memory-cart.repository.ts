@@ -152,6 +152,17 @@ export class MemoryCartRepository implements CartRepository {
     return { cart: updatedCart, removedItemId: cartItemId };
   }
 
+  async markConverted(storeId: string, cartId: string): Promise<Cart> {
+    const cart = await this.requireCart(storeId, cartId);
+    const updated: Cart = {
+      ...cart,
+      status: "converted",
+      updatedAt: new Date().toISOString(),
+    };
+    this.cartsById.set(cartId, updated);
+    return updated;
+  }
+
   private async requireCart(storeId: string, cartId: string): Promise<Cart> {
     const cart = await this.findById(storeId, cartId);
 

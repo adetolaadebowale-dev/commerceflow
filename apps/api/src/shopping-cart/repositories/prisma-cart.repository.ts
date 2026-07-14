@@ -270,4 +270,22 @@ export class PrismaCartRepository implements CartRepository {
       };
     });
   }
+
+  async markConverted(storeId: string, cartId: string): Promise<Cart> {
+    const updated = await this.db.cart.updateMany({
+      where: { id: cartId, storeId, status: "active" },
+      data: { status: "converted" },
+    });
+
+    if (updated.count === 0) {
+      throw new Error(`Cart not found: ${cartId}`);
+    }
+
+    const record = await this.db.cart.findFirstOrThrow({
+      where: { id: cartId, storeId },
+      include: { items: itemsInclude },
+    });
+
+    return toCart(record);
+  }
 }

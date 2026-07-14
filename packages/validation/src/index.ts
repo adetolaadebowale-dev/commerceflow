@@ -101,3 +101,9 @@ export {
   type CreateCartInput,
   type UpdateCartItemInput,
 } from "./shopping-cart";
+export {
+  checkoutCartQuerySchema,
+  checkoutCartSchema,
+  type CheckoutCartInput,
+  type CheckoutCartQuery,
+} from "./checkout";

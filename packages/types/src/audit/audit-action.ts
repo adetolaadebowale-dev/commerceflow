@@ -8,6 +8,7 @@ export const AUDIT_ACTIONS = [
   "cancel",
   "fulfill",
   "release",
+  "checkout",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];

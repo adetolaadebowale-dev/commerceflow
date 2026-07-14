@@ -6,6 +6,7 @@ import {
   buildCartItemAddedEvent,
   buildCartItemRemovedEvent,
   buildCartItemUpdatedEvent,
+  buildCheckoutCompletedEvent,
   buildCustomerAddressCreatedEvent,
   buildCustomerAddressUpdatedEvent,
   buildCustomerCreatedEvent,
@@ -19,6 +20,7 @@ import {
 import type {
   Cart,
   CartItem,
+  CheckoutResult,
   Customer,
   CustomerAddress,
   InventoryReservation,
@@ -116,6 +118,13 @@ export class DomainEventPublisher {
     productVariantId: string,
   ): void {
     this.dispatch(buildCartItemRemovedEvent(cart, cartItemId, productVariantId));
+  }
+
+  publishCheckoutCompleted(
+    result: CheckoutResult,
+    customerAddressId: string,
+  ): void {
+    this.dispatch(buildCheckoutCompletedEvent(result, customerAddressId));
   }
 
   private dispatch(event: DomainEvent): void {

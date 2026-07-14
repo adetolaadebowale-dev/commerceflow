@@ -9,6 +9,7 @@ export type {
   CartItemAddedPayload,
   CartItemRemovedPayload,
   CartItemUpdatedPayload,
+  CheckoutCompletedPayload,
   CustomerAddressCreatedPayload,
   CustomerAddressUpdatedPayload,
   CustomerCreatedPayload,

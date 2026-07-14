@@ -42,4 +42,5 @@ export interface CartRepository {
     storeId: string,
     cartItemId: string,
   ): Promise<{ readonly cart: Cart; readonly removedItemId: string }>;
+  markConverted(storeId: string, cartId: string): Promise<Cart>;
 }

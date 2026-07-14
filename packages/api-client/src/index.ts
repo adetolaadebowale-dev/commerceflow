@@ -129,5 +129,11 @@ export type {
   UpdateCartItemResponse,
 } from "./shopping-cart/contracts";
 export { createCartClient, type CartClient } from "./shopping-cart/cart-client";
+export type {
+  CheckoutCartParams,
+  CheckoutCartRequest,
+  CheckoutCartResponse,
+} from "./checkout/contracts";
+export { createCheckoutClient, type CheckoutClient } from "./checkout/checkout-client";
 export { ApiClientError } from "./http/api-error";
 export { apiRequest, type ApiClientConfig } from "./http/request";

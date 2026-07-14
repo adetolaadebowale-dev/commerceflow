@@ -7,6 +7,7 @@ import type { Customer } from "../customers/customer";
 import type { CustomerAddress } from "../customers/customer-address";
 import type { Cart } from "../shopping-cart/cart";
 import type { CartItem } from "../shopping-cart/cart-item";
+import type { CheckoutResult } from "../checkout/checkout-result";
 
 export interface OrderConfirmedPayload {
   readonly orderId: string;
@@ -121,4 +122,14 @@ export interface CartItemRemovedPayload {
   readonly cartItemId: string;
   readonly productVariantId: string;
   readonly cart: Cart;
+}
+
+export interface CheckoutCompletedPayload {
+  readonly cartId: string;
+  readonly orderId: string;
+  readonly customerProfileId: string;
+  readonly customerAddressId: string;
+  readonly order: Order;
+  readonly cart: Cart;
+  readonly result: CheckoutResult;
 }

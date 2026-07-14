@@ -18,6 +18,7 @@ export {
   buildCartItemAddedEvent,
   buildCartItemRemovedEvent,
   buildCartItemUpdatedEvent,
+  buildCheckoutCompletedEvent,
   buildCustomerAddressCreatedEvent,
   buildCustomerAddressUpdatedEvent,
   buildCustomerCreatedEvent,

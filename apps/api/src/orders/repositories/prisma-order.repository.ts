@@ -13,6 +13,7 @@ import type { ListOrdersQuery } from "@commerceflow/validation";
 import type { CreateOrderRecord } from "./order-create-record";
 import type { OrderRepository } from "./order.repository";
 import type { OrderStatusTransitionInput } from "./order-status-transition";
+import { toOrderAddressSnapshot } from "./order-address.mapper";
 import { generateOrderNumber } from "../services/order-pricing";
 import { isUniqueOrderNumberViolation } from "./prisma-order-variant-snapshot.reader";
 
@@ -42,10 +43,13 @@ function toOrder(record: OrderWithItems): Order {
     id: record.id,
     storeId: record.storeId,
     customerId: record.customerId ?? undefined,
+    customerProfileId: record.customerProfileId ?? undefined,
+    sourceCartId: record.sourceCartId ?? undefined,
     orderNumber: record.orderNumber,
     status: record.status,
     subtotal: record.subtotal.toString(),
     currency: record.currency,
+    shippingAddress: toOrderAddressSnapshot(record),
     items: record.items.map(toOrderItem),
     confirmedAt: record.confirmedAt?.toISOString(),
     cancelledAt: record.cancelledAt?.toISOString(),

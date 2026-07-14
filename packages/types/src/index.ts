@@ -23,7 +23,7 @@ export {
   ADJUSTMENT_STOCK_MOVEMENT_REASONS,
   STOCK_MOVEMENT_REASONS,
 } from "./inventory";
-export type { Order, OrderItem, OrderStatus } from "./orders";
+export type { Order, OrderItem, OrderAddressSnapshot, OrderStatus } from "./orders";
 export { ORDER_STATUSES } from "./orders";
 export type {
   InventoryReservation,
@@ -31,6 +31,7 @@ export type {
 } from "./reservations";
 export { RESERVATION_STATUSES } from "./reservations";
 export type { OrderFulfillmentResult } from "./fulfillment";
+export type { CheckoutResult } from "./checkout";
 export {
   CUSTOMER_STATUSES,
   type Customer,
@@ -68,6 +69,7 @@ export {
   type CartItemAddedPayload,
   type CartItemRemovedPayload,
   type CartItemUpdatedPayload,
+  type CheckoutCompletedPayload,
   type CustomerAddressCreatedPayload,
   type CustomerAddressUpdatedPayload,
   type CustomerCreatedPayload,

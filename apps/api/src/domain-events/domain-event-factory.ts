@@ -17,6 +17,8 @@ import type {
   CartItemAddedPayload,
   CartItemRemovedPayload,
   CartItemUpdatedPayload,
+  CheckoutCompletedPayload,
+  CheckoutResult,
   Order,
   OrderCancelledPayload,
   OrderConfirmedPayload,
@@ -292,6 +294,27 @@ export function buildCartItemRemovedEvent(
       cartItemId,
       productVariantId,
       cart,
+    },
+  });
+}
+
+export function buildCheckoutCompletedEvent(
+  result: CheckoutResult,
+  customerAddressId: string,
+): DomainEvent<CheckoutCompletedPayload> {
+  return createDomainEvent({
+    eventType: "checkout.completed",
+    aggregateType: "checkout",
+    aggregateId: result.order.id,
+    storeId: result.order.storeId,
+    payload: {
+      cartId: result.cart.id,
+      orderId: result.order.id,
+      customerProfileId: result.order.customerProfileId ?? result.cart.customerId,
+      customerAddressId,
+      order: result.order,
+      cart: result.cart,
+      result,
     },
   });
 }
