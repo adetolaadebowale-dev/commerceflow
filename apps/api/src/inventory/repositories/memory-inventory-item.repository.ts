@@ -199,4 +199,44 @@ export class MemoryInventoryItemRepository implements InventoryItemRepository {
   ): Promise<boolean> {
     return this.variantsByStore.get(storeId)?.has(productVariantId) ?? false;
   }
+
+  async deductForFulfillment(
+    storeId: string,
+    inventoryItemId: string,
+    quantity: number,
+  ): Promise<InventoryAdjustmentResult> {
+    const existing = await this.findById(storeId, inventoryItemId);
+
+    if (!existing) {
+      throw new Error(`InventoryItem not found: ${inventoryItemId}`);
+    }
+
+    if (existing.quantityOnHand < quantity) {
+      throw new Error("INSUFFICIENT_RESERVED_STOCK");
+    }
+
+    const quantityAfter = existing.quantityOnHand - quantity;
+    const now = new Date().toISOString();
+    const inventoryItem: InventoryItem = {
+      ...existing,
+      quantityOnHand: quantityAfter,
+      updatedAt: now,
+    };
+
+    const stockMovement: StockMovement = {
+      id: crypto.randomUUID(),
+      storeId,
+      inventoryItemId: inventoryItem.id,
+      productVariantId: inventoryItem.productVariantId,
+      quantityChange: -quantity,
+      quantityAfter,
+      reason: "sale_fulfilled",
+      createdAt: now,
+    };
+
+    this.itemsById.set(inventoryItem.id, inventoryItem);
+    this.movementsById.set(stockMovement.id, stockMovement);
+
+    return { inventoryItem, stockMovement };
+  }
 }

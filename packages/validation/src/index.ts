@@ -67,3 +67,7 @@ export {
   type OrderReservationActionQuery,
   type ReservationIdActionQuery,
 } from "./reservations";
+export {
+  orderFulfillmentActionSchema,
+  type OrderFulfillmentActionQuery,
+} from "./fulfillment";

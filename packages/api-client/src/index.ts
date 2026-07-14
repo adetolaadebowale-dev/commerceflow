@@ -73,6 +73,14 @@ export {
   type ReservationClient,
 } from "./reservations/reservation-client";
 export type {
+  FulfillOrderRequest,
+  FulfillOrderResponse,
+} from "./fulfillment/contracts";
+export {
+  createFulfillmentClient,
+  type FulfillmentClient,
+} from "./fulfillment/fulfillment-client";
+export type {
   CreateInventoryItemRequest,
   CreateInventoryItemResponse,
   CreateStockMovementRequest,

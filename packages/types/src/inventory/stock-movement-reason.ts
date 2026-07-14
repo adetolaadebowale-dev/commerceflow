@@ -3,6 +3,7 @@ export const STOCK_MOVEMENT_REASONS = [
   "initial",
   "manual_adjustment",
   "sale_reserved_ready",
+  "sale_fulfilled",
 ] as const;
 
 export type StockMovementReason =

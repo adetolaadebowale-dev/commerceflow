@@ -43,6 +43,7 @@ enum StockMovementReason {
   initial
   manual_adjustment
   sale_reserved_ready
+  sale_fulfilled
 }
 
 /// Mirrors OrderStatus from @commerceflow/types.
@@ -50,12 +51,14 @@ enum OrderStatus {
   draft
   confirmed
   cancelled
+  fulfilled
 }
 
 /// Mirrors ReservationStatus from @commerceflow/types.
 enum ReservationStatus {
   active
   released
+  fulfilled
 }
 
 /// Persists User contract fields plus passwordHash (API-internal).
@@ -311,6 +314,7 @@ model Order {
   currency    String      @db.Char(3)
   confirmedAt DateTime?   @map("confirmed_at")
   cancelledAt DateTime?   @map("cancelled_at")
+  fulfilledAt DateTime?   @map("fulfilled_at")
   createdAt   DateTime    @default(now()) @map("created_at")
   updatedAt   DateTime    @updatedAt @map("updated_at")
   items       OrderItem[]
@@ -362,6 +366,7 @@ model InventoryReservation {
   status           ReservationStatus @default(active)
   createdAt        DateTime          @default(now()) @map("created_at")
   releasedAt       DateTime?         @map("released_at")
+  fulfilledAt      DateTime?         @map("fulfilled_at")
 
   @@index([storeId])
   @@index([orderId])

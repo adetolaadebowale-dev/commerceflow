@@ -21,6 +21,7 @@ function toInventoryReservation(
     status: record.status,
     createdAt: record.createdAt.toISOString(),
     releasedAt: record.releasedAt?.toISOString(),
+    fulfilledAt: record.fulfilledAt?.toISOString(),
   };
 }
 

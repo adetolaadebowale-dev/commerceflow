@@ -6,14 +6,16 @@ import type { OrderStatus } from "@commerceflow/types";
  * - draft → confirmed: customer commitment without payment/shipping
  * - draft → cancelled: abandon before confirmation
  * - confirmed → cancelled: void before fulfillment (permitted pre-fulfillment sprint scope)
- * - cancelled: terminal — no further transitions
+ * - confirmed → fulfilled: inventory reservations converted to physical deductions
+ * - cancelled / fulfilled: terminal — no further transitions
  */
 const ALLOWED_TRANSITIONS: Readonly<
   Record<OrderStatus, readonly OrderStatus[]>
 > = {
   draft: ["confirmed", "cancelled"],
-  confirmed: ["cancelled"],
+  confirmed: ["cancelled", "fulfilled"],
   cancelled: [],
+  fulfilled: [],
 };
 
 export const OrderStatusTransitionPolicy = {

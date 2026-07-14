@@ -17,6 +17,9 @@ describe("OrderStatusTransitionPolicy", () => {
       OrderStatusTransitionPolicy.canTransition("confirmed", "cancelled"),
     ).toBe(true);
     expect(
+      OrderStatusTransitionPolicy.canTransition("confirmed", "fulfilled"),
+    ).toBe(true);
+    expect(
       OrderStatusTransitionPolicy.canTransition("confirmed", "confirmed"),
     ).toBe(false);
     expect(
@@ -24,16 +27,11 @@ describe("OrderStatusTransitionPolicy", () => {
     ).toBe(false);
   });
 
-  it("treats cancelled as terminal", () => {
+  it("treats cancelled and fulfilled as terminal", () => {
     expect(OrderStatusTransitionPolicy.allowedTargets("cancelled")).toEqual([]);
+    expect(OrderStatusTransitionPolicy.allowedTargets("fulfilled")).toEqual([]);
     expect(
-      OrderStatusTransitionPolicy.canTransition("cancelled", "draft"),
-    ).toBe(false);
-    expect(
-      OrderStatusTransitionPolicy.canTransition("cancelled", "confirmed"),
-    ).toBe(false);
-    expect(
-      OrderStatusTransitionPolicy.canTransition("cancelled", "cancelled"),
+      OrderStatusTransitionPolicy.canTransition("fulfilled", "confirmed"),
     ).toBe(false);
   });
 });

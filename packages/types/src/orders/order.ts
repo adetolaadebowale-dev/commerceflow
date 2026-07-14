@@ -15,6 +15,7 @@ export interface Order {
   readonly items: readonly OrderItem[];
   readonly confirmedAt?: string;
   readonly cancelledAt?: string;
+  readonly fulfilledAt?: string;
   readonly createdAt: string;
   readonly updatedAt: string;
 }

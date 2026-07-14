@@ -14,4 +14,5 @@ export interface InventoryReservation {
   readonly status: ReservationStatus;
   readonly createdAt: string;
   readonly releasedAt?: string;
+  readonly fulfilledAt?: string;
 }

@@ -144,6 +144,10 @@ export class MemoryInventoryReservationRepository
       throw new Error("RESERVATION_ALREADY_RELEASED");
     }
 
+    if (reservation.status === "fulfilled") {
+      throw new Error("RESERVATION_ALREADY_RELEASED");
+    }
+
     const released: InventoryReservation = {
       ...reservation,
       status: "released",
@@ -152,5 +156,22 @@ export class MemoryInventoryReservationRepository
 
     this.reservationsById.set(id, released);
     return released;
+  }
+
+  markFulfilled(storeId: string, id: string): InventoryReservation {
+    const reservation = this.reservationsById.get(id);
+
+    if (!reservation || reservation.storeId !== storeId) {
+      throw new Error(`Reservation not found: ${id}`);
+    }
+
+    const fulfilled: InventoryReservation = {
+      ...reservation,
+      status: "fulfilled",
+      fulfilledAt: new Date().toISOString(),
+    };
+
+    this.reservationsById.set(id, fulfilled);
+    return fulfilled;
   }
 }

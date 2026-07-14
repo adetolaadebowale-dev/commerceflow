@@ -49,6 +49,7 @@ function toOrder(record: OrderWithItems): Order {
     items: record.items.map(toOrderItem),
     confirmedAt: record.confirmedAt?.toISOString(),
     cancelledAt: record.cancelledAt?.toISOString(),
+    fulfilledAt: record.fulfilledAt?.toISOString(),
     createdAt: record.createdAt.toISOString(),
     updatedAt: record.updatedAt.toISOString(),
   };
@@ -155,6 +156,7 @@ export class PrismaOrderRepository implements OrderRepository {
         status: transition.toStatus,
         ...(transition.toStatus === "confirmed" ? { confirmedAt: now } : {}),
         ...(transition.toStatus === "cancelled" ? { cancelledAt: now } : {}),
+        ...(transition.toStatus === "fulfilled" ? { fulfilledAt: now } : {}),
       };
 
       const updated = await tx.order.updateMany({

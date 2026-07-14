@@ -30,3 +30,4 @@ export type {
   ReservationStatus,
 } from "./reservations";
 export { RESERVATION_STATUSES } from "./reservations";
+export type { OrderFulfillmentResult } from "./fulfillment";

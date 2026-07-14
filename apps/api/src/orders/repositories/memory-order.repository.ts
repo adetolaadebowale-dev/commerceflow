@@ -156,6 +156,8 @@ export class MemoryOrderRepository implements OrderRepository {
         transition.toStatus === "confirmed" ? now : order.confirmedAt,
       cancelledAt:
         transition.toStatus === "cancelled" ? now : order.cancelledAt,
+      fulfilledAt:
+        transition.toStatus === "fulfilled" ? now : order.fulfilledAt,
       updatedAt: now,
     };
 
