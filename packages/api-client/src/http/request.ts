@@ -7,7 +7,7 @@ export interface ApiClientConfig {
 }
 
 interface RequestOptions {
-  readonly method: "GET" | "POST";
+  readonly method: "GET" | "POST" | "PATCH";
   readonly path: string;
   readonly body?: unknown;
   readonly accessToken?: string | null;

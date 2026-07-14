@@ -15,3 +15,19 @@ export {
   resetPasswordSchema,
   type ResetPasswordInput,
 } from "./identity";
+export {
+  categoryIdQuerySchema,
+  createCategorySchema,
+  createProductSchema,
+  listCategoriesQuerySchema,
+  listProductsQuerySchema,
+  productIdQuerySchema,
+  updateCategorySchema,
+  updateProductSchema,
+  type CreateCategoryInput,
+  type CreateProductInput,
+  type ListCategoriesQuery,
+  type ListProductsQuery,
+  type UpdateCategoryInput,
+  type UpdateProductInput,
+} from "./catalogue";

@@ -1,6 +1,25 @@
 export type { ApiErrorResponse, ApiResponse, ApiSuccessResponse } from "./common/api-response";
 
 export type {
+  CreateCategoryRequest,
+  CreateCategoryResponse,
+  CreateProductRequest,
+  CreateProductResponse,
+  GetCategoryResponse,
+  GetProductResponse,
+  ListCategoriesParams,
+  ListCategoriesResponse,
+  ListProductsParams,
+  ListProductsResponse,
+  UpdateCategoryRequest,
+  UpdateCategoryResponse,
+  UpdateProductRequest,
+  UpdateProductResponse,
+} from "./catalogue/contracts";
+
+export { createCatalogueClient, type CatalogueClient } from "./catalogue/catalogue-client";
+
+export type {
   ForgotPasswordRequest,
   ForgotPasswordResponse,
   ForgotPasswordResponseData,
