@@ -51,6 +51,14 @@ export type {
 
 export { createAuthClient, type AuthClient } from "./auth/auth-client";
 export type {
+  CreateOrderRequest,
+  CreateOrderResponse,
+  GetOrderResponse,
+  ListOrdersParams,
+  ListOrdersResponse,
+} from "./orders/contracts";
+export { createOrderClient, type OrderClient } from "./orders/order-client";
+export type {
   CreateInventoryItemRequest,
   CreateInventoryItemResponse,
   CreateStockMovementRequest,

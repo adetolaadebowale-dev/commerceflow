@@ -1,0 +1,7 @@
+ALTER TABLE "orders" ADD COLUMN "currency" CHAR(3) NOT NULL DEFAULT 'USD';
+
+ALTER TABLE "order_items" ADD COLUMN "currency" CHAR(3) NOT NULL DEFAULT 'USD';
+
+ALTER TABLE "orders" ALTER COLUMN "currency" DROP DEFAULT;
+
+ALTER TABLE "order_items" ALTER COLUMN "currency" DROP DEFAULT;
