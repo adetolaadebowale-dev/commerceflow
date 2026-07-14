@@ -6,17 +6,25 @@ import {
   getFulfillmentRepository,
   type FulfillmentRepository,
 } from "../repositories";
+import {
+  getDomainEventPublisher,
+  type DomainEventPublisher,
+} from "@/domain-events";
 
 export interface FulfillmentServiceDependencies {
   readonly fulfillmentRepository?: FulfillmentRepository;
+  readonly domainEventPublisher?: DomainEventPublisher;
 }
 
 export class FulfillmentService {
   private readonly fulfillmentRepository: FulfillmentRepository;
+  private readonly domainEventPublisher: DomainEventPublisher;
 
   constructor(dependencies: FulfillmentServiceDependencies = {}) {
     this.fulfillmentRepository =
       dependencies.fulfillmentRepository ?? getFulfillmentRepository();
+    this.domainEventPublisher =
+      dependencies.domainEventPublisher ?? getDomainEventPublisher();
   }
 
   async fulfillOrder(
@@ -24,10 +32,12 @@ export class FulfillmentService {
     orderId: string,
   ): Promise<OrderFulfillmentResult> {
     try {
-      return await this.fulfillmentRepository.fulfillOrder(
+      const result = await this.fulfillmentRepository.fulfillOrder(
         input.storeId,
         orderId,
       );
+      this.domainEventPublisher.publishOrderFulfilled(result);
+      return result;
     } catch (error) {
       throw this.mapRepositoryError(error);
     }

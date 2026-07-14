@@ -14,16 +14,22 @@ import {
   type OrderRepository,
   type OrderVariantSnapshotReader,
 } from "../repositories";
+import {
+  getDomainEventPublisher,
+  type DomainEventPublisher,
+} from "@/domain-events";
 import { multiplyPrice, sumPrices } from "./order-pricing";
 
 export interface OrderServiceDependencies {
   readonly orderRepository?: OrderRepository;
   readonly orderVariantSnapshotReader?: OrderVariantSnapshotReader;
+  readonly domainEventPublisher?: DomainEventPublisher;
 }
 
 export class OrderService {
   private readonly orderRepository: OrderRepository;
   private readonly orderVariantSnapshotReader: OrderVariantSnapshotReader;
+  private readonly domainEventPublisher: DomainEventPublisher;
 
   constructor(dependencies: OrderServiceDependencies = {}) {
     this.orderRepository =
@@ -31,6 +37,8 @@ export class OrderService {
     this.orderVariantSnapshotReader =
       dependencies.orderVariantSnapshotReader ??
       getOrderVariantSnapshotReader();
+    this.domainEventPublisher =
+      dependencies.domainEventPublisher ?? getDomainEventPublisher();
   }
 
   async createOrder(input: CreateOrderInput): Promise<Order> {
@@ -150,10 +158,18 @@ export class OrderService {
     }
 
     try {
-      return await this.orderRepository.transitionStatus(storeId, id, {
+      const updated = await this.orderRepository.transitionStatus(storeId, id, {
         fromStatus: order.status,
         toStatus: targetStatus,
       });
+
+      if (targetStatus === "confirmed") {
+        this.domainEventPublisher.publishOrderConfirmed(updated, order.status);
+      } else {
+        this.domainEventPublisher.publishOrderCancelled(updated, order.status);
+      }
+
+      return updated;
     } catch (error) {
       if (error instanceof Error && error.message.includes("Order not found:")) {
         throw new OrderError(

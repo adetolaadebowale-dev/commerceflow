@@ -46,3 +46,15 @@ export {
   type AuditEntityType,
   type AuditLog,
 } from "./audit";
+export {
+  DOMAIN_AGGREGATE_TYPES,
+  DOMAIN_EVENT_TYPES,
+  type DomainAggregateType,
+  type DomainEvent,
+  type DomainEventType,
+  type InventoryReleasedPayload,
+  type InventoryReservedPayload,
+  type OrderCancelledPayload,
+  type OrderConfirmedPayload,
+  type OrderFulfilledPayload,
+} from "./domain-events";

@@ -15,17 +15,23 @@ import {
   type InventoryReservationRepository,
 } from "../repositories";
 import { calculateAvailableQuantity } from "./reservation-stock";
+import {
+  getDomainEventPublisher,
+  type DomainEventPublisher,
+} from "@/domain-events";
 
 export interface ReservationServiceDependencies {
   readonly inventoryReservationRepository?: InventoryReservationRepository;
   readonly orderRepository?: OrderRepository;
   readonly inventoryItemRepository?: InventoryItemRepository;
+  readonly domainEventPublisher?: DomainEventPublisher;
 }
 
 export class ReservationService {
   private readonly inventoryReservationRepository: InventoryReservationRepository;
   private readonly orderRepository: OrderRepository;
   private readonly inventoryItemRepository: InventoryItemRepository;
+  private readonly domainEventPublisher: DomainEventPublisher;
 
   constructor(dependencies: ReservationServiceDependencies = {}) {
     this.inventoryReservationRepository =
@@ -35,6 +41,8 @@ export class ReservationService {
       dependencies.orderRepository ?? getOrderRepository();
     this.inventoryItemRepository =
       dependencies.inventoryItemRepository ?? getInventoryItemRepository();
+    this.domainEventPublisher =
+      dependencies.domainEventPublisher ?? getDomainEventPublisher();
   }
 
   async reserveOrder(
@@ -97,11 +105,18 @@ export class ReservationService {
     }
 
     try {
-      return await this.inventoryReservationRepository.createForOrder({
-        storeId: input.storeId,
+      const reservations =
+        await this.inventoryReservationRepository.createForOrder({
+          storeId: input.storeId,
+          orderId,
+          items: pendingItems,
+        });
+      this.domainEventPublisher.publishInventoryReserved(
         orderId,
-        items: pendingItems,
-      });
+        input.storeId,
+        reservations,
+      );
+      return reservations;
     } catch (error) {
       throw this.mapRepositoryError(error);
     }
@@ -112,10 +127,12 @@ export class ReservationService {
     reservationId: string,
   ): Promise<InventoryReservation> {
     try {
-      return await this.inventoryReservationRepository.release(
+      const reservation = await this.inventoryReservationRepository.release(
         input.storeId,
         reservationId,
       );
+      this.domainEventPublisher.publishInventoryReleased(reservation);
+      return reservation;
     } catch (error) {
       throw this.mapRepositoryError(error);
     }
