@@ -2,6 +2,7 @@ import {
   createOrderSchema,
   listOrdersQuerySchema,
   orderIdQuerySchema,
+  orderStoreActionSchema,
 } from "@commerceflow/validation";
 
 import { ORDER_ERROR_CODES, OrderError } from "../errors";
@@ -67,6 +68,52 @@ export async function handleGetOrder(
     }
 
     const order = await orderService.getOrder(parsed.data.storeId, id);
+    return jsonSuccess({ order });
+  } catch (error) {
+    return handleOrderRouteError(error);
+  }
+}
+
+export async function handleConfirmOrder(
+  id: string,
+  request: Request,
+): Promise<Response> {
+  try {
+    const parsed = orderStoreActionSchema.safeParse(getQueryParams(request));
+
+    if (!parsed.success) {
+      throw new OrderError(
+        ORDER_ERROR_CODES.VALIDATION_ERROR,
+        "Validation failed",
+        400,
+        parsed.error.flatten(),
+      );
+    }
+
+    const order = await orderService.confirmOrder(parsed.data, id);
+    return jsonSuccess({ order });
+  } catch (error) {
+    return handleOrderRouteError(error);
+  }
+}
+
+export async function handleCancelOrder(
+  id: string,
+  request: Request,
+): Promise<Response> {
+  try {
+    const parsed = orderStoreActionSchema.safeParse(getQueryParams(request));
+
+    if (!parsed.success) {
+      throw new OrderError(
+        ORDER_ERROR_CODES.VALIDATION_ERROR,
+        "Validation failed",
+        400,
+        parsed.error.flatten(),
+      );
+    }
+
+    const order = await orderService.cancelOrder(parsed.data, id);
     return jsonSuccess({ order });
   } catch (error) {
     return handleOrderRouteError(error);

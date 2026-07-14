@@ -51,6 +51,8 @@ export type {
 
 export { createAuthClient, type AuthClient } from "./auth/auth-client";
 export type {
+  CancelOrderResponse,
+  ConfirmOrderResponse,
   CreateOrderRequest,
   CreateOrderResponse,
   GetOrderResponse,

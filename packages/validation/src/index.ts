@@ -53,7 +53,9 @@ export {
   createOrderSchema,
   listOrdersQuerySchema,
   orderIdQuerySchema,
+  orderStoreActionSchema,
   type CreateOrderInput,
   type CreateOrderItemInput,
   type ListOrdersQuery,
+  type OrderStoreActionQuery,
 } from "./orders";

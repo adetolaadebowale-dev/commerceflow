@@ -1,7 +1,8 @@
+import type { CreateOrderInput } from "@commerceflow/validation";
+
 import { MemoryOrderRepository } from "../repositories/memory-order.repository";
 import { MemoryOrderVariantSnapshotReader } from "../repositories/memory-order-variant-snapshot.reader";
 import { OrderService } from "../services/order.service";
-import type { CreateOrderInput } from "@commerceflow/validation";
 
 export const TEST_STORE_A_ID = "11111111-1111-1111-1111-111111111111";
 export const TEST_STORE_B_ID = "22222222-2222-2222-2222-222222222222";
@@ -59,4 +60,21 @@ export function validOrderInput(
     items: [{ productVariantId: TEST_VARIANT_A_ID, quantity: 2 }],
     ...overrides,
   };
+}
+
+export async function createDraftOrder(
+  orderService: OrderService,
+  variantSnapshotReader: MemoryOrderVariantSnapshotReader,
+  overrides: Partial<CreateOrderInput> = {},
+) {
+  seedVariant(variantSnapshotReader, {
+    storeId: TEST_STORE_A_ID,
+    productVariantId: TEST_VARIANT_A_ID,
+    productName: "Classic Tee",
+    sku: "TEE-001",
+    unitPrice: "19.99",
+    currency: "USD",
+  });
+
+  return orderService.createOrder(validOrderInput(overrides));
 }

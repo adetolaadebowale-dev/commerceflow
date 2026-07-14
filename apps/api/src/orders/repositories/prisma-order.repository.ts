@@ -12,6 +12,7 @@ import type { ListOrdersQuery } from "@commerceflow/validation";
 
 import type { CreateOrderRecord } from "./order-create-record";
 import type { OrderRepository } from "./order.repository";
+import type { OrderStatusTransitionInput } from "./order-status-transition";
 import { generateOrderNumber } from "../services/order-pricing";
 import { isUniqueOrderNumberViolation } from "./prisma-order-variant-snapshot.reader";
 
@@ -46,6 +47,8 @@ function toOrder(record: OrderWithItems): Order {
     subtotal: record.subtotal.toString(),
     currency: record.currency,
     items: record.items.map(toOrderItem),
+    confirmedAt: record.confirmedAt?.toISOString(),
+    cancelledAt: record.cancelledAt?.toISOString(),
     createdAt: record.createdAt.toISOString(),
     updatedAt: record.updatedAt.toISOString(),
   };
@@ -139,5 +142,51 @@ export class PrismaOrderRepository implements OrderRepository {
     }
 
     throw new Error("Unable to generate a unique order number");
+  }
+
+  async transitionStatus(
+    storeId: string,
+    id: string,
+    transition: OrderStatusTransitionInput,
+  ): Promise<Order> {
+    return this.db.$transaction(async (tx) => {
+      const now = new Date();
+      const updateData = {
+        status: transition.toStatus,
+        ...(transition.toStatus === "confirmed" ? { confirmedAt: now } : {}),
+        ...(transition.toStatus === "cancelled" ? { cancelledAt: now } : {}),
+      };
+
+      const updated = await tx.order.updateMany({
+        where: {
+          id,
+          storeId,
+          status: transition.fromStatus,
+        },
+        data: updateData,
+      });
+
+      if (updated.count === 0) {
+        const existing = await tx.order.findFirst({
+          where: { id, storeId },
+          select: { status: true },
+        });
+
+        if (!existing) {
+          throw new Error(`Order not found: ${id}`);
+        }
+
+        throw new Error(
+          `Order transition rejected: ${existing.status} -> ${transition.toStatus}`,
+        );
+      }
+
+      const record = await tx.order.findFirstOrThrow({
+        where: { id, storeId },
+        include: { items: itemsInclude },
+      });
+
+      return toOrder(record);
+    });
   }
 }

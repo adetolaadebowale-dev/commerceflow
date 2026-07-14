@@ -1,7 +1,12 @@
 import type { Order, CatalogueListResult } from "@commerceflow/types";
-import type { CreateOrderInput, ListOrdersQuery } from "@commerceflow/validation";
+import type {
+  CreateOrderInput,
+  ListOrdersQuery,
+  OrderStoreActionQuery,
+} from "@commerceflow/validation";
 
 import { ORDER_ERROR_CODES, OrderError } from "../errors";
+import { OrderStatusTransitionPolicy } from "../policies/order-status-transition.policy";
 import type { PreparedOrderItem } from "../repositories";
 import {
   getOrderRepository,
@@ -92,6 +97,14 @@ export class OrderService {
     }
   }
 
+  async confirmOrder(input: OrderStoreActionQuery, id: string): Promise<Order> {
+    return this.transitionOrder(input.storeId, id, "confirmed", "confirmed");
+  }
+
+  async cancelOrder(input: OrderStoreActionQuery, id: string): Promise<Order> {
+    return this.transitionOrder(input.storeId, id, "cancelled", "cancelled");
+  }
+
   async getOrder(storeId: string, id: string): Promise<Order> {
     const order = await this.orderRepository.findById(storeId, id);
 
@@ -108,6 +121,61 @@ export class OrderService {
 
   async listOrders(query: ListOrdersQuery): Promise<CatalogueListResult<Order>> {
     return this.orderRepository.list(query);
+  }
+
+  private async transitionOrder(
+    storeId: string,
+    id: string,
+    targetStatus: "confirmed" | "cancelled",
+    actionLabel: "confirmed" | "cancelled",
+  ): Promise<Order> {
+    const order = await this.orderRepository.findById(storeId, id);
+
+    if (!order) {
+      throw new OrderError(
+        ORDER_ERROR_CODES.NOT_FOUND,
+        "Order not found",
+        404,
+      );
+    }
+
+    if (
+      !OrderStatusTransitionPolicy.canTransition(order.status, targetStatus)
+    ) {
+      throw new OrderError(
+        ORDER_ERROR_CODES.IMMUTABLE,
+        `Order cannot be ${actionLabel} from its current status`,
+        409,
+      );
+    }
+
+    try {
+      return await this.orderRepository.transitionStatus(storeId, id, {
+        fromStatus: order.status,
+        toStatus: targetStatus,
+      });
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("Order not found:")) {
+        throw new OrderError(
+          ORDER_ERROR_CODES.NOT_FOUND,
+          "Order not found",
+          404,
+        );
+      }
+
+      if (
+        error instanceof Error &&
+        error.message.includes("Order transition rejected:")
+      ) {
+        throw new OrderError(
+          ORDER_ERROR_CODES.IMMUTABLE,
+          `Order cannot be ${actionLabel} from its current status`,
+          409,
+        );
+      }
+
+      throw error;
+    }
   }
 }
 

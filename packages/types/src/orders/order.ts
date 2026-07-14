@@ -13,6 +13,8 @@ export interface Order {
   readonly subtotal: string;
   readonly currency: string;
   readonly items: readonly OrderItem[];
+  readonly confirmedAt?: string;
+  readonly cancelledAt?: string;
   readonly createdAt: string;
   readonly updatedAt: string;
 }

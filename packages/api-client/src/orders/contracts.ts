@@ -10,6 +10,12 @@ export type CreateOrderResponse = ApiSuccessResponse<{ order: Order }>;
 /** GET /orders/:id */
 export type GetOrderResponse = ApiSuccessResponse<{ order: Order }>;
 
+/** POST /orders/:id/confirm */
+export type ConfirmOrderResponse = ApiSuccessResponse<{ order: Order }>;
+
+/** POST /orders/:id/cancel */
+export type CancelOrderResponse = ApiSuccessResponse<{ order: Order }>;
+
 /** GET /orders */
 export type ListOrdersResponse = ApiSuccessResponse<CatalogueListResult<Order>>;
 

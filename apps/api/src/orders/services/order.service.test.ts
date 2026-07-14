@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { ORDER_ERROR_CODES } from "../errors";
 import {
+  createDraftOrder,
   createMemoryOrderService,
   seedVariant,
   TEST_CUSTOMER_ID,
@@ -265,6 +266,130 @@ describe("OrderService", () => {
     const second = await orderService.createOrder(validOrderInput());
     expect(second.orderNumber).toMatch(/^ORD-/);
     expect(orderRepository.getOrderCount()).toBe(2);
+  });
+});
+
+describe("OrderService lifecycle", () => {
+  it("confirms a draft order and sets confirmedAt", async () => {
+    const { orderService, variantSnapshotReader } = createMemoryOrderService();
+    const draft = await createDraftOrder(orderService, variantSnapshotReader);
+
+    expect(draft.confirmedAt).toBeUndefined();
+    expect(draft.cancelledAt).toBeUndefined();
+
+    const confirmed = await orderService.confirmOrder(
+      { storeId: TEST_STORE_A_ID },
+      draft.id,
+    );
+
+    expect(confirmed.status).toBe("confirmed");
+    expect(confirmed.confirmedAt).toBeDefined();
+    expect(confirmed.cancelledAt).toBeUndefined();
+    expect(confirmed.createdAt).toBe(draft.createdAt);
+    expect(confirmed.items[0]?.createdAt).toBe(draft.items[0]?.createdAt);
+    expect(confirmed.subtotal).toBe(draft.subtotal);
+  });
+
+  it("cancels a draft order and sets cancelledAt", async () => {
+    const { orderService, variantSnapshotReader } = createMemoryOrderService();
+    const draft = await createDraftOrder(orderService, variantSnapshotReader);
+
+    const cancelled = await orderService.cancelOrder(
+      { storeId: TEST_STORE_A_ID },
+      draft.id,
+    );
+
+    expect(cancelled.status).toBe("cancelled");
+    expect(cancelled.cancelledAt).toBeDefined();
+    expect(cancelled.confirmedAt).toBeUndefined();
+    expect(cancelled.createdAt).toBe(draft.createdAt);
+  });
+
+  it("cancels a confirmed order while preserving confirmedAt", async () => {
+    const { orderService, variantSnapshotReader } = createMemoryOrderService();
+    const draft = await createDraftOrder(orderService, variantSnapshotReader);
+    const confirmed = await orderService.confirmOrder(
+      { storeId: TEST_STORE_A_ID },
+      draft.id,
+    );
+
+    const cancelled = await orderService.cancelOrder(
+      { storeId: TEST_STORE_A_ID },
+      confirmed.id,
+    );
+
+    expect(cancelled.status).toBe("cancelled");
+    expect(cancelled.confirmedAt).toBe(confirmed.confirmedAt);
+    expect(cancelled.cancelledAt).toBeDefined();
+  });
+
+  it("rejects confirming a non-draft order", async () => {
+    const { orderService, variantSnapshotReader } = createMemoryOrderService();
+    const draft = await createDraftOrder(orderService, variantSnapshotReader);
+    await orderService.confirmOrder({ storeId: TEST_STORE_A_ID }, draft.id);
+
+    await expect(
+      orderService.confirmOrder({ storeId: TEST_STORE_A_ID }, draft.id),
+    ).rejects.toMatchObject({
+      code: ORDER_ERROR_CODES.IMMUTABLE,
+      status: 409,
+    });
+  });
+
+  it("rejects cancelling an already cancelled order", async () => {
+    const { orderService, variantSnapshotReader } = createMemoryOrderService();
+    const draft = await createDraftOrder(orderService, variantSnapshotReader);
+    await orderService.cancelOrder({ storeId: TEST_STORE_A_ID }, draft.id);
+
+    await expect(
+      orderService.cancelOrder({ storeId: TEST_STORE_A_ID }, draft.id),
+    ).rejects.toMatchObject({
+      code: ORDER_ERROR_CODES.IMMUTABLE,
+      status: 409,
+    });
+  });
+
+  it("rejects confirming a cancelled order", async () => {
+    const { orderService, variantSnapshotReader } = createMemoryOrderService();
+    const draft = await createDraftOrder(orderService, variantSnapshotReader);
+    await orderService.cancelOrder({ storeId: TEST_STORE_A_ID }, draft.id);
+
+    await expect(
+      orderService.confirmOrder({ storeId: TEST_STORE_A_ID }, draft.id),
+    ).rejects.toMatchObject({
+      code: ORDER_ERROR_CODES.IMMUTABLE,
+      status: 409,
+    });
+  });
+
+  it("isolates lifecycle actions by store", async () => {
+    const { orderService, variantSnapshotReader } = createMemoryOrderService();
+    const draft = await createDraftOrder(orderService, variantSnapshotReader);
+
+    await expect(
+      orderService.confirmOrder({ storeId: TEST_STORE_B_ID }, draft.id),
+    ).rejects.toMatchObject({
+      code: ORDER_ERROR_CODES.NOT_FOUND,
+      status: 404,
+    });
+  });
+
+  it("does not persist lifecycle changes when transition fails", async () => {
+    const { orderService, orderRepository, variantSnapshotReader } =
+      createMemoryOrderService();
+    const draft = await createDraftOrder(orderService, variantSnapshotReader);
+
+    orderRepository.setTransactionFailure(
+      new Error("simulated transition failure"),
+    );
+
+    await expect(
+      orderService.confirmOrder({ storeId: TEST_STORE_A_ID }, draft.id),
+    ).rejects.toThrow("simulated transition failure");
+
+    const unchanged = await orderService.getOrder(TEST_STORE_A_ID, draft.id);
+    expect(unchanged.status).toBe("draft");
+    expect(unchanged.confirmedAt).toBeUndefined();
   });
 });
 

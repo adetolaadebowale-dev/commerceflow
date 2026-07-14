@@ -26,6 +26,8 @@ export const orderIdQuerySchema = z.object({
   storeId: storeIdSchema,
 });
 
+export const orderStoreActionSchema = orderIdQuerySchema;
+
 export const listOrdersQuerySchema = z.object({
   storeId: storeIdSchema,
   page: z.coerce.number().int().min(1).default(1),
@@ -37,3 +39,4 @@ export const listOrdersQuerySchema = z.object({
 export type CreateOrderItemInput = z.infer<typeof createOrderItemInputSchema>;
 export type CreateOrderInput = z.infer<typeof createOrderSchema>;
 export type ListOrdersQuery = z.infer<typeof listOrdersQuerySchema>;
+export type OrderStoreActionQuery = z.infer<typeof orderStoreActionSchema>;

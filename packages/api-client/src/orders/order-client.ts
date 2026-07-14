@@ -1,4 +1,6 @@
 import type {
+  CancelOrderResponse,
+  ConfirmOrderResponse,
   CreateOrderRequest,
   CreateOrderResponse,
   GetOrderResponse,
@@ -31,6 +33,14 @@ export interface OrderClient {
     params: StoreScopedParams,
   ): Promise<GetOrderResponse["data"]>;
   listOrders(params: ListOrdersParams): Promise<ListOrdersResponse["data"]>;
+  confirmOrder(
+    id: string,
+    params: StoreScopedParams,
+  ): Promise<ConfirmOrderResponse["data"]>;
+  cancelOrder(
+    id: string,
+    params: StoreScopedParams,
+  ): Promise<CancelOrderResponse["data"]>;
 }
 
 export function createOrderClient(config: ApiClientConfig): OrderClient {
@@ -54,6 +64,20 @@ export function createOrderClient(config: ApiClientConfig): OrderClient {
       apiRequest<ListOrdersResponse["data"]>(config, {
         method: "GET",
         path: `/api/orders${toQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    confirmOrder: (id, params) =>
+      apiRequest<ConfirmOrderResponse["data"]>(config, {
+        method: "POST",
+        path: `/api/orders/${id}/confirm${toQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    cancelOrder: (id, params) =>
+      apiRequest<CancelOrderResponse["data"]>(config, {
+        method: "POST",
+        path: `/api/orders/${id}/cancel${toQueryString(params)}`,
         accessToken: config.getAccessToken?.(),
       }),
   };

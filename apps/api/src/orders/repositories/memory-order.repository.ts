@@ -9,6 +9,7 @@ import type { ListOrdersQuery } from "@commerceflow/validation";
 import { generateOrderNumber } from "../services/order-pricing";
 import type { CreateOrderRecord } from "./order-create-record";
 import type { OrderRepository } from "./order.repository";
+import type { OrderStatusTransitionInput } from "./order-status-transition";
 
 export class MemoryOrderRepository implements OrderRepository {
   private readonly ordersById = new Map<string, Order>();
@@ -124,5 +125,41 @@ export class MemoryOrderRepository implements OrderRepository {
     }
 
     throw new Error("Unable to generate a unique order number");
+  }
+
+  async transitionStatus(
+    storeId: string,
+    id: string,
+    transition: OrderStatusTransitionInput,
+  ): Promise<Order> {
+    if (this.transactionFailure) {
+      throw this.transactionFailure;
+    }
+
+    const order = this.ordersById.get(id);
+
+    if (!order || order.storeId !== storeId) {
+      throw new Error(`Order not found: ${id}`);
+    }
+
+    if (order.status !== transition.fromStatus) {
+      throw new Error(
+        `Order transition rejected: ${order.status} -> ${transition.toStatus}`,
+      );
+    }
+
+    const now = new Date().toISOString();
+    const updated: Order = {
+      ...order,
+      status: transition.toStatus,
+      confirmedAt:
+        transition.toStatus === "confirmed" ? now : order.confirmedAt,
+      cancelledAt:
+        transition.toStatus === "cancelled" ? now : order.cancelledAt,
+      updatedAt: now,
+    };
+
+    this.ordersById.set(id, updated);
+    return updated;
   }
 }
