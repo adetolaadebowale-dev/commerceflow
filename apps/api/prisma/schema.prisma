@@ -1,0 +1,52 @@
+// CommerceFlow identity schema — aligned with @commerceflow/types User and Session contracts.
+// StoredUser/StoredSession persistence fields (passwordHash, refreshTokenId, revoked) are API-internal.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Mirrors UserRole from @commerceflow/types — do not add values without updating shared contracts.
+enum UserRole {
+  customer
+  staff
+  admin
+  super_admin
+}
+
+/// Persists User contract fields plus passwordHash (API-internal).
+model User {
+  id            String   @id @default(uuid()) @db.Uuid
+  email         String   @unique
+  emailVerified Boolean  @default(false) @map("email_verified")
+  firstName     String   @map("first_name")
+  lastName      String   @map("last_name")
+  role          UserRole @default(customer)
+  passwordHash  String   @map("password_hash")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  sessions      Session[]
+
+  @@map("users")
+}
+
+/// Persists Session contract fields plus refreshTokenId and revoked (API-internal).
+model Session {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt      DateTime @map("expires_at")
+  createdAt      DateTime @default(now()) @map("created_at")
+  lastActiveAt   DateTime @map("last_active_at")
+  ipAddress      String?  @map("ip_address")
+  userAgent      String?  @map("user_agent")
+  refreshTokenId String   @map("refresh_token_id")
+  revoked        Boolean  @default(false)
+
+  @@index([userId])
+  @@map("sessions")
+}
