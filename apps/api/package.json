@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
     "clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\""
   },
   "dependencies": {
@@ -27,6 +28,7 @@
     "@types/react-dom": "^19",
     "eslint": "^8.57.1",
     "eslint-config-next": "16.2.10",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^4.1.10"
   }
 }

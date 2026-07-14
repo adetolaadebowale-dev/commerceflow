@@ -1,5 +1,10 @@
 {
   "extends": "@commerceflow/config/typescript/react-native.json",
-  "compilerOptions": { "baseUrl": "." },
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
 }

@@ -1,5 +1,18 @@
 import { Stack } from "expo-router";
 
+import { SessionProvider } from "../src/auth/session-provider";
+import { StartupErrorBoundary } from "../src/components/debug/StartupErrorBoundary";
+
+console.log("[startup][app/_layout.tsx] module loaded");
+
 export default function RootLayout() {
-  return <Stack screenOptions={{ headerShown: false }} />;
+  console.log("[startup][app/_layout.tsx] RootLayout render start");
+
+  return (
+    <StartupErrorBoundary>
+      <SessionProvider>
+        <Stack screenOptions={{ headerShown: false }} />
+      </SessionProvider>
+    </StartupErrorBoundary>
+  );
 }

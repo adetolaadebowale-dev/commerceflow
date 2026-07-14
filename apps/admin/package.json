@@ -15,8 +15,10 @@
     "@commerceflow/api-client": "workspace:*",
     "@commerceflow/types": "workspace:*",
     "@commerceflow/ui": "workspace:*",
+    "@commerceflow/validation": "workspace:*",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react-dom": "^19.2.7",
+    "react-router-dom": "^7.18.1"
   },
   "devDependencies": {
     "@commerceflow/config": "workspace:*",

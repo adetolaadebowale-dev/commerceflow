@@ -5,12 +5,16 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" }
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
   "scripts": {
     "build": "tsc",
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
     "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\""
   },
   "dependencies": {
@@ -20,6 +24,7 @@
   "devDependencies": {
     "@commerceflow/config": "workspace:*",
     "eslint": "^8.57.1",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^4.1.10"
   }
 }

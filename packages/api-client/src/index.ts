@@ -21,3 +21,7 @@ export type {
   ResetPasswordResponse,
   ResetPasswordResponseData,
 } from "./auth/contracts";
+
+export { createAuthClient, type AuthClient } from "./auth/auth-client";
+export { ApiClientError } from "./http/api-error";
+export { apiRequest, type ApiClientConfig } from "./http/request";
