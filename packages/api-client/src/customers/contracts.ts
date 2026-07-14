@@ -1,8 +1,14 @@
-import type { CatalogueListResult, Customer } from "@commerceflow/types";
+import type {
+  CatalogueListResult,
+  Customer,
+  CustomerAddress,
+} from "@commerceflow/types";
 import type {
   CreateCustomerInput,
+  CreateCustomerAddressInput,
   ListCustomersQuery,
   UpdateCustomerInput,
+  UpdateCustomerAddressInput,
 } from "@commerceflow/validation";
 
 import type { ApiSuccessResponse } from "../common/api-response";
@@ -22,6 +28,28 @@ export type GetCustomerResponse = ApiSuccessResponse<{ customer: Customer }>;
 export type ListCustomersResponse = ApiSuccessResponse<
   CatalogueListResult<Customer>
 >;
+
+/** POST /customers/:id/addresses */
+export type CreateCustomerAddressRequest = CreateCustomerAddressInput;
+export type CreateCustomerAddressResponse = ApiSuccessResponse<{
+  customerAddress: CustomerAddress;
+}>;
+
+/** PATCH /customer-addresses/:id */
+export type UpdateCustomerAddressRequest = UpdateCustomerAddressInput;
+export type UpdateCustomerAddressResponse = ApiSuccessResponse<{
+  customerAddress: CustomerAddress;
+}>;
+
+/** GET /customer-addresses/:id */
+export type GetCustomerAddressResponse = ApiSuccessResponse<{
+  customerAddress: CustomerAddress;
+}>;
+
+/** GET /customers/:id/addresses */
+export type ListCustomerAddressesResponse = ApiSuccessResponse<{
+  customerAddresses: readonly CustomerAddress[];
+}>;
 
 export interface StoreScopedParams {
   readonly storeId: string;

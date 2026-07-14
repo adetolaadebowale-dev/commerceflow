@@ -34,6 +34,7 @@ export type { OrderFulfillmentResult } from "./fulfillment";
 export {
   CUSTOMER_STATUSES,
   type Customer,
+  type CustomerAddress,
   type CustomerStatus,
 } from "./customers";
 export {
@@ -57,6 +58,8 @@ export {
   type DomainAggregateType,
   type DomainEvent,
   type DomainEventType,
+  type CustomerAddressCreatedPayload,
+  type CustomerAddressUpdatedPayload,
   type CustomerCreatedPayload,
   type CustomerUpdatedPayload,
   type InventoryReleasedPayload,

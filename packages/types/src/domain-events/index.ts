@@ -5,6 +5,8 @@ export {
 export { DOMAIN_EVENT_TYPES, type DomainEventType } from "./domain-event-type";
 export type { DomainEvent } from "./domain-event";
 export type {
+  CustomerAddressCreatedPayload,
+  CustomerAddressUpdatedPayload,
   CustomerCreatedPayload,
   CustomerUpdatedPayload,
   InventoryReleasedPayload,

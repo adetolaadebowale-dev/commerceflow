@@ -8,6 +8,7 @@ export const AUDIT_ENTITY_TYPES = [
   "order",
   "inventory_reservation",
   "customer",
+  "customer_address",
 ] as const;
 
 export type AuditEntityType = (typeof AUDIT_ENTITY_TYPES)[number];

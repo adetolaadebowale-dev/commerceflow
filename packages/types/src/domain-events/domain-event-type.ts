@@ -7,6 +7,8 @@ export const DOMAIN_EVENT_TYPES = [
   "inventory.released",
   "customer.created",
   "customer.updated",
+  "customer.address.created",
+  "customer.address.updated",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

@@ -1,12 +1,18 @@
 import type {
   CreateCustomerRequest,
   CreateCustomerResponse,
+  CreateCustomerAddressRequest,
+  CreateCustomerAddressResponse,
+  GetCustomerAddressResponse,
   GetCustomerResponse,
+  ListCustomerAddressesResponse,
   ListCustomersParams,
   ListCustomersResponse,
   StoreScopedParams,
   UpdateCustomerRequest,
   UpdateCustomerResponse,
+  UpdateCustomerAddressRequest,
+  UpdateCustomerAddressResponse,
 } from "./contracts";
 import type { ApiClientConfig } from "../http/request";
 import { apiRequest } from "../http/request";
@@ -42,6 +48,24 @@ export interface CustomerClient {
   listCustomers(
     params: ListCustomersParams,
   ): Promise<ListCustomersResponse["data"]>;
+  createCustomerAddress(
+    customerId: string,
+    input: CreateCustomerAddressRequest,
+    params: StoreScopedParams,
+  ): Promise<CreateCustomerAddressResponse["data"]>;
+  updateCustomerAddress(
+    id: string,
+    input: UpdateCustomerAddressRequest,
+    params: StoreScopedParams,
+  ): Promise<UpdateCustomerAddressResponse["data"]>;
+  getCustomerAddress(
+    id: string,
+    params: StoreScopedParams,
+  ): Promise<GetCustomerAddressResponse["data"]>;
+  listCustomerAddresses(
+    customerId: string,
+    params: StoreScopedParams,
+  ): Promise<ListCustomerAddressesResponse["data"]>;
 }
 
 export function createCustomerClient(config: ApiClientConfig): CustomerClient {
@@ -73,6 +97,36 @@ export function createCustomerClient(config: ApiClientConfig): CustomerClient {
       apiRequest<ListCustomersResponse["data"]>(config, {
         method: "GET",
         path: `/api/customers${toQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    createCustomerAddress: (customerId, input, params) =>
+      apiRequest<CreateCustomerAddressResponse["data"]>(config, {
+        method: "POST",
+        path: `/api/customers/${customerId}/addresses${toQueryString(params)}`,
+        body: input,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    updateCustomerAddress: (id, input, params) =>
+      apiRequest<UpdateCustomerAddressResponse["data"]>(config, {
+        method: "PATCH",
+        path: `/api/customer-addresses/${id}${toQueryString(params)}`,
+        body: input,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    getCustomerAddress: (id, params) =>
+      apiRequest<GetCustomerAddressResponse["data"]>(config, {
+        method: "GET",
+        path: `/api/customer-addresses/${id}${toQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    listCustomerAddresses: (customerId, params) =>
+      apiRequest<ListCustomerAddressesResponse["data"]>(config, {
+        method: "GET",
+        path: `/api/customers/${customerId}/addresses${toQueryString(params)}`,
         accessToken: config.getAccessToken?.(),
       }),
   };

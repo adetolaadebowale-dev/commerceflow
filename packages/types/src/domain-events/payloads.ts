@@ -4,6 +4,7 @@ import type { OrderFulfillmentResult } from "../fulfillment/order-fulfillment-re
 import type { InventoryReservation } from "../reservations/inventory-reservation";
 
 import type { Customer } from "../customers/customer";
+import type { CustomerAddress } from "../customers/customer-address";
 
 export interface OrderConfirmedPayload {
   readonly orderId: string;
@@ -70,4 +71,20 @@ export interface CustomerUpdatedPayload {
   readonly lastName: string;
   readonly status: Customer["status"];
   readonly customer: Customer;
+}
+
+export interface CustomerAddressCreatedPayload {
+  readonly customerAddressId: string;
+  readonly customerId: string;
+  readonly label: string;
+  readonly isDefault: boolean;
+  readonly customerAddress: CustomerAddress;
+}
+
+export interface CustomerAddressUpdatedPayload {
+  readonly customerAddressId: string;
+  readonly customerId: string;
+  readonly label: string;
+  readonly isDefault: boolean;
+  readonly customerAddress: CustomerAddress;
 }

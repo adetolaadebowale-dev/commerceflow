@@ -104,11 +104,17 @@ export { createAuditClient, type AuditClient } from "./audit/audit-client";
 export type {
   CreateCustomerRequest,
   CreateCustomerResponse,
+  CreateCustomerAddressRequest,
+  CreateCustomerAddressResponse,
+  GetCustomerAddressResponse,
   GetCustomerResponse,
+  ListCustomerAddressesResponse,
   ListCustomersParams,
   ListCustomersResponse,
   UpdateCustomerRequest,
   UpdateCustomerResponse,
+  UpdateCustomerAddressRequest,
+  UpdateCustomerAddressResponse,
 } from "./customers/contracts";
 export { createCustomerClient, type CustomerClient } from "./customers/customer-client";
 export { ApiClientError } from "./http/api-error";

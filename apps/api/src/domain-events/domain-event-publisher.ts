@@ -2,6 +2,8 @@ import type { DomainEvent } from "@commerceflow/types";
 
 import type { DomainEventDispatcher } from "./dispatcher";
 import {
+  buildCustomerAddressCreatedEvent,
+  buildCustomerAddressUpdatedEvent,
   buildCustomerCreatedEvent,
   buildCustomerUpdatedEvent,
   buildInventoryReleasedEvent,
@@ -12,6 +14,7 @@ import {
 } from "./domain-event-factory";
 import type {
   Customer,
+  CustomerAddress,
   InventoryReservation,
   Order,
   OrderFulfillmentResult,
@@ -79,6 +82,14 @@ export class DomainEventPublisher {
 
   publishCustomerUpdated(customer: Customer): void {
     this.dispatch(buildCustomerUpdatedEvent(customer));
+  }
+
+  publishCustomerAddressCreated(customerAddress: CustomerAddress): void {
+    this.dispatch(buildCustomerAddressCreatedEvent(customerAddress));
+  }
+
+  publishCustomerAddressUpdated(customerAddress: CustomerAddress): void {
+    this.dispatch(buildCustomerAddressUpdatedEvent(customerAddress));
   }
 
   private dispatch(event: DomainEvent): void {

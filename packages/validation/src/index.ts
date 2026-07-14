@@ -78,10 +78,15 @@ export {
 } from "./audit";
 export {
   createCustomerSchema,
+  createCustomerAddressSchema,
+  customerAddressIdQuerySchema,
   customerIdQuerySchema,
   listCustomersQuerySchema,
   updateCustomerSchema,
+  updateCustomerAddressSchema,
   type CreateCustomerInput,
+  type CreateCustomerAddressInput,
   type ListCustomersQuery,
   type UpdateCustomerInput,
+  type UpdateCustomerAddressInput,
 } from "./customers";

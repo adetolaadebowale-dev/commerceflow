@@ -144,6 +144,7 @@ model Store {
   inventoryReservations InventoryReservation[]
   auditLogs             AuditLog[]
   customers             Customer[]
+  customerAddresses     CustomerAddress[]
 
   @@unique([organizationId, slug])
   @@index([organizationId])
@@ -426,10 +427,40 @@ model Customer {
   createdAt DateTime       @default(now()) @map("created_at")
   updatedAt DateTime       @updatedAt @map("updated_at")
   deletedAt DateTime?      @map("deleted_at")
+  addresses CustomerAddress[]
 
   @@index([storeId])
   @@index([deletedAt])
   @@index([storeId, deletedAt])
   @@index([storeId, status])
   @@map("customers")
+}
+
+/// Store-scoped postal address belonging to a customer profile.
+model CustomerAddress {
+  id             String   @id @default(uuid()) @db.Uuid
+  customerId     String   @map("customer_id") @db.Uuid
+  customer       Customer @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  storeId        String   @map("store_id") @db.Uuid
+  store          Store    @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  label          String
+  recipientName  String   @map("recipient_name")
+  phone          String?
+  addressLine1   String   @map("address_line1")
+  addressLine2   String?  @map("address_line2")
+  city           String
+  stateProvince  String   @map("state_province")
+  postalCode     String   @map("postal_code")
+  countryCode    String   @map("country_code") @db.Char(2)
+  isDefault      Boolean  @default(false) @map("is_default")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+  deletedAt      DateTime? @map("deleted_at")
+
+  @@index([customerId])
+  @@index([storeId])
+  @@index([storeId, customerId])
+  @@index([deletedAt])
+  @@index([storeId, deletedAt])
+  @@map("customer_addresses")
 }

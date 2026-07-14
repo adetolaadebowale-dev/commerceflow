@@ -6,6 +6,9 @@ import type {
   InventoryReservedPayload,
   InventoryReservation,
   Customer,
+  CustomerAddress,
+  CustomerAddressCreatedPayload,
+  CustomerAddressUpdatedPayload,
   CustomerCreatedPayload,
   CustomerUpdatedPayload,
   Order,
@@ -171,6 +174,42 @@ export function buildCustomerUpdatedEvent(
       lastName: customer.lastName,
       status: customer.status,
       customer,
+    },
+  });
+}
+
+export function buildCustomerAddressCreatedEvent(
+  customerAddress: CustomerAddress,
+): DomainEvent<CustomerAddressCreatedPayload> {
+  return createDomainEvent({
+    eventType: "customer.address.created",
+    aggregateType: "customer_address",
+    aggregateId: customerAddress.id,
+    storeId: customerAddress.storeId,
+    payload: {
+      customerAddressId: customerAddress.id,
+      customerId: customerAddress.customerId,
+      label: customerAddress.label,
+      isDefault: customerAddress.isDefault,
+      customerAddress,
+    },
+  });
+}
+
+export function buildCustomerAddressUpdatedEvent(
+  customerAddress: CustomerAddress,
+): DomainEvent<CustomerAddressUpdatedPayload> {
+  return createDomainEvent({
+    eventType: "customer.address.updated",
+    aggregateType: "customer_address",
+    aggregateId: customerAddress.id,
+    storeId: customerAddress.storeId,
+    payload: {
+      customerAddressId: customerAddress.id,
+      customerId: customerAddress.customerId,
+      label: customerAddress.label,
+      isDefault: customerAddress.isDefault,
+      customerAddress,
     },
   });
 }
