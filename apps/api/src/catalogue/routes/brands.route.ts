@@ -6,6 +6,7 @@ import {
 } from "@commerceflow/validation";
 
 import { authorizationService } from "@/authorization/services";
+import { auditService } from "@/audit/services";
 import { CATALOGUE_ERROR_CODES, CatalogueError } from "../errors";
 import { brandService } from "../services";
 import { handleCatalogueRouteError, jsonSuccess } from "./http-response";
@@ -25,13 +26,19 @@ export async function handleCreateBrand(request: Request): Promise<Response> {
       );
     }
 
-    await authorizationService.authorizeStoreRequest(
+    const authContext = await authorizationService.authorizeStoreRequest(
       request,
       parsed.data.storeId,
       "catalogue:write",
     );
 
     const brand = await brandService.createBrand(parsed.data);
+    auditService.recordFromAuthContext(authContext, {
+      entityType: "brand",
+      entityId: brand.id,
+      action: "create",
+      metadata: { name: brand.name, slug: brand.slug },
+    });
     return jsonSuccess({ brand }, 201);
   } catch (error) {
     return handleCatalogueRouteError(error);
@@ -121,7 +128,7 @@ export async function handleUpdateBrand(
       );
     }
 
-    await authorizationService.authorizeStoreRequest(
+    const authContext = await authorizationService.authorizeStoreRequest(
       request,
       queryParsed.data.storeId,
       "catalogue:write",
@@ -132,6 +139,12 @@ export async function handleUpdateBrand(
       id,
       parsed.data,
     );
+    auditService.recordFromAuthContext(authContext, {
+      entityType: "brand",
+      entityId: brand.id,
+      action: "update",
+      metadata: { name: brand.name, slug: brand.slug },
+    });
     return jsonSuccess({ brand });
   } catch (error) {
     return handleCatalogueRouteError(error);
@@ -154,13 +167,19 @@ export async function handleDeleteBrand(
       );
     }
 
-    await authorizationService.authorizeStoreRequest(
+    const authContext = await authorizationService.authorizeStoreRequest(
       request,
       parsed.data.storeId,
       "catalogue:write",
     );
 
     const brand = await brandService.deleteBrand(parsed.data.storeId, id);
+    auditService.recordFromAuthContext(authContext, {
+      entityType: "brand",
+      entityId: brand.id,
+      action: "delete",
+      metadata: { name: brand.name, slug: brand.slug },
+    });
     return jsonSuccess({ brand });
   } catch (error) {
     return handleCatalogueRouteError(error);

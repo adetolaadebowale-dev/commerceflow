@@ -4,6 +4,7 @@ import {
 } from "@commerceflow/validation";
 
 import { authorizationService } from "@/authorization/services";
+import { auditService } from "@/audit/services";
 import { INVENTORY_ERROR_CODES, InventoryError } from "../errors";
 import { inventoryService } from "../services";
 import { handleInventoryRouteError, jsonSuccess } from "./http-response";
@@ -25,13 +26,24 @@ export async function handleCreateStockMovement(
       );
     }
 
-    await authorizationService.authorizeStoreRequest(
+    const authContext = await authorizationService.authorizeStoreRequest(
       request,
       parsed.data.storeId,
       "inventory:write",
     );
 
     const result = await inventoryService.adjustStock(parsed.data);
+    auditService.recordFromAuthContext(authContext, {
+      entityType: "stock_movement",
+      entityId: result.stockMovement.id,
+      action: "adjust",
+      metadata: {
+        inventoryItemId: result.inventoryItem.id,
+        quantityChange: result.stockMovement.quantityChange,
+        quantityAfter: result.stockMovement.quantityAfter,
+        reason: result.stockMovement.reason,
+      },
+    });
     return jsonSuccess(result, 201);
   } catch (error) {
     return handleInventoryRouteError(error);

@@ -6,6 +6,7 @@ import {
 } from "@commerceflow/validation";
 
 import { authorizationService } from "@/authorization/services";
+import { auditService } from "@/audit/services";
 import { CATALOGUE_ERROR_CODES, CatalogueError } from "../errors";
 import { productService } from "../services";
 import { handleCatalogueRouteError, jsonSuccess } from "./http-response";
@@ -25,13 +26,19 @@ export async function handleCreateProduct(request: Request): Promise<Response> {
       );
     }
 
-    await authorizationService.authorizeStoreRequest(
+    const authContext = await authorizationService.authorizeStoreRequest(
       request,
       parsed.data.storeId,
       "catalogue:write",
     );
 
     const product = await productService.createProduct(parsed.data);
+    auditService.recordFromAuthContext(authContext, {
+      entityType: "product",
+      entityId: product.id,
+      action: "create",
+      metadata: { name: product.name, slug: product.slug, status: product.status },
+    });
     return jsonSuccess({ product }, 201);
   } catch (error) {
     return handleCatalogueRouteError(error);
@@ -121,7 +128,7 @@ export async function handleUpdateProduct(
       );
     }
 
-    await authorizationService.authorizeStoreRequest(
+    const authContext = await authorizationService.authorizeStoreRequest(
       request,
       queryParsed.data.storeId,
       "catalogue:write",
@@ -132,6 +139,12 @@ export async function handleUpdateProduct(
       id,
       parsed.data,
     );
+    auditService.recordFromAuthContext(authContext, {
+      entityType: "product",
+      entityId: product.id,
+      action: "update",
+      metadata: { name: product.name, slug: product.slug, status: product.status },
+    });
     return jsonSuccess({ product });
   } catch (error) {
     return handleCatalogueRouteError(error);

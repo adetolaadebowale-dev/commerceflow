@@ -5,6 +5,7 @@ import {
 } from "@commerceflow/validation";
 
 import { authorizationService } from "@/authorization/services";
+import { auditService } from "@/audit/services";
 import { RESERVATION_ERROR_CODES, ReservationError } from "../errors";
 import { reservationService } from "../services";
 import { handleReservationRouteError, jsonSuccess } from "./http-response";
@@ -59,7 +60,7 @@ export async function handleReleaseReservation(
       );
     }
 
-    await authorizationService.authorizeStoreRequest(
+    const authContext = await authorizationService.authorizeStoreRequest(
       request,
       parsed.data.storeId,
       "reservations:manage",
@@ -69,6 +70,16 @@ export async function handleReleaseReservation(
       parsed.data,
       reservationId,
     );
+    auditService.recordFromAuthContext(authContext, {
+      entityType: "inventory_reservation",
+      entityId: reservation.id,
+      action: "release",
+      metadata: {
+        orderId: reservation.orderId,
+        orderItemId: reservation.orderItemId,
+        reservedQuantity: reservation.reservedQuantity,
+      },
+    });
 
     return jsonSuccess({ reservation });
   } catch (error) {

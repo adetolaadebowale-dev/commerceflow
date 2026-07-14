@@ -5,6 +5,7 @@ import {
 } from "@commerceflow/validation";
 
 import { authorizationService } from "@/authorization/services";
+import { auditService } from "@/audit/services";
 import { INVENTORY_ERROR_CODES, InventoryError } from "../errors";
 import { inventoryService } from "../services";
 import { handleInventoryRouteError, jsonSuccess } from "./http-response";
@@ -26,13 +27,22 @@ export async function handleCreateInventoryItem(
       );
     }
 
-    await authorizationService.authorizeStoreRequest(
+    const authContext = await authorizationService.authorizeStoreRequest(
       request,
       parsed.data.storeId,
       "inventory:write",
     );
 
     const result = await inventoryService.createInventoryItem(parsed.data);
+    auditService.recordFromAuthContext(authContext, {
+      entityType: "inventory_item",
+      entityId: result.inventoryItem.id,
+      action: "create",
+      metadata: {
+        productVariantId: result.inventoryItem.productVariantId,
+        quantityOnHand: result.inventoryItem.quantityOnHand,
+      },
+    });
     return jsonSuccess(result, 201);
   } catch (error) {
     return handleInventoryRouteError(error);

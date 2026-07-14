@@ -95,5 +95,11 @@ export {
   createInventoryClient,
   type InventoryClient,
 } from "./inventory/inventory-client";
+export type {
+  GetAuditLogResponse,
+  ListAuditLogsParams,
+  ListAuditLogsResponse,
+} from "./audit/contracts";
+export { createAuditClient, type AuditClient } from "./audit/audit-client";
 export { ApiClientError } from "./http/api-error";
 export { apiRequest, type ApiClientConfig } from "./http/request";

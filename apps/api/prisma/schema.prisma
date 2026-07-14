@@ -77,6 +77,7 @@ model User {
   sessions        Session[]
   storeMemberships StoreMember[]
   orders          Order[]
+  auditLogs       AuditLog[]
 
   @@index([deletedAt])
   @@map("users")
@@ -94,6 +95,7 @@ model Session {
   ipAddress      String?       @map("ip_address")
   userAgent      String?       @map("user_agent")
   refreshTokenId String        @map("refresh_token_id")
+  auditLogs      AuditLog[]
 
   @@index([userId])
   @@index([status])
@@ -134,6 +136,7 @@ model Store {
   stockMovements StockMovement[]
   orders         Order[]
   inventoryReservations InventoryReservation[]
+  auditLogs             AuditLog[]
 
   @@unique([organizationId, slug])
   @@index([organizationId])
@@ -376,4 +379,29 @@ model InventoryReservation {
   @@index([storeId, inventoryItemId, status])
   @@index([status])
   @@map("inventory_reservations")
+}
+
+/// Immutable append-only record of authenticated administrative actions.
+model AuditLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  storeId    String?  @map("store_id") @db.Uuid
+  store      Store?   @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  userId     String   @map("user_id") @db.Uuid
+  user       User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+  sessionId  String   @map("session_id") @db.Uuid
+  session    Session  @relation(fields: [sessionId], references: [id], onDelete: Restrict)
+  entityType String   @map("entity_type")
+  entityId   String   @map("entity_id") @db.Uuid
+  action     String
+  metadata   Json?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([storeId])
+  @@index([userId])
+  @@index([sessionId])
+  @@index([entityType, entityId])
+  @@index([storeId, createdAt])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
 }

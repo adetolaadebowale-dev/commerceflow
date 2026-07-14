@@ -10,6 +10,7 @@ const ALL_STORE_PERMISSIONS: readonly StorePermissionCode[] = [
   "orders:lifecycle",
   "orders:fulfill",
   "reservations:manage",
+  "audit:read",
 ];
 
 const PERMISSIONS_BY_STORE_ROLE: Readonly<
@@ -27,6 +28,7 @@ const PERMISSIONS_BY_STORE_ROLE: Readonly<
     "orders:lifecycle",
     "orders:fulfill",
     "reservations:manage",
+    "audit:read",
   ],
   staff: [
     "catalogue:read",

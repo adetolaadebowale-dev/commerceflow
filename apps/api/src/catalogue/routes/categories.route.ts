@@ -6,6 +6,7 @@ import {
 } from "@commerceflow/validation";
 
 import { authorizationService } from "@/authorization/services";
+import { auditService } from "@/audit/services";
 import { CATALOGUE_ERROR_CODES, CatalogueError } from "../errors";
 import { categoryService } from "../services";
 import { handleCatalogueRouteError, jsonSuccess } from "./http-response";
@@ -25,13 +26,19 @@ export async function handleCreateCategory(request: Request): Promise<Response> 
       );
     }
 
-    await authorizationService.authorizeStoreRequest(
+    const authContext = await authorizationService.authorizeStoreRequest(
       request,
       parsed.data.storeId,
       "catalogue:write",
     );
 
     const category = await categoryService.createCategory(parsed.data);
+    auditService.recordFromAuthContext(authContext, {
+      entityType: "category",
+      entityId: category.id,
+      action: "create",
+      metadata: { name: category.name, slug: category.slug },
+    });
     return jsonSuccess({ category }, 201);
   } catch (error) {
     return handleCatalogueRouteError(error);
@@ -121,7 +128,7 @@ export async function handleUpdateCategory(
       );
     }
 
-    await authorizationService.authorizeStoreRequest(
+    const authContext = await authorizationService.authorizeStoreRequest(
       request,
       queryParsed.data.storeId,
       "catalogue:write",
@@ -132,6 +139,12 @@ export async function handleUpdateCategory(
       id,
       parsed.data,
     );
+    auditService.recordFromAuthContext(authContext, {
+      entityType: "category",
+      entityId: category.id,
+      action: "update",
+      metadata: { name: category.name, slug: category.slug },
+    });
     return jsonSuccess({ category });
   } catch (error) {
     return handleCatalogueRouteError(error);

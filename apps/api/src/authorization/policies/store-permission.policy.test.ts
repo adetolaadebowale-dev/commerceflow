@@ -45,5 +45,14 @@ describe("StorePermissionPolicy", () => {
     expect(
       StorePermissionPolicy.hasPermission("staff", "orders:fulfill"),
     ).toBe(false);
+    expect(StorePermissionPolicy.hasPermission("staff", "audit:read")).toBe(
+      false,
+    );
+  });
+
+  it("grants managers audit read access", () => {
+    expect(StorePermissionPolicy.hasPermission("manager", "audit:read")).toBe(
+      true,
+    );
   });
 });

@@ -39,3 +39,10 @@ export {
   type StorePermissionCode,
   type StoreRole,
 } from "./authorization";
+export {
+  AUDIT_ACTIONS,
+  AUDIT_ENTITY_TYPES,
+  type AuditAction,
+  type AuditEntityType,
+  type AuditLog,
+} from "./audit";

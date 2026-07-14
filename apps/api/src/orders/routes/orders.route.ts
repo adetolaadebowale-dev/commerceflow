@@ -6,6 +6,7 @@ import {
 } from "@commerceflow/validation";
 
 import { authorizationService } from "@/authorization/services";
+import { auditService } from "@/audit/services";
 import { ORDER_ERROR_CODES, OrderError } from "../errors";
 import { orderService } from "../services";
 import { handleOrderRouteError, jsonSuccess } from "./http-response";
@@ -109,13 +110,19 @@ export async function handleConfirmOrder(
       );
     }
 
-    await authorizationService.authorizeStoreRequest(
+    const authContext = await authorizationService.authorizeStoreRequest(
       request,
       parsed.data.storeId,
       "orders:lifecycle",
     );
 
     const order = await orderService.confirmOrder(parsed.data, id);
+    auditService.recordFromAuthContext(authContext, {
+      entityType: "order",
+      entityId: order.id,
+      action: "confirm",
+      metadata: { orderNumber: order.orderNumber, status: order.status },
+    });
     return jsonSuccess({ order });
   } catch (error) {
     return handleOrderRouteError(error);
@@ -138,13 +145,19 @@ export async function handleCancelOrder(
       );
     }
 
-    await authorizationService.authorizeStoreRequest(
+    const authContext = await authorizationService.authorizeStoreRequest(
       request,
       parsed.data.storeId,
       "orders:lifecycle",
     );
 
     const order = await orderService.cancelOrder(parsed.data, id);
+    auditService.recordFromAuthContext(authContext, {
+      entityType: "order",
+      entityId: order.id,
+      action: "cancel",
+      metadata: { orderNumber: order.orderNumber, status: order.status },
+    });
     return jsonSuccess({ order });
   } catch (error) {
     return handleOrderRouteError(error);
