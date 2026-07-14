@@ -70,4 +70,19 @@ describe("StorePermissionPolicy", () => {
       true,
     );
   });
+
+  it("grants staff cart read and write access", () => {
+    expect(StorePermissionPolicy.hasPermission("staff", "carts:read")).toBe(
+      true,
+    );
+    expect(StorePermissionPolicy.hasPermission("staff", "carts:write")).toBe(
+      true,
+    );
+  });
+
+  it("grants managers cart write access", () => {
+    expect(StorePermissionPolicy.hasPermission("manager", "carts:write")).toBe(
+      true,
+    );
+  });
 });

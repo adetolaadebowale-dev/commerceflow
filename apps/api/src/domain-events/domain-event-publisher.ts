@@ -2,6 +2,10 @@ import type { DomainEvent } from "@commerceflow/types";
 
 import type { DomainEventDispatcher } from "./dispatcher";
 import {
+  buildCartCreatedEvent,
+  buildCartItemAddedEvent,
+  buildCartItemRemovedEvent,
+  buildCartItemUpdatedEvent,
   buildCustomerAddressCreatedEvent,
   buildCustomerAddressUpdatedEvent,
   buildCustomerCreatedEvent,
@@ -13,6 +17,8 @@ import {
   buildOrderFulfilledEvent,
 } from "./domain-event-factory";
 import type {
+  Cart,
+  CartItem,
   Customer,
   CustomerAddress,
   InventoryReservation,
@@ -90,6 +96,26 @@ export class DomainEventPublisher {
 
   publishCustomerAddressUpdated(customerAddress: CustomerAddress): void {
     this.dispatch(buildCustomerAddressUpdatedEvent(customerAddress));
+  }
+
+  publishCartCreated(cart: Cart): void {
+    this.dispatch(buildCartCreatedEvent(cart));
+  }
+
+  publishCartItemAdded(cart: Cart, cartItem: CartItem): void {
+    this.dispatch(buildCartItemAddedEvent(cart, cartItem));
+  }
+
+  publishCartItemUpdated(cart: Cart, cartItem: CartItem): void {
+    this.dispatch(buildCartItemUpdatedEvent(cart, cartItem));
+  }
+
+  publishCartItemRemoved(
+    cart: Cart,
+    cartItemId: string,
+    productVariantId: string,
+  ): void {
+    this.dispatch(buildCartItemRemovedEvent(cart, cartItemId, productVariantId));
   }
 
   private dispatch(event: DomainEvent): void {

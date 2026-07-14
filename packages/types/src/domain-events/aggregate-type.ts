@@ -4,6 +4,8 @@ export const DOMAIN_AGGREGATE_TYPES = [
   "inventory_reservation",
   "customer",
   "customer_address",
+  "cart",
+  "cart_item",
 ] as const;
 
 export type DomainAggregateType = (typeof DOMAIN_AGGREGATE_TYPES)[number];

@@ -90,3 +90,14 @@ export {
   type UpdateCustomerInput,
   type UpdateCustomerAddressInput,
 } from "./customers";
+export {
+  addCartItemSchema,
+  cartIdQuerySchema,
+  cartItemIdQuerySchema,
+  createCartSchema,
+  customerCartQuerySchema,
+  updateCartItemSchema,
+  type AddCartItemInput,
+  type CreateCartInput,
+  type UpdateCartItemInput,
+} from "./shopping-cart";

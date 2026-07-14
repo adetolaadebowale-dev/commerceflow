@@ -38,6 +38,12 @@ export {
   type CustomerStatus,
 } from "./customers";
 export {
+  CART_STATUSES,
+  type Cart,
+  type CartItem,
+  type CartStatus,
+} from "./shopping-cart";
+export {
   STORE_PERMISSIONS,
   STORE_ROLES,
   type AuthorizedStoreContext,
@@ -58,6 +64,10 @@ export {
   type DomainAggregateType,
   type DomainEvent,
   type DomainEventType,
+  type CartCreatedPayload,
+  type CartItemAddedPayload,
+  type CartItemRemovedPayload,
+  type CartItemUpdatedPayload,
   type CustomerAddressCreatedPayload,
   type CustomerAddressUpdatedPayload,
   type CustomerCreatedPayload,

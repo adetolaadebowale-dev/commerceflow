@@ -68,6 +68,13 @@ enum CustomerStatus {
   inactive
 }
 
+/// Mirrors CartStatus from @commerceflow/types.
+enum CartStatus {
+  active
+  converted
+  abandoned
+}
+
 /// Persists User contract fields plus passwordHash (API-internal).
 model User {
   id              String        @id @default(uuid()) @db.Uuid
@@ -145,6 +152,7 @@ model Store {
   auditLogs             AuditLog[]
   customers             Customer[]
   customerAddresses     CustomerAddress[]
+  carts                 Cart[]
 
   @@unique([organizationId, slug])
   @@index([organizationId])
@@ -261,6 +269,7 @@ model ProductVariant {
   deletedAt  DateTime? @map("deleted_at")
   inventoryItem InventoryItem?
   orderItems OrderItem[]
+  cartItems  CartItem[]
 
   @@unique([storeId, sku])
   @@index([storeId])
@@ -428,6 +437,7 @@ model Customer {
   updatedAt DateTime       @updatedAt @map("updated_at")
   deletedAt DateTime?      @map("deleted_at")
   addresses CustomerAddress[]
+  carts     Cart[]
 
   @@index([storeId])
   @@index([deletedAt])
@@ -463,4 +473,46 @@ model CustomerAddress {
   @@index([deletedAt])
   @@index([storeId, deletedAt])
   @@map("customer_addresses")
+}
+
+/// Store-scoped mutable shopping cart belonging to a customer.
+model Cart {
+  id         String     @id @default(uuid()) @db.Uuid
+  storeId    String     @map("store_id") @db.Uuid
+  store      Store      @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  customerId String     @map("customer_id") @db.Uuid
+  customer   Customer   @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  status     CartStatus @default(active)
+  subtotal   Decimal    @default(0) @db.Decimal(12, 2)
+  currency   String     @default("USD") @db.Char(3)
+  createdAt  DateTime   @default(now()) @map("created_at")
+  updatedAt  DateTime   @updatedAt @map("updated_at")
+  items      CartItem[]
+
+  @@index([storeId])
+  @@index([customerId])
+  @@index([storeId, customerId])
+  @@index([status])
+  @@index([storeId, status])
+  @@map("carts")
+}
+
+/// Mutable cart line with snapshotted pricing at add time.
+model CartItem {
+  id                String         @id @default(uuid()) @db.Uuid
+  cartId            String         @map("cart_id") @db.Uuid
+  cart              Cart           @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productVariantId  String         @map("product_variant_id") @db.Uuid
+  productVariant    ProductVariant @relation(fields: [productVariantId], references: [id], onDelete: Restrict)
+  quantity          Int
+  unitPriceSnapshot Decimal        @map("unit_price_snapshot") @db.Decimal(12, 2)
+  currencySnapshot  String         @map("currency_snapshot") @db.Char(3)
+  lineSubtotal      Decimal        @map("line_subtotal") @db.Decimal(12, 2)
+  createdAt         DateTime       @default(now()) @map("created_at")
+  updatedAt         DateTime       @updatedAt @map("updated_at")
+
+  @@unique([cartId, productVariantId])
+  @@index([cartId])
+  @@index([productVariantId])
+  @@map("cart_items")
 }

@@ -5,6 +5,8 @@ import type { InventoryReservation } from "../reservations/inventory-reservation
 
 import type { Customer } from "../customers/customer";
 import type { CustomerAddress } from "../customers/customer-address";
+import type { Cart } from "../shopping-cart/cart";
+import type { CartItem } from "../shopping-cart/cart-item";
 
 export interface OrderConfirmedPayload {
   readonly orderId: string;
@@ -87,4 +89,36 @@ export interface CustomerAddressUpdatedPayload {
   readonly label: string;
   readonly isDefault: boolean;
   readonly customerAddress: CustomerAddress;
+}
+
+export interface CartCreatedPayload {
+  readonly cartId: string;
+  readonly customerId: string;
+  readonly status: Cart["status"];
+  readonly cart: Cart;
+}
+
+export interface CartItemAddedPayload {
+  readonly cartId: string;
+  readonly cartItemId: string;
+  readonly productVariantId: string;
+  readonly quantity: number;
+  readonly cartItem: CartItem;
+  readonly cart: Cart;
+}
+
+export interface CartItemUpdatedPayload {
+  readonly cartId: string;
+  readonly cartItemId: string;
+  readonly productVariantId: string;
+  readonly quantity: number;
+  readonly cartItem: CartItem;
+  readonly cart: Cart;
+}
+
+export interface CartItemRemovedPayload {
+  readonly cartId: string;
+  readonly cartItemId: string;
+  readonly productVariantId: string;
+  readonly cart: Cart;
 }

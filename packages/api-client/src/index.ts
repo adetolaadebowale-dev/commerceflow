@@ -117,5 +117,17 @@ export type {
   UpdateCustomerAddressResponse,
 } from "./customers/contracts";
 export { createCustomerClient, type CustomerClient } from "./customers/customer-client";
+export type {
+  AddCartItemRequest,
+  AddCartItemResponse,
+  CreateCartRequest,
+  CreateCartResponse,
+  GetCartResponse,
+  GetCustomerCartResponse,
+  RemoveCartItemResponse,
+  UpdateCartItemRequest,
+  UpdateCartItemResponse,
+} from "./shopping-cart/contracts";
+export { createCartClient, type CartClient } from "./shopping-cart/cart-client";
 export { ApiClientError } from "./http/api-error";
 export { apiRequest, type ApiClientConfig } from "./http/request";

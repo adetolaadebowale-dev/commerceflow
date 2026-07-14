@@ -11,6 +11,12 @@ import type {
   CustomerAddressUpdatedPayload,
   CustomerCreatedPayload,
   CustomerUpdatedPayload,
+  Cart,
+  CartCreatedPayload,
+  CartItem,
+  CartItemAddedPayload,
+  CartItemRemovedPayload,
+  CartItemUpdatedPayload,
   Order,
   OrderCancelledPayload,
   OrderConfirmedPayload,
@@ -210,6 +216,82 @@ export function buildCustomerAddressUpdatedEvent(
       label: customerAddress.label,
       isDefault: customerAddress.isDefault,
       customerAddress,
+    },
+  });
+}
+
+export function buildCartCreatedEvent(
+  cart: Cart,
+): DomainEvent<CartCreatedPayload> {
+  return createDomainEvent({
+    eventType: "cart.created",
+    aggregateType: "cart",
+    aggregateId: cart.id,
+    storeId: cart.storeId,
+    payload: {
+      cartId: cart.id,
+      customerId: cart.customerId,
+      status: cart.status,
+      cart,
+    },
+  });
+}
+
+export function buildCartItemAddedEvent(
+  cart: Cart,
+  cartItem: CartItem,
+): DomainEvent<CartItemAddedPayload> {
+  return createDomainEvent({
+    eventType: "cart.item.added",
+    aggregateType: "cart_item",
+    aggregateId: cartItem.id,
+    storeId: cart.storeId,
+    payload: {
+      cartId: cart.id,
+      cartItemId: cartItem.id,
+      productVariantId: cartItem.productVariantId,
+      quantity: cartItem.quantity,
+      cartItem,
+      cart,
+    },
+  });
+}
+
+export function buildCartItemUpdatedEvent(
+  cart: Cart,
+  cartItem: CartItem,
+): DomainEvent<CartItemUpdatedPayload> {
+  return createDomainEvent({
+    eventType: "cart.item.updated",
+    aggregateType: "cart_item",
+    aggregateId: cartItem.id,
+    storeId: cart.storeId,
+    payload: {
+      cartId: cart.id,
+      cartItemId: cartItem.id,
+      productVariantId: cartItem.productVariantId,
+      quantity: cartItem.quantity,
+      cartItem,
+      cart,
+    },
+  });
+}
+
+export function buildCartItemRemovedEvent(
+  cart: Cart,
+  cartItemId: string,
+  productVariantId: string,
+): DomainEvent<CartItemRemovedPayload> {
+  return createDomainEvent({
+    eventType: "cart.item.removed",
+    aggregateType: "cart_item",
+    aggregateId: cartItemId,
+    storeId: cart.storeId,
+    payload: {
+      cartId: cart.id,
+      cartItemId,
+      productVariantId,
+      cart,
     },
   });
 }

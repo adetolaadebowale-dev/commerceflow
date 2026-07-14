@@ -13,6 +13,8 @@ const ALL_STORE_PERMISSIONS: readonly StorePermissionCode[] = [
   "audit:read",
   "customers:read",
   "customers:write",
+  "carts:read",
+  "carts:write",
 ];
 
 const PERMISSIONS_BY_STORE_ROLE: Readonly<
@@ -33,6 +35,8 @@ const PERMISSIONS_BY_STORE_ROLE: Readonly<
     "audit:read",
     "customers:read",
     "customers:write",
+    "carts:read",
+    "carts:write",
   ],
   staff: [
     "catalogue:read",
@@ -40,6 +44,8 @@ const PERMISSIONS_BY_STORE_ROLE: Readonly<
     "orders:read",
     "orders:write",
     "customers:read",
+    "carts:read",
+    "carts:write",
   ],
 };
 

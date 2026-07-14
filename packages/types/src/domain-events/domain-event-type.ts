@@ -9,6 +9,10 @@ export const DOMAIN_EVENT_TYPES = [
   "customer.updated",
   "customer.address.created",
   "customer.address.updated",
+  "cart.created",
+  "cart.item.added",
+  "cart.item.updated",
+  "cart.item.removed",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

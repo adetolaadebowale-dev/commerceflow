@@ -12,6 +12,8 @@ export const STORE_PERMISSIONS = [
   "audit:read",
   "customers:read",
   "customers:write",
+  "carts:read",
+  "carts:write",
 ] as const;
 
 export type StorePermissionCode = (typeof STORE_PERMISSIONS)[number];

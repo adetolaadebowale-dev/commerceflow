@@ -14,6 +14,10 @@ export function getDomainEventPublisher(): DomainEventPublisher {
 
 export { DomainEventPublisher } from "./domain-event-publisher";
 export {
+  buildCartCreatedEvent,
+  buildCartItemAddedEvent,
+  buildCartItemRemovedEvent,
+  buildCartItemUpdatedEvent,
   buildCustomerAddressCreatedEvent,
   buildCustomerAddressUpdatedEvent,
   buildCustomerCreatedEvent,
