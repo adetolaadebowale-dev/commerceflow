@@ -5,6 +5,7 @@ import {
   orderStoreActionSchema,
 } from "@commerceflow/validation";
 
+import { authorizationService } from "@/authorization/services";
 import { ORDER_ERROR_CODES, OrderError } from "../errors";
 import { orderService } from "../services";
 import { handleOrderRouteError, jsonSuccess } from "./http-response";
@@ -23,6 +24,12 @@ export async function handleCreateOrder(request: Request): Promise<Response> {
         parsed.error.flatten(),
       );
     }
+
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "orders:write",
+    );
 
     const order = await orderService.createOrder(parsed.data);
     return jsonSuccess({ order }, 201);
@@ -43,6 +50,12 @@ export async function handleListOrders(request: Request): Promise<Response> {
         parsed.error.flatten(),
       );
     }
+
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "orders:read",
+    );
 
     const result = await orderService.listOrders(parsed.data);
     return jsonSuccess(result);
@@ -67,6 +80,12 @@ export async function handleGetOrder(
       );
     }
 
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "orders:read",
+    );
+
     const order = await orderService.getOrder(parsed.data.storeId, id);
     return jsonSuccess({ order });
   } catch (error) {
@@ -90,6 +109,12 @@ export async function handleConfirmOrder(
       );
     }
 
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "orders:lifecycle",
+    );
+
     const order = await orderService.confirmOrder(parsed.data, id);
     return jsonSuccess({ order });
   } catch (error) {
@@ -112,6 +137,12 @@ export async function handleCancelOrder(
         parsed.error.flatten(),
       );
     }
+
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "orders:lifecycle",
+    );
 
     const order = await orderService.cancelOrder(parsed.data, id);
     return jsonSuccess({ order });

@@ -4,6 +4,7 @@ import {
   listInventoryItemsQuerySchema,
 } from "@commerceflow/validation";
 
+import { authorizationService } from "@/authorization/services";
 import { INVENTORY_ERROR_CODES, InventoryError } from "../errors";
 import { inventoryService } from "../services";
 import { handleInventoryRouteError, jsonSuccess } from "./http-response";
@@ -24,6 +25,12 @@ export async function handleCreateInventoryItem(
         parsed.error.flatten(),
       );
     }
+
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "inventory:write",
+    );
 
     const result = await inventoryService.createInventoryItem(parsed.data);
     return jsonSuccess(result, 201);
@@ -49,6 +56,12 @@ export async function handleListInventoryItems(
       );
     }
 
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "inventory:read",
+    );
+
     const result = await inventoryService.listInventoryItems(parsed.data);
     return jsonSuccess(result);
   } catch (error) {
@@ -71,6 +84,12 @@ export async function handleGetInventoryItem(
         parsed.error.flatten(),
       );
     }
+
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "inventory:read",
+    );
 
     const inventoryItem = await inventoryService.getInventoryItem(
       parsed.data.storeId,

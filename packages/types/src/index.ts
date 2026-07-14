@@ -31,3 +31,11 @@ export type {
 } from "./reservations";
 export { RESERVATION_STATUSES } from "./reservations";
 export type { OrderFulfillmentResult } from "./fulfillment";
+export {
+  STORE_PERMISSIONS,
+  STORE_ROLES,
+  type AuthorizedStoreContext,
+  type StoreMember,
+  type StorePermissionCode,
+  type StoreRole,
+} from "./authorization";

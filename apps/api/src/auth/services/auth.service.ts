@@ -218,6 +218,29 @@ export class AuthService {
   }
 
   async getCurrentUser(accessToken: string): Promise<AuthenticatedUser> {
+    const authContext = await this.resolveAuthenticatedSession(accessToken);
+
+    return {
+      user: authContext.user,
+      permissions: getPermissionsForRole(authContext.user.role),
+      session: authContext.session,
+    };
+  }
+
+  async resolveAuthenticatedSession(accessToken: string | null): Promise<{
+    userId: string;
+    sessionId: string;
+    user: User;
+    session: ReturnType<typeof toPublicSession>;
+  }> {
+    if (!accessToken) {
+      throw new AuthError(
+        AUTH_ERROR_CODES.UNAUTHENTICATED,
+        "Authentication credentials were not provided",
+        401,
+      );
+    }
+
     let payload;
 
     try {
@@ -255,8 +278,9 @@ export class AuthService {
     await this.sessionRepository.touch(session.id);
 
     return {
+      userId: storedUser.id,
+      sessionId: session.id,
       user: toPublicUser(storedUser),
-      permissions: getPermissionsForRole(storedUser.role),
       session: toPublicSession(session),
     };
   }

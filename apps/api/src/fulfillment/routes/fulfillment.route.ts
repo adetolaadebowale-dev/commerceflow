@@ -1,5 +1,6 @@
 import { orderFulfillmentActionSchema } from "@commerceflow/validation";
 
+import { authorizationService } from "@/authorization/services";
 import { FULFILLMENT_ERROR_CODES, FulfillmentError } from "../errors";
 import { fulfillmentService } from "../services";
 import { handleFulfillmentRouteError, jsonSuccess } from "./http-response";
@@ -20,6 +21,12 @@ export async function handleFulfillOrder(
         parsed.error.flatten(),
       );
     }
+
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "orders:fulfill",
+    );
 
     const result = await fulfillmentService.fulfillOrder(parsed.data, orderId);
     return jsonSuccess(result, 201);

@@ -5,6 +5,7 @@ import {
   updateBrandSchema,
 } from "@commerceflow/validation";
 
+import { authorizationService } from "@/authorization/services";
 import { CATALOGUE_ERROR_CODES, CatalogueError } from "../errors";
 import { brandService } from "../services";
 import { handleCatalogueRouteError, jsonSuccess } from "./http-response";
@@ -23,6 +24,12 @@ export async function handleCreateBrand(request: Request): Promise<Response> {
         parsed.error.flatten(),
       );
     }
+
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "catalogue:write",
+    );
 
     const brand = await brandService.createBrand(parsed.data);
     return jsonSuccess({ brand }, 201);
@@ -43,6 +50,12 @@ export async function handleListBrands(request: Request): Promise<Response> {
         parsed.error.flatten(),
       );
     }
+
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "catalogue:read",
+    );
 
     const result = await brandService.listBrands(parsed.data);
     return jsonSuccess(result);
@@ -66,6 +79,12 @@ export async function handleGetBrand(
         parsed.error.flatten(),
       );
     }
+
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "catalogue:read",
+    );
 
     const brand = await brandService.getBrand(parsed.data.storeId, id);
     return jsonSuccess({ brand });
@@ -102,6 +121,12 @@ export async function handleUpdateBrand(
       );
     }
 
+    await authorizationService.authorizeStoreRequest(
+      request,
+      queryParsed.data.storeId,
+      "catalogue:write",
+    );
+
     const brand = await brandService.updateBrand(
       queryParsed.data.storeId,
       id,
@@ -128,6 +153,12 @@ export async function handleDeleteBrand(
         parsed.error.flatten(),
       );
     }
+
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "catalogue:write",
+    );
 
     const brand = await brandService.deleteBrand(parsed.data.storeId, id);
     return jsonSuccess({ brand });

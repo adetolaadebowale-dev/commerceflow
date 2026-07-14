@@ -5,6 +5,7 @@ import {
   updateCategorySchema,
 } from "@commerceflow/validation";
 
+import { authorizationService } from "@/authorization/services";
 import { CATALOGUE_ERROR_CODES, CatalogueError } from "../errors";
 import { categoryService } from "../services";
 import { handleCatalogueRouteError, jsonSuccess } from "./http-response";
@@ -23,6 +24,12 @@ export async function handleCreateCategory(request: Request): Promise<Response> 
         parsed.error.flatten(),
       );
     }
+
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "catalogue:write",
+    );
 
     const category = await categoryService.createCategory(parsed.data);
     return jsonSuccess({ category }, 201);
@@ -43,6 +50,12 @@ export async function handleListCategories(request: Request): Promise<Response> 
         parsed.error.flatten(),
       );
     }
+
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "catalogue:read",
+    );
 
     const result = await categoryService.listCategories(parsed.data);
     return jsonSuccess(result);
@@ -66,6 +79,12 @@ export async function handleGetCategory(
         parsed.error.flatten(),
       );
     }
+
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "catalogue:read",
+    );
 
     const category = await categoryService.getCategory(parsed.data.storeId, id);
     return jsonSuccess({ category });
@@ -101,6 +120,12 @@ export async function handleUpdateCategory(
         parsed.error.flatten(),
       );
     }
+
+    await authorizationService.authorizeStoreRequest(
+      request,
+      queryParsed.data.storeId,
+      "catalogue:write",
+    );
 
     const category = await categoryService.updateCategory(
       queryParsed.data.storeId,

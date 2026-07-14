@@ -1,0 +1,1 @@
+ALTER TYPE "StoreRole" ADD VALUE IF NOT EXISTS 'admin';

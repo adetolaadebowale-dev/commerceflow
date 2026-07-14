@@ -1,5 +1,7 @@
 import type { ApiErrorResponse, ApiSuccessResponse } from "@commerceflow/api-client";
 
+import { respondKnownRouteError } from "@/lib/route-errors";
+
 import { FulfillmentError } from "../errors";
 
 export function jsonSuccess<T>(data: T, status = 200): Response {
@@ -16,6 +18,11 @@ export function jsonError(
 }
 
 export function handleFulfillmentRouteError(error: unknown): Response {
+  const known = respondKnownRouteError(error);
+  if (known) {
+    return known;
+  }
+
   if (error instanceof FulfillmentError) {
     return jsonError(
       {

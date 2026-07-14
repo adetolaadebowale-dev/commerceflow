@@ -4,6 +4,7 @@ import {
   reservationIdActionSchema,
 } from "@commerceflow/validation";
 
+import { authorizationService } from "@/authorization/services";
 import { RESERVATION_ERROR_CODES, ReservationError } from "../errors";
 import { reservationService } from "../services";
 import { handleReservationRouteError, jsonSuccess } from "./http-response";
@@ -24,6 +25,12 @@ export async function handleReserveOrder(
         parsed.error.flatten(),
       );
     }
+
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "reservations:manage",
+    );
 
     const reservations = await reservationService.reserveOrder(
       parsed.data,
@@ -51,6 +58,12 @@ export async function handleReleaseReservation(
         parsed.error.flatten(),
       );
     }
+
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "reservations:manage",
+    );
 
     const reservation = await reservationService.releaseReservation(
       parsed.data,
@@ -80,6 +93,12 @@ export async function handleListOrderReservations(
         parsed.error.flatten(),
       );
     }
+
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "reservations:manage",
+    );
 
     const reservations = await reservationService.listOrderReservations(
       parsed.data,

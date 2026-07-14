@@ -3,6 +3,7 @@ import {
   listStockMovementsQuerySchema,
 } from "@commerceflow/validation";
 
+import { authorizationService } from "@/authorization/services";
 import { INVENTORY_ERROR_CODES, InventoryError } from "../errors";
 import { inventoryService } from "../services";
 import { handleInventoryRouteError, jsonSuccess } from "./http-response";
@@ -23,6 +24,12 @@ export async function handleCreateStockMovement(
         parsed.error.flatten(),
       );
     }
+
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "inventory:write",
+    );
 
     const result = await inventoryService.adjustStock(parsed.data);
     return jsonSuccess(result, 201);
@@ -47,6 +54,12 @@ export async function handleListStockMovements(
         parsed.error.flatten(),
       );
     }
+
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "inventory:read",
+    );
 
     const result = await inventoryService.listStockMovements(parsed.data);
     return jsonSuccess(result);

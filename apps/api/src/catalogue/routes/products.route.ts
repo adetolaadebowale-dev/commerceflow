@@ -5,6 +5,7 @@ import {
   updateProductSchema,
 } from "@commerceflow/validation";
 
+import { authorizationService } from "@/authorization/services";
 import { CATALOGUE_ERROR_CODES, CatalogueError } from "../errors";
 import { productService } from "../services";
 import { handleCatalogueRouteError, jsonSuccess } from "./http-response";
@@ -23,6 +24,12 @@ export async function handleCreateProduct(request: Request): Promise<Response> {
         parsed.error.flatten(),
       );
     }
+
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "catalogue:write",
+    );
 
     const product = await productService.createProduct(parsed.data);
     return jsonSuccess({ product }, 201);
@@ -43,6 +50,12 @@ export async function handleListProducts(request: Request): Promise<Response> {
         parsed.error.flatten(),
       );
     }
+
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "catalogue:read",
+    );
 
     const result = await productService.listProducts(parsed.data);
     return jsonSuccess(result);
@@ -66,6 +79,12 @@ export async function handleGetProduct(
         parsed.error.flatten(),
       );
     }
+
+    await authorizationService.authorizeStoreRequest(
+      request,
+      parsed.data.storeId,
+      "catalogue:read",
+    );
 
     const product = await productService.getProduct(parsed.data.storeId, id);
     return jsonSuccess({ product });
@@ -101,6 +120,12 @@ export async function handleUpdateProduct(
         parsed.error.flatten(),
       );
     }
+
+    await authorizationService.authorizeStoreRequest(
+      request,
+      queryParsed.data.storeId,
+      "catalogue:write",
+    );
 
     const product = await productService.updateProduct(
       queryParsed.data.storeId,
