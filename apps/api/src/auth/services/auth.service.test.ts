@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { AUTH_ERROR_CODES, AuthError } from "../errors";
-import { AuthService } from "./auth.service";
+import { createMemoryAuthService } from "../testing/auth-test-utils";
+import { tokenService } from "./token.service";
 
 function uniqueEmail(): string {
   return `user-${crypto.randomUUID()}@example.com`;
@@ -17,9 +18,8 @@ function validRegisterInput(email: string) {
 }
 
 describe("AuthService", () => {
-  const authService = new AuthService();
-
   it("registers a user successfully", async () => {
+    const { authService } = createMemoryAuthService();
     const email = uniqueEmail();
 
     const result = await authService.register(validRegisterInput(email));
@@ -32,6 +32,7 @@ describe("AuthService", () => {
   });
 
   it("rejects duplicate email registration", async () => {
+    const { authService } = createMemoryAuthService();
     const email = uniqueEmail();
     const input = validRegisterInput(email);
 
@@ -44,6 +45,7 @@ describe("AuthService", () => {
   });
 
   it("logs in successfully", async () => {
+    const { authService } = createMemoryAuthService();
     const email = uniqueEmail();
     const input = validRegisterInput(email);
 
@@ -60,6 +62,7 @@ describe("AuthService", () => {
   });
 
   it("rejects login with an invalid password", async () => {
+    const { authService } = createMemoryAuthService();
     const email = uniqueEmail();
     const input = validRegisterInput(email);
 
@@ -77,6 +80,7 @@ describe("AuthService", () => {
   });
 
   it("logs out a session", async () => {
+    const { authService } = createMemoryAuthService();
     const email = uniqueEmail();
     const input = validRegisterInput(email);
     const { tokens } = await authService.register(input);
@@ -93,6 +97,7 @@ describe("AuthService", () => {
   });
 
   it("refreshes tokens", async () => {
+    const { authService } = createMemoryAuthService();
     const email = uniqueEmail();
     const input = validRegisterInput(email);
     const { tokens } = await authService.register(input);
@@ -113,6 +118,7 @@ describe("AuthService", () => {
   });
 
   it("returns the current user", async () => {
+    const { authService } = createMemoryAuthService();
     const email = uniqueEmail();
     const input = validRegisterInput(email);
     const { tokens } = await authService.register(input);
@@ -122,5 +128,56 @@ describe("AuthService", () => {
     expect(currentUser.user.email).toBe(email);
     expect(currentUser.session.userId).toBe(currentUser.user.id);
     expect(currentUser.permissions.length).toBeGreaterThan(0);
+  });
+
+  it("rejects a revoked session on refresh", async () => {
+    const { authService } = createMemoryAuthService();
+    const email = uniqueEmail();
+    const { tokens } = await authService.register(validRegisterInput(email));
+
+    await authService.logout({ refreshToken: tokens.refreshToken });
+
+    await expect(
+      authService.refreshToken({ refreshToken: tokens.refreshToken }),
+    ).rejects.toMatchObject({
+      code: AUTH_ERROR_CODES.SESSION_REVOKED,
+      status: 401,
+    });
+  });
+
+  it("rejects an expired session on refresh", async () => {
+    const { authService, userRepository, sessionRepository } =
+      createMemoryAuthService();
+    const email = uniqueEmail();
+    const input = validRegisterInput(email);
+    const passwordHash = "test-hash";
+
+    const user = await userRepository.create({
+      email,
+      passwordHash,
+      firstName: input.firstName,
+      lastName: input.lastName,
+    });
+
+    const refreshTokenId = crypto.randomUUID();
+    const session = await sessionRepository.create({
+      userId: user.id,
+      expiresAt: new Date(Date.now() - 60_000).toISOString(),
+      refreshTokenId,
+    });
+
+    const tokens = await tokenService.issueTokenPair({
+      userId: user.id,
+      sessionId: session.id,
+      role: user.role,
+      refreshTokenId,
+    });
+
+    await expect(
+      authService.refreshToken({ refreshToken: tokens.refreshToken }),
+    ).rejects.toMatchObject({
+      code: AUTH_ERROR_CODES.SESSION_EXPIRED,
+      status: 401,
+    });
   });
 });

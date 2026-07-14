@@ -4,7 +4,7 @@ import { hashPassword } from "../src/auth/services/password.service";
 
 const prisma = new PrismaClient();
 
-const SEED_PASSWORD = "Password123!";
+export const SEED_PASSWORD = "Password123!";
 
 const seedUsers = [
   {
@@ -38,6 +38,8 @@ async function main(): Promise<void> {
         lastName: user.lastName,
         role: user.role,
         passwordHash,
+        emailVerified: true,
+        deletedAt: null,
       },
       create: {
         email: user.email,
@@ -50,7 +52,8 @@ async function main(): Promise<void> {
     });
   }
 
-  console.log("Seeded users (password for all):", SEED_PASSWORD);
+  console.log("Seeded CommerceFlow identity users.");
+  console.log(`Password for all seeded accounts: ${SEED_PASSWORD}`);
   for (const user of seedUsers) {
     console.log(`  - ${user.role}: ${user.email}`);
   }

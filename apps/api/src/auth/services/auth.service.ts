@@ -14,6 +14,8 @@ import {
   getSessionRepository,
   getUserRepository,
 } from "../repositories";
+import type { SessionRepository } from "../repositories/session.repository";
+import type { UserRepository } from "../repositories/user.repository";
 import type { RequestContext, StoredSession, StoredUser } from "../types";
 import { getPermissionsForRole } from "./permission.service";
 import { hashPassword, verifyPassword } from "./password.service";
@@ -62,9 +64,20 @@ function assertActiveSession(session: StoredSession): void {
   }
 }
 
+export interface AuthServiceDependencies {
+  readonly userRepository?: UserRepository;
+  readonly sessionRepository?: SessionRepository;
+}
+
 export class AuthService {
-  private readonly userRepository = getUserRepository();
-  private readonly sessionRepository = getSessionRepository();
+  private readonly userRepository: UserRepository;
+  private readonly sessionRepository: SessionRepository;
+
+  constructor(dependencies: AuthServiceDependencies = {}) {
+    this.userRepository = dependencies.userRepository ?? getUserRepository();
+    this.sessionRepository =
+      dependencies.sessionRepository ?? getSessionRepository();
+  }
 
   async register(
     input: RegisterInput,
