@@ -1,13 +1,19 @@
 import type {
+  CreateBrandRequest,
   CreateCategoryRequest,
   CreateProductRequest,
+  DeleteBrandResponse,
+  GetBrandResponse,
   GetCategoryResponse,
   GetProductResponse,
+  ListBrandsParams,
+  ListBrandsResponse,
   ListCategoriesParams,
   ListCategoriesResponse,
   ListProductsParams,
   ListProductsResponse,
   StoreScopedParams,
+  UpdateBrandRequest,
   UpdateCategoryRequest,
   UpdateProductRequest,
 } from "./contracts";
@@ -15,7 +21,11 @@ import type { ApiClientConfig } from "../http/request";
 import { apiRequest } from "../http/request";
 
 function toQueryString(
-  params: ListCategoriesParams | ListProductsParams | StoreScopedParams,
+  params:
+    | ListBrandsParams
+    | ListCategoriesParams
+    | ListProductsParams
+    | StoreScopedParams,
 ): string {
   const searchParams = new URLSearchParams();
 
@@ -30,6 +40,21 @@ function toQueryString(
 }
 
 export interface CatalogueClient {
+  createBrand(input: CreateBrandRequest): Promise<GetBrandResponse["data"]>;
+  updateBrand(
+    id: string,
+    input: UpdateBrandRequest,
+    params: StoreScopedParams,
+  ): Promise<GetBrandResponse["data"]>;
+  getBrand(
+    id: string,
+    params: StoreScopedParams,
+  ): Promise<GetBrandResponse["data"]>;
+  deleteBrand(
+    id: string,
+    params: StoreScopedParams,
+  ): Promise<DeleteBrandResponse["data"]>;
+  listBrands(params: ListBrandsParams): Promise<ListBrandsResponse["data"]>;
   createCategory(input: CreateCategoryRequest): Promise<GetCategoryResponse["data"]>;
   updateCategory(
     id: string,
@@ -58,6 +83,43 @@ export interface CatalogueClient {
 
 export function createCatalogueClient(config: ApiClientConfig): CatalogueClient {
   return {
+    createBrand: (input) =>
+      apiRequest<GetBrandResponse["data"]>(config, {
+        method: "POST",
+        path: "/api/brands",
+        body: input,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    updateBrand: (id, input, params) =>
+      apiRequest<GetBrandResponse["data"]>(config, {
+        method: "PATCH",
+        path: `/api/brands/${id}${toQueryString(params)}`,
+        body: input,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    getBrand: (id, params) =>
+      apiRequest<GetBrandResponse["data"]>(config, {
+        method: "GET",
+        path: `/api/brands/${id}${toQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    deleteBrand: (id, params) =>
+      apiRequest<DeleteBrandResponse["data"]>(config, {
+        method: "DELETE",
+        path: `/api/brands/${id}${toQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    listBrands: (params) =>
+      apiRequest<ListBrandsResponse["data"]>(config, {
+        method: "GET",
+        path: `/api/brands${toQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      }),
+
     createCategory: (input) =>
       apiRequest<GetCategoryResponse["data"]>(config, {
         method: "POST",

@@ -5,6 +5,7 @@ import {
   createMemoryCatalogueServices,
   TEST_STORE_A_ID,
   TEST_STORE_B_ID,
+  validBrandInput,
   validCategoryInput,
   validProductInput,
 } from "../testing/catalogue-test-utils";
@@ -234,6 +235,19 @@ describe("ProductService", () => {
       code: CATALOGUE_ERROR_CODES.BRAND_NOT_FOUND,
       status: 404,
     });
+  });
+
+  it("creates products linked to an existing brand", async () => {
+    const { brandService, categoryService, productService } =
+      createMemoryCatalogueServices();
+    const category = await categoryService.createCategory(validCategoryInput());
+    const brand = await brandService.createBrand(validBrandInput());
+
+    const product = await productService.createProduct(
+      validProductInput(category.id, { brandId: brand.id }),
+    );
+
+    expect(product.brandId).toBe(brand.id);
   });
 
   it("rejects duplicate product slugs within the same store", async () => {

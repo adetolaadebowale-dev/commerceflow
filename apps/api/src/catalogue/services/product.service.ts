@@ -8,8 +8,10 @@ import type {
 
 import { CATALOGUE_ERROR_CODES, CatalogueError } from "../errors";
 import {
+  getBrandRepository,
   getCategoryRepository,
   getProductRepository,
+  type BrandRepository,
   type CategoryRepository,
   type ProductRepository,
 } from "../repositories";
@@ -17,17 +19,21 @@ import {
 export interface ProductServiceDependencies {
   readonly productRepository?: ProductRepository;
   readonly categoryRepository?: CategoryRepository;
+  readonly brandRepository?: BrandRepository;
 }
 
 export class ProductService {
   private readonly productRepository: ProductRepository;
   private readonly categoryRepository: CategoryRepository;
+  private readonly brandRepository: BrandRepository;
 
   constructor(dependencies: ProductServiceDependencies = {}) {
     this.productRepository =
       dependencies.productRepository ?? getProductRepository();
     this.categoryRepository =
       dependencies.categoryRepository ?? getCategoryRepository();
+    this.brandRepository =
+      dependencies.brandRepository ?? getBrandRepository();
   }
 
   async createProduct(input: CreateProductInput): Promise<Product> {
@@ -58,12 +64,12 @@ export class ProductService {
     }
 
     if (input.brandId) {
-      const brandExists = await this.productRepository.brandExists(
+      const brand = await this.brandRepository.findById(
         input.storeId,
         input.brandId,
       );
 
-      if (!brandExists) {
+      if (!brand) {
         throw new CatalogueError(
           CATALOGUE_ERROR_CODES.BRAND_NOT_FOUND,
           "Brand not found",

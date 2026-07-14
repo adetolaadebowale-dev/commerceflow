@@ -1,4 +1,13 @@
 export {
+  brandIdQuerySchema,
+  createBrandSchema,
+  listBrandsQuerySchema,
+  updateBrandSchema,
+  type CreateBrandInput,
+  type ListBrandsQuery,
+  type UpdateBrandInput,
+} from "./brand.schemas";
+export {
   categoryIdQuerySchema,
   createCategorySchema,
   createProductSchema,

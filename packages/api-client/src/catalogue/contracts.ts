@@ -1,16 +1,38 @@
 import type {
+  Brand,
   Category,
   Product,
   CatalogueListResult,
 } from "@commerceflow/types";
 import type {
+  CreateBrandInput,
   CreateCategoryInput,
   CreateProductInput,
+  UpdateBrandInput,
   UpdateCategoryInput,
   UpdateProductInput,
 } from "@commerceflow/validation";
 
 import type { ApiSuccessResponse } from "../common/api-response";
+
+/** POST /brands */
+export type CreateBrandRequest = CreateBrandInput;
+export type CreateBrandResponse = ApiSuccessResponse<{ brand: Brand }>;
+
+/** PATCH /brands/:id */
+export type UpdateBrandRequest = UpdateBrandInput;
+export type UpdateBrandResponse = ApiSuccessResponse<{ brand: Brand }>;
+
+/** GET /brands/:id */
+export type GetBrandResponse = ApiSuccessResponse<{ brand: Brand }>;
+
+/** DELETE /brands/:id */
+export type DeleteBrandResponse = ApiSuccessResponse<{ brand: Brand }>;
+
+/** GET /brands */
+export type ListBrandsResponse = ApiSuccessResponse<
+  CatalogueListResult<Brand>
+>;
 
 /** POST /categories */
 export type CreateCategoryRequest = CreateCategoryInput;
@@ -46,6 +68,12 @@ export type ListProductsResponse = ApiSuccessResponse<
 
 export interface StoreScopedParams {
   readonly storeId: string;
+}
+
+export interface ListBrandsParams extends StoreScopedParams {
+  readonly page?: number;
+  readonly limit?: number;
+  readonly search?: string;
 }
 
 export interface ListCategoriesParams extends StoreScopedParams {
