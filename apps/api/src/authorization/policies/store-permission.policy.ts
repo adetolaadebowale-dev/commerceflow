@@ -18,6 +18,9 @@ const ALL_STORE_PERMISSIONS: readonly StorePermissionCode[] = [
   "payments:read",
   "payments:write",
   "payments:lifecycle",
+  "invoices:read",
+  "invoices:write",
+  "invoices:lifecycle",
 ];
 
 const PERMISSIONS_BY_STORE_ROLE: Readonly<
@@ -43,6 +46,9 @@ const PERMISSIONS_BY_STORE_ROLE: Readonly<
     "payments:read",
     "payments:write",
     "payments:lifecycle",
+    "invoices:read",
+    "invoices:write",
+    "invoices:lifecycle",
   ],
   staff: [
     "catalogue:read",
@@ -53,6 +59,7 @@ const PERMISSIONS_BY_STORE_ROLE: Readonly<
     "carts:read",
     "carts:write",
     "payments:read",
+    "invoices:read",
   ],
 };
 

@@ -90,6 +90,14 @@ enum PaymentProvider {
   manual
 }
 
+/// Mirrors InvoiceStatus from @commerceflow/types.
+enum InvoiceStatus {
+  draft
+  issued
+  paid
+  void
+}
+
 /// Persists User contract fields plus passwordHash (API-internal).
 model User {
   id              String        @id @default(uuid()) @db.Uuid
@@ -169,6 +177,7 @@ model Store {
   customerAddresses     CustomerAddress[]
   carts                 Cart[]
   payments              Payment[]
+  invoices              Invoice[]
 
   @@unique([organizationId, slug])
   @@index([organizationId])
@@ -369,6 +378,7 @@ model Order {
   items       OrderItem[]
   inventoryReservations InventoryReservation[]
   payments    Payment[]
+  invoices    Invoice[]
 
   @@unique([storeId, orderNumber])
   @@index([storeId])
@@ -452,6 +462,33 @@ model Payment {
   @@index([status])
   @@index([storeId, status])
   @@map("payments")
+}
+
+/// Financial invoice document linked to an order.
+model Invoice {
+  id            String        @id @default(uuid()) @db.Uuid
+  storeId       String        @map("store_id") @db.Uuid
+  store         Store         @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  orderId       String        @map("order_id") @db.Uuid
+  order         Order         @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  invoiceNumber String        @map("invoice_number")
+  status        InvoiceStatus @default(draft)
+  subtotal      Decimal       @db.Decimal(12, 2)
+  currency      String        @db.Char(3)
+  issuedAt      DateTime?     @map("issued_at")
+  dueAt         DateTime?     @map("due_at")
+  paidAt        DateTime?     @map("paid_at")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  @@unique([storeId, invoiceNumber])
+  @@unique([storeId, orderId])
+  @@index([storeId])
+  @@index([orderId])
+  @@index([storeId, orderId])
+  @@index([status])
+  @@index([storeId, status])
+  @@map("invoices")
 }
 
 /// Immutable append-only record of authenticated administrative actions.

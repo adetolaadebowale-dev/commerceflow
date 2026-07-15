@@ -21,6 +21,10 @@ import {
   buildPaymentCreatedEvent,
   buildPaymentFailedEvent,
   buildPaymentPaidEvent,
+  buildInvoiceCreatedEvent,
+  buildInvoiceIssuedEvent,
+  buildInvoicePaidEvent,
+  buildInvoiceVoidedEvent,
 } from "./domain-event-factory";
 import type {
   Cart,
@@ -34,6 +38,8 @@ import type {
   OrderStatus,
   Payment,
   PaymentStatus,
+  Invoice,
+  InvoiceStatus,
 } from "@commerceflow/types";
 
 export interface DomainEventPublisherDependencies {
@@ -158,6 +164,28 @@ export class DomainEventPublisher {
     previousStatus: PaymentStatus,
   ): void {
     this.dispatch(buildPaymentCancelledEvent(payment, previousStatus));
+  }
+
+  publishInvoiceCreated(invoice: Invoice): void {
+    this.dispatch(buildInvoiceCreatedEvent(invoice));
+  }
+
+  publishInvoiceIssued(
+    invoice: Invoice,
+    previousStatus: InvoiceStatus,
+  ): void {
+    this.dispatch(buildInvoiceIssuedEvent(invoice, previousStatus));
+  }
+
+  publishInvoicePaid(invoice: Invoice, previousStatus: InvoiceStatus): void {
+    this.dispatch(buildInvoicePaidEvent(invoice, previousStatus));
+  }
+
+  publishInvoiceVoided(
+    invoice: Invoice,
+    previousStatus: InvoiceStatus,
+  ): void {
+    this.dispatch(buildInvoiceVoidedEvent(invoice, previousStatus));
   }
 
   private dispatch(event: DomainEvent): void {

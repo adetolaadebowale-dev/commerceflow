@@ -32,6 +32,12 @@ import type {
   PaymentFailedPayload,
   PaymentPaidPayload,
   PaymentStatus,
+  Invoice,
+  InvoiceCreatedPayload,
+  InvoiceIssuedPayload,
+  InvoicePaidPayload,
+  InvoiceStatus,
+  InvoiceVoidedPayload,
 } from "@commerceflow/types";
 
 export function createDomainEvent<TPayload>(input: {
@@ -427,6 +433,94 @@ export function buildPaymentCancelledEvent(
       amount: payment.amount,
       currency: payment.currency,
       payment,
+    },
+  });
+}
+
+export function buildInvoiceCreatedEvent(
+  invoice: Invoice,
+): DomainEvent<InvoiceCreatedPayload> {
+  return createDomainEvent({
+    eventType: "invoice.created",
+    aggregateType: "invoice",
+    aggregateId: invoice.id,
+    storeId: invoice.storeId,
+    payload: {
+      invoiceId: invoice.id,
+      orderId: invoice.orderId,
+      invoiceNumber: invoice.invoiceNumber,
+      status: invoice.status,
+      subtotal: invoice.subtotal,
+      currency: invoice.currency,
+      invoice,
+    },
+  });
+}
+
+export function buildInvoiceIssuedEvent(
+  invoice: Invoice,
+  previousStatus: InvoiceStatus,
+): DomainEvent<InvoiceIssuedPayload> {
+  return createDomainEvent({
+    eventType: "invoice.issued",
+    aggregateType: "invoice",
+    aggregateId: invoice.id,
+    storeId: invoice.storeId,
+    payload: {
+      invoiceId: invoice.id,
+      orderId: invoice.orderId,
+      invoiceNumber: invoice.invoiceNumber,
+      previousStatus,
+      status: "issued",
+      subtotal: invoice.subtotal,
+      currency: invoice.currency,
+      issuedAt: invoice.issuedAt,
+      invoice,
+    },
+  });
+}
+
+export function buildInvoicePaidEvent(
+  invoice: Invoice,
+  previousStatus: InvoiceStatus,
+): DomainEvent<InvoicePaidPayload> {
+  return createDomainEvent({
+    eventType: "invoice.paid",
+    aggregateType: "invoice",
+    aggregateId: invoice.id,
+    storeId: invoice.storeId,
+    payload: {
+      invoiceId: invoice.id,
+      orderId: invoice.orderId,
+      invoiceNumber: invoice.invoiceNumber,
+      previousStatus,
+      status: "paid",
+      subtotal: invoice.subtotal,
+      currency: invoice.currency,
+      paidAt: invoice.paidAt,
+      invoice,
+    },
+  });
+}
+
+export function buildInvoiceVoidedEvent(
+  invoice: Invoice,
+  previousStatus: InvoiceStatus,
+): DomainEvent<InvoiceVoidedPayload> {
+  return createDomainEvent({
+    eventType: "invoice.voided",
+    aggregateType: "invoice",
+    aggregateId: invoice.id,
+    storeId: invoice.storeId,
+    payload: {
+      invoiceId: invoice.id,
+      orderId: invoice.orderId,
+      invoiceNumber: invoice.invoiceNumber,
+      previousStatus,
+      status: "void",
+      subtotal: invoice.subtotal,
+      currency: invoice.currency,
+      invoice,
     },
   });
 }

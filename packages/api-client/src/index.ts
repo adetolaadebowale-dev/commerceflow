@@ -145,5 +145,15 @@ export type {
   PaymentStoreScopedParams,
 } from "./payments/contracts";
 export { createPaymentClient, type PaymentClient } from "./payments/payment-client";
+export type {
+  CreateInvoiceRequest,
+  CreateInvoiceResponse,
+  GetInvoiceResponse,
+  InvoiceActionResponse,
+  InvoiceStoreScopedParams,
+  ListOrderInvoicesParams,
+  ListOrderInvoicesResponse,
+} from "./invoices/contracts";
+export { createInvoiceClient, type InvoiceClient } from "./invoices/invoice-client";
 export { ApiClientError } from "./http/api-error";
 export { apiRequest, type ApiClientConfig } from "./http/request";

@@ -8,6 +8,8 @@ import type { CustomerAddress } from "../customers/customer-address";
 import type { Cart } from "../shopping-cart/cart";
 import type { CartItem } from "../shopping-cart/cart-item";
 import type { CheckoutResult } from "../checkout/checkout-result";
+import type { Invoice } from "../invoices/invoice";
+import type { InvoiceStatus } from "../invoices/invoice-status";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -185,4 +187,49 @@ export interface PaymentCancelledPayload {
   readonly amount: string;
   readonly currency: string;
   readonly payment: Payment;
+}
+
+export interface InvoiceCreatedPayload {
+  readonly invoiceId: string;
+  readonly orderId: string;
+  readonly invoiceNumber: string;
+  readonly status: InvoiceStatus;
+  readonly subtotal: string;
+  readonly currency: string;
+  readonly invoice: Invoice;
+}
+
+export interface InvoiceIssuedPayload {
+  readonly invoiceId: string;
+  readonly orderId: string;
+  readonly invoiceNumber: string;
+  readonly previousStatus: InvoiceStatus;
+  readonly status: "issued";
+  readonly subtotal: string;
+  readonly currency: string;
+  readonly issuedAt?: string;
+  readonly invoice: Invoice;
+}
+
+export interface InvoicePaidPayload {
+  readonly invoiceId: string;
+  readonly orderId: string;
+  readonly invoiceNumber: string;
+  readonly previousStatus: InvoiceStatus;
+  readonly status: "paid";
+  readonly subtotal: string;
+  readonly currency: string;
+  readonly paidAt?: string;
+  readonly invoice: Invoice;
+}
+
+export interface InvoiceVoidedPayload {
+  readonly invoiceId: string;
+  readonly orderId: string;
+  readonly invoiceNumber: string;
+  readonly previousStatus: InvoiceStatus;
+  readonly status: "void";
+  readonly subtotal: string;
+  readonly currency: string;
+  readonly invoice: Invoice;
 }

@@ -13,6 +13,7 @@ export const AUDIT_ENTITY_TYPES = [
   "cart_item",
   "checkout",
   "payment",
+  "invoice",
 ] as const;
 
 export type AuditEntityType = (typeof AUDIT_ENTITY_TYPES)[number];

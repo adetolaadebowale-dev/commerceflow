@@ -44,6 +44,11 @@ export {
   type PaymentStatus,
 } from "./payments";
 export {
+  INVOICE_STATUSES,
+  type Invoice,
+  type InvoiceStatus,
+} from "./invoices";
+export {
   CUSTOMER_STATUSES,
   type Customer,
   type CustomerAddress,
@@ -95,4 +100,8 @@ export {
   type PaymentCreatedPayload,
   type PaymentFailedPayload,
   type PaymentPaidPayload,
+  type InvoiceCreatedPayload,
+  type InvoiceIssuedPayload,
+  type InvoicePaidPayload,
+  type InvoiceVoidedPayload,
 } from "./domain-events";
