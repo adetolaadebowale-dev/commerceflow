@@ -61,6 +61,8 @@ export async function handleCheckoutCart(
         customerAddressId: parsed.data.customerAddressId,
         itemCount: result.order.items.length,
         subtotal: result.order.subtotal,
+        discountAmount: result.order.discountAmount,
+        total: result.order.total,
         currency: result.order.currency,
       },
     });

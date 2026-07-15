@@ -23,6 +23,8 @@ export interface OrderConfirmedPayload {
   readonly status: "confirmed";
   readonly confirmedAt?: string;
   readonly subtotal: string;
+  readonly discountAmount?: string;
+  readonly total: string;
   readonly currency: string;
   readonly itemCount: number;
 }
@@ -34,6 +36,8 @@ export interface OrderCancelledPayload {
   readonly status: "cancelled";
   readonly cancelledAt?: string;
   readonly subtotal: string;
+  readonly discountAmount?: string;
+  readonly total: string;
   readonly currency: string;
   readonly itemCount: number;
 }
@@ -198,6 +202,8 @@ export interface InvoiceCreatedPayload {
   readonly invoiceNumber: string;
   readonly status: InvoiceStatus;
   readonly subtotal: string;
+  readonly discountAmount?: string;
+  readonly total: string;
   readonly currency: string;
   readonly invoice: Invoice;
 }
@@ -209,6 +215,8 @@ export interface InvoiceIssuedPayload {
   readonly previousStatus: InvoiceStatus;
   readonly status: "issued";
   readonly subtotal: string;
+  readonly discountAmount?: string;
+  readonly total: string;
   readonly currency: string;
   readonly issuedAt?: string;
   readonly invoice: Invoice;
@@ -221,6 +229,8 @@ export interface InvoicePaidPayload {
   readonly previousStatus: InvoiceStatus;
   readonly status: "paid";
   readonly subtotal: string;
+  readonly discountAmount?: string;
+  readonly total: string;
   readonly currency: string;
   readonly paidAt?: string;
   readonly invoice: Invoice;
@@ -233,6 +243,8 @@ export interface InvoiceVoidedPayload {
   readonly previousStatus: InvoiceStatus;
   readonly status: "void";
   readonly subtotal: string;
+  readonly discountAmount?: string;
+  readonly total: string;
   readonly currency: string;
   readonly invoice: Invoice;
 }

@@ -25,6 +25,7 @@ describe("InvoiceService", () => {
 
     expect(invoice.status).toBe("draft");
     expect(invoice.subtotal).toBe(order.subtotal);
+    expect(invoice.total).toBe(order.total);
     expect(invoice.currency).toBe(order.currency);
     expect(invoice.orderId).toBe(order.id);
     expect(invoice.invoiceNumber).toMatch(/^INV-/);
@@ -76,6 +77,7 @@ describe("InvoiceService", () => {
     );
 
     expect(issued.subtotal).toBe(order.subtotal);
+    expect(issued.total).toBe(order.total);
     expect(issued.currency).toBe(order.currency);
     expect(issued.invoiceNumber).toBe(invoice.invoiceNumber);
 
@@ -85,6 +87,7 @@ describe("InvoiceService", () => {
     );
 
     expect(paid.subtotal).toBe(order.subtotal);
+    expect(paid.total).toBe(order.total);
     expect(paid.currency).toBe(order.currency);
     expect(paid.invoiceNumber).toBe(invoice.invoiceNumber);
   });

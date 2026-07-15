@@ -8,6 +8,8 @@ export interface Invoice {
   readonly invoiceNumber: string;
   readonly status: InvoiceStatus;
   readonly subtotal: string;
+  readonly discountAmount?: string;
+  readonly total: string;
   readonly currency: string;
   readonly issuedAt?: string;
   readonly dueAt?: string;

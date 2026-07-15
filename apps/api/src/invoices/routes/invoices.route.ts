@@ -4,6 +4,7 @@ import {
   listOrderInvoicesQuerySchema,
   orderInvoiceActionSchema,
 } from "@commerceflow/validation";
+import type { Invoice } from "@commerceflow/types";
 
 import { auditService } from "@/audit/services";
 import { authorizationService } from "@/authorization/services";
@@ -60,6 +61,8 @@ export async function handleCreateInvoice(
         orderId: invoice.orderId,
         invoiceNumber: invoice.invoiceNumber,
         subtotal: invoice.subtotal,
+        discountAmount: invoice.discountAmount,
+        total: invoice.total,
         currency: invoice.currency,
         status: invoice.status,
       },
@@ -160,14 +163,7 @@ async function handleInvoiceLifecycleAction(
   id: string,
   request: Request,
   action: "issue" | "mark_paid" | "void",
-  execute: (query: { storeId: string }) => Promise<{
-    id: string;
-    orderId: string;
-    invoiceNumber: string;
-    subtotal: string;
-    currency: string;
-    status: string;
-  }>,
+  execute: (query: { storeId: string }) => Promise<Invoice>,
 ): Promise<Response> {
   try {
     const parsed = invoiceIdQuerySchema.safeParse(getQueryParams(request));
@@ -197,6 +193,8 @@ async function handleInvoiceLifecycleAction(
         orderId: invoice.orderId,
         invoiceNumber: invoice.invoiceNumber,
         subtotal: invoice.subtotal,
+        discountAmount: invoice.discountAmount,
+        total: invoice.total,
         currency: invoice.currency,
         status: invoice.status,
       },

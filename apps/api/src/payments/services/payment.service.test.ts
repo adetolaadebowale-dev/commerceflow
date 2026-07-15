@@ -22,14 +22,14 @@ describe("PaymentService", () => {
     );
 
     expect(payment.status).toBe("pending");
-    expect(payment.amount).toBe(order.subtotal);
+    expect(payment.amount).toBe(order.total);
     expect(payment.currency).toBe(order.currency);
     expect(payment.orderId).toBe(order.id);
     expect(payment.reference).toMatch(/^PAY-/);
     expect(payment.metadata).toEqual({ channel: "manual" });
   });
 
-  it("sets payment amount equal to order subtotal", async () => {
+  it("sets payment amount equal to order total", async () => {
     const module = createMemoryPaymentModule();
     const { order } = await seedPaymentScenario(module);
 

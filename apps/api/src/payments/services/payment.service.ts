@@ -67,7 +67,7 @@ export class PaymentService {
     const initializeResult = await gateway.initializePayment({
       storeId,
       orderId,
-      amount: order.subtotal,
+      amount: order.total,
       currency: order.currency,
       reference,
       provider: input.provider,
@@ -79,7 +79,7 @@ export class PaymentService {
     const payment = await this.paymentRepository.create({
       storeId,
       orderId,
-      amount: order.subtotal,
+      amount: order.total,
       currency: order.currency,
       provider: input.provider,
       reference,

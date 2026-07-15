@@ -66,6 +66,27 @@ export class MemoryOrderRepository implements OrderRepository {
     });
   }
 
+  /** Test helper: insert a fully-formed order record. */
+  seedOrder(order: Order): void {
+    this.ordersById.set(order.id, order);
+    const storeNumbers =
+      this.orderNumbersByStore.get(order.storeId) ?? new Set<string>();
+    storeNumbers.add(order.orderNumber);
+    this.orderNumbersByStore.set(order.storeId, storeNumbers);
+  }
+
+  /** Test helper: override order financial fields after creation. */
+  setOrderFinancials(
+    orderId: string,
+    financials: { discountAmount?: string; total: string },
+  ): void {
+    const order = this.ordersById.get(orderId);
+
+    if (order) {
+      this.ordersById.set(orderId, { ...order, ...financials });
+    }
+  }
+
   async create(record: CreateOrderRecord): Promise<Order> {
     for (let attempt = 0; attempt < 5; attempt += 1) {
       if (this.transactionFailure) {

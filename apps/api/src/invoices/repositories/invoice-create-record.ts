@@ -4,6 +4,8 @@ export interface CreateInvoiceRecord {
   readonly storeId: string;
   readonly orderId: string;
   readonly subtotal: string;
+  readonly discountAmount?: string;
+  readonly total: string;
   readonly currency: string;
   readonly dueAt?: string;
 }
