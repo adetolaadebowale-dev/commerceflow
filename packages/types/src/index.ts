@@ -36,6 +36,10 @@ export {
   PAYMENT_PROVIDERS,
   PAYMENT_STATUSES,
   type Payment,
+  type PaymentGateway,
+  type PaymentGatewayInitializeRequest,
+  type PaymentGatewayOperationResult,
+  type PaymentGatewayPaymentContext,
   type PaymentProvider,
   type PaymentStatus,
 } from "./payments";

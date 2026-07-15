@@ -10,6 +10,8 @@ import {
   TEST_STORE_A_ID,
   TEST_VARIANT_A_ID,
 } from "@/orders/testing/order-test-utils";
+import type { PaymentGatewayFactory } from "../gateways";
+import { getPaymentGatewayFactory } from "../gateways";
 import { MemoryPaymentRepository } from "../repositories/memory-payment.repository";
 import { PaymentService } from "../services/payment.service";
 
@@ -18,6 +20,7 @@ export const TEST_STORE_B_ID = "22222222-2222-2222-2222-222222222222";
 
 export function createMemoryPaymentModule(dependencies: {
   domainEventPublisher?: DomainEventPublisher;
+  paymentGatewayFactory?: PaymentGatewayFactory;
 } = {}) {
   const paymentRepository = new MemoryPaymentRepository();
   const orderRepository = new MemoryOrderRepository();
@@ -35,6 +38,7 @@ export function createMemoryPaymentModule(dependencies: {
     paymentService: new PaymentService({
       paymentRepository,
       orderRepository,
+      paymentGatewayFactory: getPaymentGatewayFactory(),
       ...dependencies,
     }),
   };

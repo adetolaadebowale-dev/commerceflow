@@ -11,6 +11,10 @@ import {
 } from "@/domain-events";
 import { getOrderRepository, type OrderRepository } from "@/orders/repositories";
 import { PAYMENT_ERROR_CODES, PaymentError } from "../errors";
+import {
+  getPaymentGatewayFactory,
+  type PaymentGatewayFactory,
+} from "../gateways";
 import { PaymentStatusTransitionPolicy } from "../policies/payment-status-transition.policy";
 import {
   getPaymentRepository,
@@ -21,12 +25,14 @@ import { generatePaymentReference } from "./payment-reference";
 export interface PaymentServiceDependencies {
   readonly paymentRepository?: PaymentRepository;
   readonly orderRepository?: OrderRepository;
+  readonly paymentGatewayFactory?: PaymentGatewayFactory;
   readonly domainEventPublisher?: DomainEventPublisher;
 }
 
 export class PaymentService {
   private readonly paymentRepository: PaymentRepository;
   private readonly orderRepository: OrderRepository;
+  private readonly paymentGatewayFactory: PaymentGatewayFactory;
   private readonly domainEventPublisher: DomainEventPublisher;
 
   constructor(dependencies: PaymentServiceDependencies = {}) {
@@ -34,6 +40,8 @@ export class PaymentService {
       dependencies.paymentRepository ?? getPaymentRepository();
     this.orderRepository =
       dependencies.orderRepository ?? getOrderRepository();
+    this.paymentGatewayFactory =
+      dependencies.paymentGatewayFactory ?? getPaymentGatewayFactory();
     this.domainEventPublisher =
       dependencies.domainEventPublisher ?? getDomainEventPublisher();
   }
@@ -53,13 +61,28 @@ export class PaymentService {
       );
     }
 
+    const gateway = this.paymentGatewayFactory.resolve(input.provider);
+    const reference = generatePaymentReference();
+
+    const initializeResult = await gateway.initializePayment({
+      storeId,
+      orderId,
+      amount: order.subtotal,
+      currency: order.currency,
+      reference,
+      provider: input.provider,
+      metadata: input.metadata,
+    });
+
+    this.assertGatewaySuccess(initializeResult, "initialize");
+
     const payment = await this.paymentRepository.create({
       storeId,
       orderId,
       amount: order.subtotal,
       currency: order.currency,
       provider: input.provider,
-      reference: generatePaymentReference(),
+      reference,
       metadata: input.metadata,
     });
 
@@ -102,14 +125,24 @@ export class PaymentService {
     query: PaymentIdQuery,
     paymentId: string,
   ): Promise<Payment> {
-    return this.transitionPayment(query.storeId, paymentId, "authorized");
+    return this.transitionPaymentWithGateway(
+      query.storeId,
+      paymentId,
+      "authorized",
+      (gateway, context) => gateway.authorizePayment(context),
+    );
   }
 
   async markPaymentPaid(
     query: PaymentIdQuery,
     paymentId: string,
   ): Promise<Payment> {
-    return this.transitionPayment(query.storeId, paymentId, "paid");
+    return this.transitionPaymentWithGateway(
+      query.storeId,
+      paymentId,
+      "paid",
+      (gateway, context) => gateway.capturePayment(context),
+    );
   }
 
   async failPayment(
@@ -123,7 +156,52 @@ export class PaymentService {
     query: PaymentIdQuery,
     paymentId: string,
   ): Promise<Payment> {
-    return this.transitionPayment(query.storeId, paymentId, "cancelled");
+    return this.transitionPaymentWithGateway(
+      query.storeId,
+      paymentId,
+      "cancelled",
+      (gateway, context) => gateway.cancelPayment(context),
+    );
+  }
+
+  private async transitionPaymentWithGateway(
+    storeId: string,
+    paymentId: string,
+    toStatus: PaymentStatus,
+    gatewayOperation: (
+      gateway: ReturnType<PaymentGatewayFactory["resolve"]>,
+      context: Parameters<
+        ReturnType<PaymentGatewayFactory["resolve"]>["authorizePayment"]
+      >[0],
+    ) => Promise<{ success: boolean; message?: string }>,
+  ): Promise<Payment> {
+    const existing = await this.paymentRepository.findById(storeId, paymentId);
+
+    if (!existing) {
+      throw new PaymentError(
+        PAYMENT_ERROR_CODES.NOT_FOUND,
+        "Payment not found",
+        404,
+      );
+    }
+
+    if (!PaymentStatusTransitionPolicy.canTransition(existing.status, toStatus)) {
+      throw new PaymentError(
+        PAYMENT_ERROR_CODES.INVALID_TRANSITION,
+        `Cannot transition payment from ${existing.status} to ${toStatus}`,
+        409,
+      );
+    }
+
+    const gateway = this.paymentGatewayFactory.resolve(existing.provider);
+    const gatewayResult = await gatewayOperation(
+      gateway,
+      toGatewayContext(existing),
+    );
+
+    this.assertGatewaySuccess(gatewayResult, toStatus);
+
+    return this.transitionPayment(storeId, paymentId, toStatus);
   }
 
   private async transitionPayment(
@@ -163,6 +241,19 @@ export class PaymentService {
       return payment;
     } catch (error) {
       throw this.mapRepositoryError(error, existing.status, toStatus);
+    }
+  }
+
+  private assertGatewaySuccess(
+    result: { success: boolean; message?: string },
+    operation: string,
+  ): void {
+    if (!result.success) {
+      throw new PaymentError(
+        PAYMENT_ERROR_CODES.GATEWAY_ERROR,
+        result.message ?? `Payment gateway ${operation} failed`,
+        502,
+      );
     }
   }
 
@@ -222,6 +313,20 @@ export class PaymentService {
       500,
     );
   }
+}
+
+function toGatewayContext(payment: Payment) {
+  return {
+    storeId: payment.storeId,
+    orderId: payment.orderId,
+    paymentId: payment.id,
+    amount: payment.amount,
+    currency: payment.currency,
+    reference: payment.reference,
+    provider: payment.provider,
+    status: payment.status,
+    metadata: payment.metadata,
+  };
 }
 
 export const paymentService = new PaymentService();
