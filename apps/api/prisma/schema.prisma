@@ -222,6 +222,22 @@ enum WarehouseTransferStatus {
   cancelled
 }
 
+/// Mirrors PurchaseOrderStatus from @commerceflow/types.
+enum PurchaseOrderStatus {
+  draft
+  approved
+  ordered
+  partially_received
+  received
+  cancelled
+}
+
+/// Supplier lifecycle for procurement references.
+enum SupplierStatus {
+  active
+  inactive
+}
+
 /// Mirrors ShippingZoneStatus from @commerceflow/types.
 enum ShippingZoneStatus {
   active
@@ -331,6 +347,8 @@ model Store {
   inventoryAdjustments   InventoryAdjustment[]
   cycleCounts            CycleCount[]
   warehouseTransfers     WarehouseTransfer[]
+  suppliers              Supplier[]
+  purchaseOrders         PurchaseOrder[]
   warehouses             Warehouse[]
   shippingZones          ShippingZone[]
   shippingMethods        ShippingMethod[]
@@ -451,6 +469,7 @@ model ProductVariant {
   inventoryItems InventoryItem[]
   orderItems OrderItem[]
   cartItems  CartItem[]
+  purchaseOrderItems PurchaseOrderItem[]
 
   @@unique([storeId, sku])
   @@index([storeId])
@@ -485,6 +504,7 @@ model Warehouse {
   shipments                Shipment[]
   sourceWarehouseTransfers WarehouseTransfer[] @relation("SourceWarehouse")
   destinationWarehouseTransfers WarehouseTransfer[] @relation("DestinationWarehouse")
+  purchaseOrders           PurchaseOrder[]
 
   @@unique([storeId, code])
   @@index([storeId])
@@ -1324,6 +1344,77 @@ model WarehouseTransferItem {
   @@index([warehouseTransferId])
   @@index([inventoryItemId])
   @@map("warehouse_transfer_items")
+}
+
+/// Store-scoped supplier for inbound procurement.
+model Supplier {
+  id             String         @id @default(uuid()) @db.Uuid
+  storeId        String         @map("store_id") @db.Uuid
+  store          Store          @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  name           String
+  code           String
+  status         SupplierStatus @default(active)
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+  deletedAt      DateTime?      @map("deleted_at")
+  purchaseOrders PurchaseOrder[]
+
+  @@unique([storeId, code])
+  @@index([storeId])
+  @@index([status])
+  @@index([storeId, status])
+  @@index([deletedAt])
+  @@index([storeId, deletedAt])
+  @@map("suppliers")
+}
+
+/// Store-scoped purchase order for supplier procurement and receiving.
+model PurchaseOrder {
+  id                   String              @id @default(uuid()) @db.Uuid
+  storeId              String              @map("store_id") @db.Uuid
+  store                Store               @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  warehouseId          String              @map("warehouse_id") @db.Uuid
+  warehouse            Warehouse           @relation(fields: [warehouseId], references: [id], onDelete: Restrict)
+  supplierId           String              @map("supplier_id") @db.Uuid
+  supplier             Supplier            @relation(fields: [supplierId], references: [id], onDelete: Restrict)
+  purchaseOrderNumber  String              @map("purchase_order_number")
+  status               PurchaseOrderStatus @default(draft)
+  orderedAt            DateTime?           @map("ordered_at")
+  receivedAt           DateTime?           @map("received_at")
+  expectedDeliveryDate DateTime?           @map("expected_delivery_date")
+  notes                String?
+  createdAt            DateTime            @default(now()) @map("created_at")
+  updatedAt            DateTime            @updatedAt @map("updated_at")
+  items                PurchaseOrderItem[]
+
+  @@unique([storeId, purchaseOrderNumber])
+  @@index([storeId])
+  @@index([warehouseId])
+  @@index([supplierId])
+  @@index([status])
+  @@index([storeId, status])
+  @@index([storeId, warehouseId])
+  @@index([storeId, supplierId])
+  @@map("purchase_orders")
+}
+
+/// Line item on a purchase order referencing a product variant to receive.
+model PurchaseOrderItem {
+  id               String        @id @default(uuid()) @db.Uuid
+  purchaseOrderId  String        @map("purchase_order_id") @db.Uuid
+  purchaseOrder    PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  productVariantId String        @map("product_variant_id") @db.Uuid
+  productVariant   ProductVariant @relation(fields: [productVariantId], references: [id], onDelete: Restrict)
+  quantityOrdered  Int           @map("quantity_ordered")
+  quantityReceived Int           @default(0) @map("quantity_received")
+  unitCost         Decimal       @map("unit_cost") @db.Decimal(12, 2)
+  currency         String        @db.Char(3)
+  createdAt        DateTime      @default(now()) @map("created_at")
+  updatedAt        DateTime      @updatedAt @map("updated_at")
+
+  @@index([purchaseOrderId])
+  @@index([productVariantId])
+  @@map("purchase_order_items")
 }
 
 /// Append-only shipment tracking timeline entry.

@@ -244,6 +244,26 @@ export {
   type WarehouseTransferClient,
 } from "./warehouse-transfers/warehouse-transfer-client";
 export type {
+  ApprovePurchaseOrderRequest,
+  ApprovePurchaseOrderResponse,
+  CancelPurchaseOrderRequest,
+  CancelPurchaseOrderResponse,
+  CreatePurchaseOrderRequest,
+  CreatePurchaseOrderResponse,
+  GetPurchaseOrderResponse,
+  ListPurchaseOrdersParams,
+  ListPurchaseOrdersResponse,
+  OrderPurchaseOrderRequest,
+  OrderPurchaseOrderResponse,
+  PurchaseOrderStoreScopedParams,
+  ReceivePurchaseOrderRequest,
+  ReceivePurchaseOrderResponse,
+} from "./purchase-orders/contracts";
+export {
+  createPurchaseOrderClient,
+  type PurchaseOrderClient,
+} from "./purchase-orders/purchase-order-client";
+export type {
   CreateShipmentRequest,
   CreateShipmentResponse,
   GetShipmentResponse,

@@ -28,6 +28,7 @@ export const AUDIT_ACTIONS = [
   "receive",
   "inspect",
   "approve",
+  "order",
   "fulfill",
 ] as const;
 

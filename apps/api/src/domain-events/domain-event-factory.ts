@@ -73,6 +73,13 @@ import type {
   WarehouseTransferReceivedPayload,
   WarehouseTransferShipResult,
   WarehouseTransferShippedPayload,
+  PurchaseOrder,
+  PurchaseOrderApprovedPayload,
+  PurchaseOrderCancelledPayload,
+  PurchaseOrderCreatedPayload,
+  PurchaseOrderOrderedPayload,
+  PurchaseOrderReceiveResult,
+  PurchaseOrderReceivedPayload,
   Shipment,
   ShipmentStatus,
   ShipmentCreatedPayload,
@@ -1069,6 +1076,101 @@ export function buildWarehouseTransferCancelledEvent(
       previousStatus,
       status: "cancelled",
       warehouseTransfer,
+    },
+  });
+}
+
+export function buildPurchaseOrderCreatedEvent(
+  purchaseOrder: PurchaseOrder,
+): DomainEvent<PurchaseOrderCreatedPayload> {
+  return createDomainEvent({
+    eventType: "purchase-order.created",
+    aggregateType: "purchase_order",
+    aggregateId: purchaseOrder.id,
+    storeId: purchaseOrder.storeId,
+    payload: {
+      purchaseOrderId: purchaseOrder.id,
+      purchaseOrderNumber: purchaseOrder.purchaseOrderNumber,
+      status: purchaseOrder.status,
+      warehouseId: purchaseOrder.warehouseId,
+      supplierId: purchaseOrder.supplierId,
+      itemCount: purchaseOrder.items.length,
+      purchaseOrder,
+    },
+  });
+}
+
+export function buildPurchaseOrderApprovedEvent(
+  purchaseOrder: PurchaseOrder,
+): DomainEvent<PurchaseOrderApprovedPayload> {
+  return createDomainEvent({
+    eventType: "purchase-order.approved",
+    aggregateType: "purchase_order",
+    aggregateId: purchaseOrder.id,
+    storeId: purchaseOrder.storeId,
+    payload: {
+      purchaseOrderId: purchaseOrder.id,
+      purchaseOrderNumber: purchaseOrder.purchaseOrderNumber,
+      previousStatus: "draft",
+      status: "approved",
+      purchaseOrder,
+    },
+  });
+}
+
+export function buildPurchaseOrderOrderedEvent(
+  purchaseOrder: PurchaseOrder,
+): DomainEvent<PurchaseOrderOrderedPayload> {
+  return createDomainEvent({
+    eventType: "purchase-order.ordered",
+    aggregateType: "purchase_order",
+    aggregateId: purchaseOrder.id,
+    storeId: purchaseOrder.storeId,
+    payload: {
+      purchaseOrderId: purchaseOrder.id,
+      purchaseOrderNumber: purchaseOrder.purchaseOrderNumber,
+      previousStatus: "approved",
+      status: "ordered",
+      purchaseOrder,
+    },
+  });
+}
+
+export function buildPurchaseOrderReceivedEvent(
+  result: PurchaseOrderReceiveResult,
+  previousStatus: PurchaseOrder["status"],
+): DomainEvent<PurchaseOrderReceivedPayload> {
+  return createDomainEvent({
+    eventType: "purchase-order.received",
+    aggregateType: "purchase_order",
+    aggregateId: result.purchaseOrder.id,
+    storeId: result.purchaseOrder.storeId,
+    payload: {
+      purchaseOrderId: result.purchaseOrder.id,
+      purchaseOrderNumber: result.purchaseOrder.purchaseOrderNumber,
+      previousStatus,
+      status: result.purchaseOrder.status,
+      stockMovementCount: result.stockMovements.length,
+      result,
+    },
+  });
+}
+
+export function buildPurchaseOrderCancelledEvent(
+  purchaseOrder: PurchaseOrder,
+  previousStatus: PurchaseOrder["status"],
+): DomainEvent<PurchaseOrderCancelledPayload> {
+  return createDomainEvent({
+    eventType: "purchase-order.cancelled",
+    aggregateType: "purchase_order",
+    aggregateId: purchaseOrder.id,
+    storeId: purchaseOrder.storeId,
+    payload: {
+      purchaseOrderId: purchaseOrder.id,
+      purchaseOrderNumber: purchaseOrder.purchaseOrderNumber,
+      previousStatus,
+      status: "cancelled",
+      purchaseOrder,
     },
   });
 }

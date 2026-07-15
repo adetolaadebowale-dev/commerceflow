@@ -147,6 +147,13 @@ export {
   type WarehouseTransferStatus,
 } from "./warehouse-transfers";
 export {
+  PURCHASE_ORDER_STATUSES,
+  type PurchaseOrder,
+  type PurchaseOrderItem,
+  type PurchaseOrderReceiveResult,
+  type PurchaseOrderStatus,
+} from "./purchase-orders";
+export {
   type AppliedCartPromotion,
   type OrderPromotionSnapshot,
 } from "./promotion-redemption";
@@ -262,4 +269,9 @@ export {
   type WarehouseTransferCreatedPayload,
   type WarehouseTransferReceivedPayload,
   type WarehouseTransferShippedPayload,
+  type PurchaseOrderApprovedPayload,
+  type PurchaseOrderCancelledPayload,
+  type PurchaseOrderCreatedPayload,
+  type PurchaseOrderOrderedPayload,
+  type PurchaseOrderReceivedPayload,
 } from "./domain-events";

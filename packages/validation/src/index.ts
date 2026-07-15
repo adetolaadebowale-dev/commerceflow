@@ -268,6 +268,18 @@ export {
   type WarehouseTransferLifecycleInput,
 } from "./warehouse-transfers";
 export {
+  createPurchaseOrderSchema,
+  listPurchaseOrdersQuerySchema,
+  purchaseOrderIdQuerySchema,
+  purchaseOrderLifecycleSchema,
+  receivePurchaseOrderSchema,
+  type CreatePurchaseOrderInput,
+  type ListPurchaseOrdersQuery,
+  type PurchaseOrderIdQuery,
+  type PurchaseOrderLifecycleInput,
+  type ReceivePurchaseOrderInput,
+} from "./purchase-orders";
+export {
   createShippingMethodSchema,
   createShippingZoneSchema,
   listShippingMethodsQuerySchema,

@@ -41,6 +41,11 @@ import type {
   WarehouseTransferShipResult,
 } from "../warehouse-transfers/warehouse-transfer";
 import type { WarehouseTransferStatus } from "../warehouse-transfers/warehouse-transfer-status";
+import type {
+  PurchaseOrder,
+  PurchaseOrderReceiveResult,
+} from "../purchase-orders/purchase-order";
+import type { PurchaseOrderStatus } from "../purchase-orders/purchase-order-status";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -733,6 +738,49 @@ export interface WarehouseTransferCancelledPayload {
   readonly previousStatus: WarehouseTransferStatus;
   readonly status: "cancelled";
   readonly warehouseTransfer: WarehouseTransfer;
+}
+
+export interface PurchaseOrderCreatedPayload {
+  readonly purchaseOrderId: string;
+  readonly purchaseOrderNumber: string;
+  readonly status: PurchaseOrderStatus;
+  readonly warehouseId: string;
+  readonly supplierId: string;
+  readonly itemCount: number;
+  readonly purchaseOrder: PurchaseOrder;
+}
+
+export interface PurchaseOrderApprovedPayload {
+  readonly purchaseOrderId: string;
+  readonly purchaseOrderNumber: string;
+  readonly previousStatus: "draft";
+  readonly status: "approved";
+  readonly purchaseOrder: PurchaseOrder;
+}
+
+export interface PurchaseOrderOrderedPayload {
+  readonly purchaseOrderId: string;
+  readonly purchaseOrderNumber: string;
+  readonly previousStatus: "approved";
+  readonly status: "ordered";
+  readonly purchaseOrder: PurchaseOrder;
+}
+
+export interface PurchaseOrderReceivedPayload {
+  readonly purchaseOrderId: string;
+  readonly purchaseOrderNumber: string;
+  readonly previousStatus: PurchaseOrderStatus;
+  readonly status: PurchaseOrderStatus;
+  readonly stockMovementCount: number;
+  readonly result: PurchaseOrderReceiveResult;
+}
+
+export interface PurchaseOrderCancelledPayload {
+  readonly purchaseOrderId: string;
+  readonly purchaseOrderNumber: string;
+  readonly previousStatus: PurchaseOrderStatus;
+  readonly status: "cancelled";
+  readonly purchaseOrder: PurchaseOrder;
 }
 
 export interface ShippingZoneCreatedPayload {

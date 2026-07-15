@@ -38,6 +38,9 @@ const ALL_STORE_PERMISSIONS: readonly StorePermissionCode[] = [
   "warehouse-transfers:read",
   "warehouse-transfers:write",
   "warehouse-transfers:lifecycle",
+  "purchase-orders:read",
+  "purchase-orders:write",
+  "purchase-orders:lifecycle",
 ];
 
 const PERMISSIONS_BY_STORE_ROLE: Readonly<
@@ -83,6 +86,9 @@ const PERMISSIONS_BY_STORE_ROLE: Readonly<
     "warehouse-transfers:read",
     "warehouse-transfers:write",
     "warehouse-transfers:lifecycle",
+    "purchase-orders:read",
+    "purchase-orders:write",
+    "purchase-orders:lifecycle",
   ],
   staff: [
     "catalogue:read",
@@ -101,6 +107,7 @@ const PERMISSIONS_BY_STORE_ROLE: Readonly<
     "shipping-config:read",
     "warehouses:read",
     "warehouse-transfers:read",
+    "purchase-orders:read",
   ],
 };
 

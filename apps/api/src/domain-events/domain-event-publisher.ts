@@ -48,6 +48,11 @@ import {
   buildWarehouseTransferCreatedEvent,
   buildWarehouseTransferReceivedEvent,
   buildWarehouseTransferShippedEvent,
+  buildPurchaseOrderApprovedEvent,
+  buildPurchaseOrderCancelledEvent,
+  buildPurchaseOrderCreatedEvent,
+  buildPurchaseOrderOrderedEvent,
+  buildPurchaseOrderReceivedEvent,
   buildShipmentCreatedEvent,
   buildShipmentShippedEvent,
   buildShipmentDeliveredEvent,
@@ -122,6 +127,8 @@ import type {
   WarehouseTransfer,
   WarehouseTransferReceiveResult,
   WarehouseTransferShipResult,
+  PurchaseOrder,
+  PurchaseOrderReceiveResult,
   ShippingZone,
   ShippingMethod,
 } from "@commerceflow/types";
@@ -555,6 +562,37 @@ export class DomainEventPublisher {
   ): void {
     this.dispatch(
       buildWarehouseTransferCancelledEvent(warehouseTransfer, previousStatus),
+    );
+  }
+
+  publishPurchaseOrderCreated(purchaseOrder: PurchaseOrder): void {
+    this.dispatch(buildPurchaseOrderCreatedEvent(purchaseOrder));
+  }
+
+  publishPurchaseOrderApproved(purchaseOrder: PurchaseOrder): void {
+    this.dispatch(buildPurchaseOrderApprovedEvent(purchaseOrder));
+  }
+
+  publishPurchaseOrderOrdered(purchaseOrder: PurchaseOrder): void {
+    this.dispatch(buildPurchaseOrderOrderedEvent(purchaseOrder));
+  }
+
+  publishPurchaseOrderReceived(
+    result: PurchaseOrderReceiveResult,
+    previousStatus: PurchaseOrder["status"],
+  ): void {
+    this.dispatch(buildPurchaseOrderReceivedEvent(result, previousStatus));
+    for (const stockMovement of result.stockMovements) {
+      this.publishStockMovementCreated(stockMovement);
+    }
+  }
+
+  publishPurchaseOrderCancelled(
+    purchaseOrder: PurchaseOrder,
+    previousStatus: PurchaseOrder["status"],
+  ): void {
+    this.dispatch(
+      buildPurchaseOrderCancelledEvent(purchaseOrder, previousStatus),
     );
   }
 
