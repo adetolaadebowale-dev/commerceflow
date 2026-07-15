@@ -29,6 +29,16 @@ export interface PurchaseOrderRepository {
   findById(storeId: string, id: string): Promise<PurchaseOrder | null>;
   list(query: ListPurchaseOrdersQuery): Promise<CatalogueListResult<PurchaseOrder>>;
   create(record: CreatePurchaseOrderRecord): Promise<PurchaseOrder>;
+  findDraftByWarehouseAndSupplier(
+    storeId: string,
+    warehouseId: string,
+    supplierId: string,
+  ): Promise<PurchaseOrder | null>;
+  appendItemsToDraft(
+    storeId: string,
+    id: string,
+    items: readonly CreatePurchaseOrderItemRecord[],
+  ): Promise<PurchaseOrder>;
   approvePurchaseOrder(
     storeId: string,
     id: string,

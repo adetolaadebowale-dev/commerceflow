@@ -47,6 +47,12 @@ import type {
 } from "../purchase-orders/purchase-order";
 import type { PurchaseOrderStatus } from "../purchase-orders/purchase-order-status";
 import type { Supplier, SupplierContact } from "../suppliers/supplier";
+import type {
+  ReplenishmentRecommendation,
+  ReplenishmentRule,
+} from "../replenishment/replenishment";
+import type { ReplenishmentRecommendationStatus } from "../replenishment/replenishment-recommendation-status";
+import type { AcceptReplenishmentRecommendationResult } from "../replenishment/accept-replenishment-result";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -833,6 +839,66 @@ export interface SupplierContactDeletedPayload {
   readonly lastName: string;
   readonly isPrimary: boolean;
   readonly contact: SupplierContact;
+}
+
+export interface ReplenishmentRuleCreatedPayload {
+  readonly replenishmentRuleId: string;
+  readonly warehouseId: string;
+  readonly productVariantId: string;
+  readonly supplierId: string;
+  readonly reorderPoint: number;
+  readonly isEnabled: boolean;
+  readonly rule: ReplenishmentRule;
+}
+
+export interface ReplenishmentRuleUpdatedPayload {
+  readonly replenishmentRuleId: string;
+  readonly warehouseId: string;
+  readonly productVariantId: string;
+  readonly supplierId: string;
+  readonly reorderPoint: number;
+  readonly isEnabled: boolean;
+  readonly rule: ReplenishmentRule;
+}
+
+export interface ReplenishmentRuleDeletedPayload {
+  readonly replenishmentRuleId: string;
+  readonly warehouseId: string;
+  readonly productVariantId: string;
+  readonly supplierId: string;
+  readonly rule: ReplenishmentRule;
+}
+
+export interface ReplenishmentRecommendationGeneratedPayload {
+  readonly replenishmentRecommendationId: string;
+  readonly warehouseId: string;
+  readonly productVariantId: string;
+  readonly supplierId: string;
+  readonly recommendedQuantity: number;
+  readonly currentQuantity: number;
+  readonly reorderPoint: number;
+  readonly status: ReplenishmentRecommendationStatus;
+  readonly recommendation: ReplenishmentRecommendation;
+}
+
+export interface ReplenishmentRecommendationAcceptedPayload {
+  readonly replenishmentRecommendationId: string;
+  readonly warehouseId: string;
+  readonly productVariantId: string;
+  readonly supplierId: string;
+  readonly purchaseOrderId: string;
+  readonly purchaseOrderCreated: boolean;
+  readonly recommendation: ReplenishmentRecommendation;
+  readonly result: AcceptReplenishmentRecommendationResult;
+}
+
+export interface ReplenishmentRecommendationDismissedPayload {
+  readonly replenishmentRecommendationId: string;
+  readonly warehouseId: string;
+  readonly productVariantId: string;
+  readonly supplierId: string;
+  readonly status: "dismissed";
+  readonly recommendation: ReplenishmentRecommendation;
 }
 
 export interface ShippingZoneCreatedPayload {

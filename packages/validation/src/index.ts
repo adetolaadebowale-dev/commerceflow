@@ -296,6 +296,26 @@ export {
   type UpdateSupplierInput,
 } from "./suppliers";
 export {
+  acceptReplenishmentRecommendationSchema,
+  createReplenishmentRuleSchema,
+  dismissReplenishmentRecommendationSchema,
+  generateReplenishmentRecommendationsSchema,
+  listReplenishmentRecommendationsQuerySchema,
+  listReplenishmentRulesQuerySchema,
+  replenishmentRecommendationIdQuerySchema,
+  replenishmentRuleIdQuerySchema,
+  updateReplenishmentRuleSchema,
+  type AcceptReplenishmentRecommendationInput,
+  type CreateReplenishmentRuleInput,
+  type DismissReplenishmentRecommendationInput,
+  type GenerateReplenishmentRecommendationsInput,
+  type ListReplenishmentRecommendationsQuery,
+  type ListReplenishmentRulesQuery,
+  type ReplenishmentRecommendationIdQuery,
+  type ReplenishmentRuleIdQuery,
+  type UpdateReplenishmentRuleInput,
+} from "./replenishment";
+export {
   createShippingMethodSchema,
   createShippingZoneSchema,
   listShippingMethodsQuerySchema,

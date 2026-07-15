@@ -59,6 +59,12 @@ import {
   buildSupplierContactCreatedEvent,
   buildSupplierContactUpdatedEvent,
   buildSupplierContactDeletedEvent,
+  buildReplenishmentRuleCreatedEvent,
+  buildReplenishmentRuleUpdatedEvent,
+  buildReplenishmentRuleDeletedEvent,
+  buildReplenishmentRecommendationGeneratedEvent,
+  buildReplenishmentRecommendationAcceptedEvent,
+  buildReplenishmentRecommendationDismissedEvent,
   buildShipmentCreatedEvent,
   buildShipmentShippedEvent,
   buildShipmentDeliveredEvent,
@@ -137,6 +143,9 @@ import type {
   PurchaseOrderReceiveResult,
   Supplier,
   SupplierContact,
+  ReplenishmentRule,
+  ReplenishmentRecommendation,
+  AcceptReplenishmentRecommendationResult,
   ShippingZone,
   ShippingMethod,
 } from "@commerceflow/types";
@@ -635,6 +644,40 @@ export class DomainEventPublisher {
     storeId: string,
   ): void {
     this.dispatch(buildSupplierContactDeletedEvent(contact, storeId));
+  }
+
+  publishReplenishmentRuleCreated(rule: ReplenishmentRule): void {
+    this.dispatch(buildReplenishmentRuleCreatedEvent(rule));
+  }
+
+  publishReplenishmentRuleUpdated(rule: ReplenishmentRule): void {
+    this.dispatch(buildReplenishmentRuleUpdatedEvent(rule));
+  }
+
+  publishReplenishmentRuleDeleted(rule: ReplenishmentRule): void {
+    this.dispatch(buildReplenishmentRuleDeletedEvent(rule));
+  }
+
+  publishReplenishmentRecommendationGenerated(
+    recommendation: ReplenishmentRecommendation,
+  ): void {
+    this.dispatch(
+      buildReplenishmentRecommendationGeneratedEvent(recommendation),
+    );
+  }
+
+  publishReplenishmentRecommendationAccepted(
+    result: AcceptReplenishmentRecommendationResult,
+  ): void {
+    this.dispatch(buildReplenishmentRecommendationAcceptedEvent(result));
+  }
+
+  publishReplenishmentRecommendationDismissed(
+    recommendation: ReplenishmentRecommendation,
+  ): void {
+    this.dispatch(
+      buildReplenishmentRecommendationDismissedEvent(recommendation),
+    );
   }
 
   publishShippingZoneCreated(shippingZone: ShippingZone): void {

@@ -11,6 +11,7 @@ import type {
 import type { MemoryInventoryItemRepository } from "../../inventory/repositories/memory-inventory-item.repository";
 import { resolvePurchaseOrderStatusAfterReceive } from "../policies/purchase-order-status-transition.policy";
 import type {
+  CreatePurchaseOrderItemRecord,
   CreatePurchaseOrderRecord,
   PurchaseOrderRepository,
 } from "./purchase-order.repository";
@@ -114,6 +115,70 @@ export class MemoryPurchaseOrderRepository implements PurchaseOrderRepository {
     this.purchaseOrdersById.set(purchaseOrderId, purchaseOrder);
 
     return toPurchaseOrder(purchaseOrder);
+  }
+
+  async findDraftByWarehouseAndSupplier(
+    storeId: string,
+    warehouseId: string,
+    supplierId: string,
+  ): Promise<PurchaseOrder | null> {
+    for (const record of this.purchaseOrdersById.values()) {
+      if (
+        record.storeId === storeId &&
+        record.warehouseId === warehouseId &&
+        record.supplierId === supplierId &&
+        record.status === "draft"
+      ) {
+        return toPurchaseOrder(record);
+      }
+    }
+
+    return null;
+  }
+
+  async appendItemsToDraft(
+    storeId: string,
+    id: string,
+    items: readonly CreatePurchaseOrderItemRecord[],
+  ): Promise<PurchaseOrder> {
+    if (this.transactionFailure) {
+      throw this.transactionFailure;
+    }
+
+    const record = this.purchaseOrdersById.get(id);
+
+    if (!record || record.storeId !== storeId || record.status !== "draft") {
+      throw new Error(`Purchase order not found: ${id}`);
+    }
+
+    const now = new Date().toISOString();
+
+    for (const item of items) {
+      const existingItem = record.items.find(
+        (line) => line.productVariantId === item.productVariantId,
+      );
+
+      if (existingItem) {
+        existingItem.quantityOrdered += item.quantityOrdered;
+        existingItem.updatedAt = now;
+      } else {
+        record.items.push({
+          id: crypto.randomUUID(),
+          purchaseOrderId: id,
+          productVariantId: item.productVariantId,
+          quantityOrdered: item.quantityOrdered,
+          quantityReceived: 0,
+          unitCost: item.unitCost,
+          currency: item.currency,
+          createdAt: now,
+          updatedAt: now,
+        });
+      }
+    }
+
+    record.updatedAt = now;
+    this.purchaseOrdersById.set(id, record);
+    return toPurchaseOrder(record);
   }
 
   async approvePurchaseOrder(

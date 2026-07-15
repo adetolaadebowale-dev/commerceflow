@@ -248,6 +248,13 @@ enum PaymentTerm {
   custom
 }
 
+/// Replenishment recommendation lifecycle.
+enum ReplenishmentRecommendationStatus {
+  pending
+  accepted
+  dismissed
+}
+
 /// Mirrors ShippingZoneStatus from @commerceflow/types.
 enum ShippingZoneStatus {
   active
@@ -362,6 +369,8 @@ model Store {
   warehouses             Warehouse[]
   shippingZones          ShippingZone[]
   shippingMethods        ShippingMethod[]
+  replenishmentRules     ReplenishmentRule[]
+  replenishmentRecommendations ReplenishmentRecommendation[]
 
   @@unique([organizationId, slug])
   @@index([organizationId])
@@ -480,6 +489,8 @@ model ProductVariant {
   orderItems OrderItem[]
   cartItems  CartItem[]
   purchaseOrderItems PurchaseOrderItem[]
+  replenishmentRules ReplenishmentRule[]
+  replenishmentRecommendations ReplenishmentRecommendation[]
 
   @@unique([storeId, sku])
   @@index([storeId])
@@ -515,6 +526,8 @@ model Warehouse {
   sourceWarehouseTransfers WarehouseTransfer[] @relation("SourceWarehouse")
   destinationWarehouseTransfers WarehouseTransfer[] @relation("DestinationWarehouse")
   purchaseOrders           PurchaseOrder[]
+  replenishmentRules       ReplenishmentRule[]
+  replenishmentRecommendations ReplenishmentRecommendation[]
 
   @@unique([storeId, code])
   @@index([storeId])
@@ -1376,6 +1389,8 @@ model Supplier {
   deletedAt      DateTime?         @map("deleted_at")
   contacts       SupplierContact[]
   purchaseOrders PurchaseOrder[]
+  replenishmentRules ReplenishmentRule[]
+  replenishmentRecommendations ReplenishmentRecommendation[]
 
   @@unique([storeId, code])
   @@index([storeId])
@@ -1423,6 +1438,7 @@ model PurchaseOrder {
   createdAt            DateTime            @default(now()) @map("created_at")
   updatedAt            DateTime            @updatedAt @map("updated_at")
   items                PurchaseOrderItem[]
+  replenishmentRecommendations ReplenishmentRecommendation[]
 
   @@unique([storeId, purchaseOrderNumber])
   @@index([storeId])
@@ -1452,6 +1468,65 @@ model PurchaseOrderItem {
   @@index([purchaseOrderId])
   @@index([productVariantId])
   @@map("purchase_order_items")
+}
+
+/// Warehouse-specific reorder threshold for automated replenishment planning.
+model ReplenishmentRule {
+  id               String   @id @default(uuid()) @db.Uuid
+  storeId          String   @map("store_id") @db.Uuid
+  store            Store    @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  warehouseId      String   @map("warehouse_id") @db.Uuid
+  warehouse        Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Restrict)
+  productVariantId String   @map("product_variant_id") @db.Uuid
+  productVariant   ProductVariant @relation(fields: [productVariantId], references: [id], onDelete: Restrict)
+  supplierId       String   @map("supplier_id") @db.Uuid
+  supplier         Supplier @relation(fields: [supplierId], references: [id], onDelete: Restrict)
+  reorderPoint     Int      @map("reorder_point")
+  reorderQuantity  Int      @map("reorder_quantity")
+  minimumQuantity  Int?     @map("minimum_quantity")
+  maximumQuantity  Int?     @map("maximum_quantity")
+  isEnabled        Boolean  @default(true) @map("is_enabled")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@unique([storeId, warehouseId, productVariantId])
+  @@index([storeId])
+  @@index([warehouseId])
+  @@index([supplierId])
+  @@index([storeId, isEnabled])
+  @@index([storeId, warehouseId, isEnabled])
+  @@map("replenishment_rules")
+}
+
+/// Generated replenishment suggestion when stock falls below a rule threshold.
+model ReplenishmentRecommendation {
+  id                   String                            @id @default(uuid()) @db.Uuid
+  storeId              String                            @map("store_id") @db.Uuid
+  store                Store                             @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  warehouseId          String                            @map("warehouse_id") @db.Uuid
+  warehouse            Warehouse                         @relation(fields: [warehouseId], references: [id], onDelete: Restrict)
+  supplierId           String                            @map("supplier_id") @db.Uuid
+  supplier             Supplier                          @relation(fields: [supplierId], references: [id], onDelete: Restrict)
+  productVariantId     String                            @map("product_variant_id") @db.Uuid
+  productVariant       ProductVariant                    @relation(fields: [productVariantId], references: [id], onDelete: Restrict)
+  recommendedQuantity  Int                               @map("recommended_quantity")
+  currentQuantity      Int                               @map("current_quantity")
+  reorderPoint         Int                               @map("reorder_point")
+  status               ReplenishmentRecommendationStatus @default(pending)
+  purchaseOrderId      String?                           @map("purchase_order_id") @db.Uuid
+  purchaseOrder        PurchaseOrder?                    @relation(fields: [purchaseOrderId], references: [id], onDelete: SetNull)
+  createdAt            DateTime                          @default(now()) @map("created_at")
+  updatedAt            DateTime                          @updatedAt @map("updated_at")
+
+  @@index([storeId])
+  @@index([warehouseId])
+  @@index([supplierId])
+  @@index([productVariantId])
+  @@index([status])
+  @@index([storeId, status])
+  @@index([storeId, warehouseId, productVariantId, status])
+  @@index([purchaseOrderId])
+  @@map("replenishment_recommendations")
 }
 
 /// Append-only shipment tracking timeline entry.

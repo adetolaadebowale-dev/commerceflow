@@ -29,7 +29,9 @@ export const AUDIT_ACTIONS = [
   "inspect",
   "approve",
   "order",
-  "fulfill",
+  "generate",
+  "accept",
+  "dismiss",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];

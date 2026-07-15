@@ -18,6 +18,7 @@ import type {
 import { toStockMovement } from "@/lib/stock-movement-mapper";
 import { resolvePurchaseOrderStatusAfterReceive } from "../policies/purchase-order-status-transition.policy";
 import type {
+  CreatePurchaseOrderItemRecord,
   CreatePurchaseOrderRecord,
   PurchaseOrderRepository,
 } from "./purchase-order.repository";
@@ -121,6 +122,75 @@ export class PrismaPurchaseOrderRepository implements PurchaseOrderRepository {
     });
 
     return toPurchaseOrder(created);
+  }
+
+  async findDraftByWarehouseAndSupplier(
+    storeId: string,
+    warehouseId: string,
+    supplierId: string,
+  ): Promise<PurchaseOrder | null> {
+    const record = await this.db.purchaseOrder.findFirst({
+      where: {
+        storeId,
+        warehouseId,
+        supplierId,
+        status: "draft",
+      },
+      include: { items: itemsInclude },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+    });
+
+    return record ? toPurchaseOrder(record) : null;
+  }
+
+  async appendItemsToDraft(
+    storeId: string,
+    id: string,
+    items: readonly CreatePurchaseOrderItemRecord[],
+  ): Promise<PurchaseOrder> {
+    return this.db.$transaction(async (tx) => {
+      const existing = await tx.purchaseOrder.findFirst({
+        where: { id, storeId, status: "draft" },
+        include: { items: itemsInclude },
+      });
+
+      if (!existing) {
+        throw new Error(`Purchase order not found: ${id}`);
+      }
+
+      for (const item of items) {
+        const existingItem = existing.items.find(
+          (line) => line.productVariantId === item.productVariantId,
+        );
+
+        if (existingItem) {
+          await tx.purchaseOrderItem.update({
+            where: { id: existingItem.id },
+            data: {
+              quantityOrdered:
+                existingItem.quantityOrdered + item.quantityOrdered,
+            },
+          });
+        } else {
+          await tx.purchaseOrderItem.create({
+            data: {
+              purchaseOrderId: id,
+              productVariantId: item.productVariantId,
+              quantityOrdered: item.quantityOrdered,
+              unitCost: item.unitCost,
+              currency: item.currency,
+            },
+          });
+        }
+      }
+
+      const updated = await tx.purchaseOrder.findFirstOrThrow({
+        where: { id, storeId },
+        include: { items: itemsInclude },
+      });
+
+      return toPurchaseOrder(updated);
+    });
   }
 
   async approvePurchaseOrder(

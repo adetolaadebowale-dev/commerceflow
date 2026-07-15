@@ -285,6 +285,31 @@ export {
   type SupplierClient,
 } from "./suppliers/supplier-client";
 export type {
+  AcceptReplenishmentRecommendationRequest,
+  AcceptReplenishmentRecommendationResponse,
+  CreateReplenishmentRuleRequest,
+  CreateReplenishmentRuleResponse,
+  DeleteReplenishmentRuleResponse,
+  DismissReplenishmentRecommendationRequest,
+  DismissReplenishmentRecommendationResponse,
+  GenerateReplenishmentRecommendationsRequest,
+  GenerateReplenishmentRecommendationsResponse,
+  GetReplenishmentRecommendationResponse,
+  GetReplenishmentRuleResponse,
+  ListReplenishmentRecommendationsParams,
+  ListReplenishmentRecommendationsResponse,
+  ListReplenishmentRulesParams,
+  ListReplenishmentRulesResponse,
+  ReplenishmentRecommendationStoreScopedParams,
+  ReplenishmentRuleStoreScopedParams,
+  UpdateReplenishmentRuleRequest,
+  UpdateReplenishmentRuleResponse,
+} from "./replenishment/contracts";
+export {
+  createReplenishmentClient,
+  type ReplenishmentClient,
+} from "./replenishment/replenishment-client";
+export type {
   CreateShipmentRequest,
   CreateShipmentResponse,
   GetShipmentResponse,

@@ -88,6 +88,15 @@ import type {
   SupplierCreatedPayload,
   SupplierDeletedPayload,
   SupplierUpdatedPayload,
+  ReplenishmentRule,
+  ReplenishmentRecommendation,
+  ReplenishmentRuleCreatedPayload,
+  ReplenishmentRuleUpdatedPayload,
+  ReplenishmentRuleDeletedPayload,
+  ReplenishmentRecommendationGeneratedPayload,
+  ReplenishmentRecommendationAcceptedPayload,
+  ReplenishmentRecommendationDismissedPayload,
+  AcceptReplenishmentRecommendationResult,
   Shipment,
   ShipmentStatus,
   ShipmentCreatedPayload,
@@ -1293,6 +1302,126 @@ export function buildSupplierContactDeletedEvent(
       lastName: contact.lastName,
       isPrimary: contact.isPrimary,
       contact,
+    },
+  });
+}
+
+export function buildReplenishmentRuleCreatedEvent(
+  rule: ReplenishmentRule,
+): DomainEvent<ReplenishmentRuleCreatedPayload> {
+  return createDomainEvent({
+    eventType: "replenishment-rule.created",
+    aggregateType: "replenishment_rule",
+    aggregateId: rule.id,
+    storeId: rule.storeId,
+    payload: {
+      replenishmentRuleId: rule.id,
+      warehouseId: rule.warehouseId,
+      productVariantId: rule.productVariantId,
+      supplierId: rule.supplierId,
+      reorderPoint: rule.reorderPoint,
+      isEnabled: rule.isEnabled,
+      rule,
+    },
+  });
+}
+
+export function buildReplenishmentRuleUpdatedEvent(
+  rule: ReplenishmentRule,
+): DomainEvent<ReplenishmentRuleUpdatedPayload> {
+  return createDomainEvent({
+    eventType: "replenishment-rule.updated",
+    aggregateType: "replenishment_rule",
+    aggregateId: rule.id,
+    storeId: rule.storeId,
+    payload: {
+      replenishmentRuleId: rule.id,
+      warehouseId: rule.warehouseId,
+      productVariantId: rule.productVariantId,
+      supplierId: rule.supplierId,
+      reorderPoint: rule.reorderPoint,
+      isEnabled: rule.isEnabled,
+      rule,
+    },
+  });
+}
+
+export function buildReplenishmentRuleDeletedEvent(
+  rule: ReplenishmentRule,
+): DomainEvent<ReplenishmentRuleDeletedPayload> {
+  return createDomainEvent({
+    eventType: "replenishment-rule.deleted",
+    aggregateType: "replenishment_rule",
+    aggregateId: rule.id,
+    storeId: rule.storeId,
+    payload: {
+      replenishmentRuleId: rule.id,
+      warehouseId: rule.warehouseId,
+      productVariantId: rule.productVariantId,
+      supplierId: rule.supplierId,
+      rule,
+    },
+  });
+}
+
+export function buildReplenishmentRecommendationGeneratedEvent(
+  recommendation: ReplenishmentRecommendation,
+): DomainEvent<ReplenishmentRecommendationGeneratedPayload> {
+  return createDomainEvent({
+    eventType: "replenishment.recommendation.generated",
+    aggregateType: "replenishment_recommendation",
+    aggregateId: recommendation.id,
+    storeId: recommendation.storeId,
+    payload: {
+      replenishmentRecommendationId: recommendation.id,
+      warehouseId: recommendation.warehouseId,
+      productVariantId: recommendation.productVariantId,
+      supplierId: recommendation.supplierId,
+      recommendedQuantity: recommendation.recommendedQuantity,
+      currentQuantity: recommendation.currentQuantity,
+      reorderPoint: recommendation.reorderPoint,
+      status: recommendation.status,
+      recommendation,
+    },
+  });
+}
+
+export function buildReplenishmentRecommendationAcceptedEvent(
+  result: AcceptReplenishmentRecommendationResult,
+): DomainEvent<ReplenishmentRecommendationAcceptedPayload> {
+  return createDomainEvent({
+    eventType: "replenishment.recommendation.accepted",
+    aggregateType: "replenishment_recommendation",
+    aggregateId: result.recommendation.id,
+    storeId: result.recommendation.storeId,
+    payload: {
+      replenishmentRecommendationId: result.recommendation.id,
+      warehouseId: result.recommendation.warehouseId,
+      productVariantId: result.recommendation.productVariantId,
+      supplierId: result.recommendation.supplierId,
+      purchaseOrderId: result.purchaseOrder.id,
+      purchaseOrderCreated: result.purchaseOrderCreated,
+      recommendation: result.recommendation,
+      result,
+    },
+  });
+}
+
+export function buildReplenishmentRecommendationDismissedEvent(
+  recommendation: ReplenishmentRecommendation,
+): DomainEvent<ReplenishmentRecommendationDismissedPayload> {
+  return createDomainEvent({
+    eventType: "replenishment.recommendation.dismissed",
+    aggregateType: "replenishment_recommendation",
+    aggregateId: recommendation.id,
+    storeId: recommendation.storeId,
+    payload: {
+      replenishmentRecommendationId: recommendation.id,
+      warehouseId: recommendation.warehouseId,
+      productVariantId: recommendation.productVariantId,
+      supplierId: recommendation.supplierId,
+      status: "dismissed",
+      recommendation,
     },
   });
 }

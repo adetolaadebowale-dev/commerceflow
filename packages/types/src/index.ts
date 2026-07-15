@@ -162,6 +162,13 @@ export {
   type SupplierStatus,
 } from "./suppliers";
 export {
+  REPLENISHMENT_RECOMMENDATION_STATUSES,
+  type AcceptReplenishmentRecommendationResult,
+  type ReplenishmentRecommendation,
+  type ReplenishmentRecommendationStatus,
+  type ReplenishmentRule,
+} from "./replenishment";
+export {
   type AppliedCartPromotion,
   type OrderPromotionSnapshot,
 } from "./promotion-redemption";
@@ -288,4 +295,10 @@ export {
   type SupplierCreatedPayload,
   type SupplierDeletedPayload,
   type SupplierUpdatedPayload,
+  type ReplenishmentRuleCreatedPayload,
+  type ReplenishmentRuleUpdatedPayload,
+  type ReplenishmentRuleDeletedPayload,
+  type ReplenishmentRecommendationGeneratedPayload,
+  type ReplenishmentRecommendationAcceptedPayload,
+  type ReplenishmentRecommendationDismissedPayload,
 } from "./domain-events";
