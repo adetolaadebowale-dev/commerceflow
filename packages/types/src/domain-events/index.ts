@@ -31,4 +31,7 @@ export type {
   RefundCancelledPayload,
   RefundCompletedPayload,
   RefundCreatedPayload,
+  PromotionCreatedPayload,
+  PromotionDeletedPayload,
+  PromotionUpdatedPayload,
 } from "./payloads";

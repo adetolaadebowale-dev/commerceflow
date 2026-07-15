@@ -43,6 +43,10 @@ import type {
   RefundCompletedPayload,
   RefundCreatedPayload,
   RefundStatus,
+  Promotion,
+  PromotionCreatedPayload,
+  PromotionDeletedPayload,
+  PromotionUpdatedPayload,
 } from "@commerceflow/types";
 
 export function createDomainEvent<TPayload>(input: {
@@ -591,6 +595,66 @@ export function buildRefundCancelledEvent(
       currency: refund.currency,
       reason: refund.reason,
       refund,
+    },
+  });
+}
+
+export function buildPromotionCreatedEvent(
+  promotion: Promotion,
+): DomainEvent<PromotionCreatedPayload> {
+  return createDomainEvent({
+    eventType: "promotion.created",
+    aggregateType: "promotion",
+    aggregateId: promotion.id,
+    storeId: promotion.storeId,
+    payload: {
+      promotionId: promotion.id,
+      code: promotion.code,
+      name: promotion.name,
+      type: promotion.type,
+      value: promotion.value,
+      currency: promotion.currency,
+      status: promotion.status,
+      promotion,
+    },
+  });
+}
+
+export function buildPromotionUpdatedEvent(
+  promotion: Promotion,
+): DomainEvent<PromotionUpdatedPayload> {
+  return createDomainEvent({
+    eventType: "promotion.updated",
+    aggregateType: "promotion",
+    aggregateId: promotion.id,
+    storeId: promotion.storeId,
+    payload: {
+      promotionId: promotion.id,
+      code: promotion.code,
+      name: promotion.name,
+      type: promotion.type,
+      value: promotion.value,
+      currency: promotion.currency,
+      status: promotion.status,
+      promotion,
+    },
+  });
+}
+
+export function buildPromotionDeletedEvent(
+  promotion: Promotion,
+): DomainEvent<PromotionDeletedPayload> {
+  return createDomainEvent({
+    eventType: "promotion.deleted",
+    aggregateType: "promotion",
+    aggregateId: promotion.id,
+    storeId: promotion.storeId,
+    payload: {
+      promotionId: promotion.id,
+      code: promotion.code,
+      name: promotion.name,
+      status: promotion.status,
+      promotion,
     },
   });
 }

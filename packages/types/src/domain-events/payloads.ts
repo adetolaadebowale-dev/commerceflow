@@ -12,6 +12,7 @@ import type { Invoice } from "../invoices/invoice";
 import type { InvoiceStatus } from "../invoices/invoice-status";
 import type { Refund } from "../refunds/refund";
 import type { RefundStatus } from "../refunds/refund-status";
+import type { Promotion } from "../promotions/promotion";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -267,4 +268,34 @@ export interface RefundCancelledPayload {
   readonly currency: string;
   readonly reason: string;
   readonly refund: Refund;
+}
+
+export interface PromotionCreatedPayload {
+  readonly promotionId: string;
+  readonly code: string;
+  readonly name: string;
+  readonly type: Promotion["type"];
+  readonly value: string;
+  readonly currency?: string;
+  readonly status: Promotion["status"];
+  readonly promotion: Promotion;
+}
+
+export interface PromotionUpdatedPayload {
+  readonly promotionId: string;
+  readonly code: string;
+  readonly name: string;
+  readonly type: Promotion["type"];
+  readonly value: string;
+  readonly currency?: string;
+  readonly status: Promotion["status"];
+  readonly promotion: Promotion;
+}
+
+export interface PromotionDeletedPayload {
+  readonly promotionId: string;
+  readonly code: string;
+  readonly name: string;
+  readonly status: Promotion["status"];
+  readonly promotion: Promotion;
 }

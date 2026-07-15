@@ -54,6 +54,13 @@ export {
   type RefundStatus,
 } from "./refunds";
 export {
+  PROMOTION_STATUSES,
+  PROMOTION_TYPES,
+  type Promotion,
+  type PromotionStatus,
+  type PromotionType,
+} from "./promotions";
+export {
   CUSTOMER_STATUSES,
   type Customer,
   type CustomerAddress,
@@ -112,4 +119,7 @@ export {
   type RefundCancelledPayload,
   type RefundCompletedPayload,
   type RefundCreatedPayload,
+  type PromotionCreatedPayload,
+  type PromotionDeletedPayload,
+  type PromotionUpdatedPayload,
 } from "./domain-events";

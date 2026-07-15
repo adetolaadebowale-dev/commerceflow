@@ -165,5 +165,20 @@ export type {
   RefundStoreScopedParams,
 } from "./refunds/contracts";
 export { createRefundClient, type RefundClient } from "./refunds/refund-client";
+export type {
+  CreatePromotionRequest,
+  CreatePromotionResponse,
+  DeletePromotionResponse,
+  GetPromotionResponse,
+  ListPromotionsParams,
+  ListPromotionsResponse,
+  PromotionStoreScopedParams,
+  UpdatePromotionRequest,
+  UpdatePromotionResponse,
+} from "./promotions/contracts";
+export {
+  createPromotionClient,
+  type PromotionClient,
+} from "./promotions/promotion-client";
 export { ApiClientError } from "./http/api-error";
 export { apiRequest, type ApiClientConfig } from "./http/request";

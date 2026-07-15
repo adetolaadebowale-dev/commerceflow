@@ -26,6 +26,9 @@ export const DOMAIN_EVENT_TYPES = [
   "refund.created",
   "refund.completed",
   "refund.cancelled",
+  "promotion.created",
+  "promotion.updated",
+  "promotion.deleted",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

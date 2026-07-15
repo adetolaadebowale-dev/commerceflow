@@ -10,6 +10,7 @@ export const DOMAIN_AGGREGATE_TYPES = [
   "payment",
   "invoice",
   "refund",
+  "promotion",
 ] as const;
 
 export type DomainAggregateType = (typeof DOMAIN_AGGREGATE_TYPES)[number];
