@@ -26,4 +26,14 @@ export interface InventoryItemRepository {
     storeId: string,
     productVariantId: string,
   ): Promise<boolean>;
+  restockForReturn(
+    storeId: string,
+    inventoryItemId: string,
+    quantity: number,
+    context: {
+      returnId: string;
+      returnItemId: string;
+      reference: string;
+    },
+  ): Promise<InventoryAdjustmentResult>;
 }

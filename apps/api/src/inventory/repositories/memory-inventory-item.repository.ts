@@ -289,4 +289,54 @@ export class MemoryInventoryItemRepository implements InventoryItemRepository {
 
     return { inventoryItem, stockMovement };
   }
+
+  async restockForReturn(
+    storeId: string,
+    inventoryItemId: string,
+    quantity: number,
+    context: {
+      returnId: string;
+      returnItemId: string;
+      reference: string;
+    },
+  ): Promise<InventoryAdjustmentResult> {
+    const existing = await this.findById(storeId, inventoryItemId);
+
+    if (!existing) {
+      throw new Error(`InventoryItem not found: ${inventoryItemId}`);
+    }
+
+    if (this.transactionFailure) {
+      throw this.transactionFailure;
+    }
+
+    const newQuantityOnHand = existing.quantityOnHand + quantity;
+    const now = new Date().toISOString();
+    const inventoryItem: InventoryItem = {
+      ...existing,
+      quantityOnHand: newQuantityOnHand,
+      updatedAt: now,
+    };
+
+    const stockMovement: StockMovement = {
+      id: crypto.randomUUID(),
+      storeId,
+      inventoryItemId: inventoryItem.id,
+      movementType: "return",
+      quantity,
+      previousQuantityOnHand: existing.quantityOnHand,
+      newQuantityOnHand,
+      reference: context.reference,
+      metadata: {
+        returnId: context.returnId,
+        returnItemId: context.returnItemId,
+      },
+      createdAt: now,
+    };
+
+    this.itemsById.set(inventoryItem.id, inventoryItem);
+    this.movementsById.set(stockMovement.id, stockMovement);
+
+    return { inventoryItem, stockMovement };
+  }
 }

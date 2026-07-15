@@ -275,5 +275,23 @@ export {
   createAllocationClient,
   type AllocationClient,
 } from "./inventory-allocation/allocation-client";
+export type {
+  CompleteReturnRequest,
+  CompleteReturnResponse,
+  CreateReturnRequest,
+  CreateReturnResponse,
+  GetReturnParams,
+  GetReturnResponse,
+  InspectReturnRequest,
+  InspectReturnResponse,
+  ListReturnsParams,
+  ListReturnsResponse,
+  ReceiveReturnRequest,
+  ReceiveReturnResponse,
+} from "./returns/return-client";
+export {
+  createReturnClient,
+  type ReturnClient,
+} from "./returns/return-client";
 export { ApiClientError } from "./http/api-error";
 export { apiRequest, type ApiClientConfig } from "./http/request";

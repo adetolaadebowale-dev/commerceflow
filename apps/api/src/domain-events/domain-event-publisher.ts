@@ -56,6 +56,10 @@ import {
   buildInventoryShortageReportedEvent,
   buildInventoryFulfilledEvent,
   buildStockMovementCreatedEvent,
+  buildReturnCreatedEvent,
+  buildReturnReceivedEvent,
+  buildReturnInspectedEvent,
+  buildReturnCompletedEvent,
   buildShippingZoneCreatedEvent,
   buildShippingZoneUpdatedEvent,
   buildShippingZoneDeletedEvent,
@@ -93,6 +97,8 @@ import type {
   InventoryAllocationStatus,
   ShipmentFulfillmentResult,
   StockMovement,
+  Return,
+  ReturnCompletionResult,
   ShippingZone,
   ShippingMethod,
 } from "@commerceflow/types";
@@ -432,6 +438,22 @@ export class DomainEventPublisher {
 
   publishStockMovementCreated(stockMovement: StockMovement): void {
     this.dispatch(buildStockMovementCreatedEvent(stockMovement));
+  }
+
+  publishReturnCreated(returnRecord: Return): void {
+    this.dispatch(buildReturnCreatedEvent(returnRecord));
+  }
+
+  publishReturnReceived(returnRecord: Return): void {
+    this.dispatch(buildReturnReceivedEvent(returnRecord));
+  }
+
+  publishReturnInspected(returnRecord: Return): void {
+    this.dispatch(buildReturnInspectedEvent(returnRecord));
+  }
+
+  publishReturnCompleted(result: ReturnCompletionResult): void {
+    this.dispatch(buildReturnCompletedEvent(result));
   }
 
   publishShippingZoneCreated(shippingZone: ShippingZone): void {

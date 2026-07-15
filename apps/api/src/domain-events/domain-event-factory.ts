@@ -85,6 +85,12 @@ import type {
   ShipmentFulfillmentResult,
   StockMovement,
   StockMovementCreatedPayload,
+  Return,
+  ReturnCompletionResult,
+  ReturnCreatedPayload,
+  ReturnReceivedPayload,
+  ReturnInspectedPayload,
+  ReturnCompletedPayload,
   ShippingZone,
   ShippingMethod,
   ShippingZoneCreatedPayload,
@@ -1204,6 +1210,83 @@ export function buildStockMovementCreatedEvent(
       shipmentId: stockMovement.shipmentId,
       inventoryAllocationId: stockMovement.inventoryAllocationId,
       stockMovement,
+    },
+  });
+}
+
+export function buildReturnCreatedEvent(
+  returnRecord: Return,
+): DomainEvent<ReturnCreatedPayload> {
+  return createDomainEvent({
+    eventType: "return.created",
+    aggregateType: "return",
+    aggregateId: returnRecord.id,
+    storeId: returnRecord.storeId,
+    payload: {
+      returnId: returnRecord.id,
+      orderId: returnRecord.orderId,
+      shipmentId: returnRecord.shipmentId,
+      returnNumber: returnRecord.returnNumber,
+      status: returnRecord.status,
+      return: returnRecord,
+    },
+  });
+}
+
+export function buildReturnReceivedEvent(
+  returnRecord: Return,
+): DomainEvent<ReturnReceivedPayload> {
+  return createDomainEvent({
+    eventType: "return.received",
+    aggregateType: "return",
+    aggregateId: returnRecord.id,
+    storeId: returnRecord.storeId,
+    payload: {
+      returnId: returnRecord.id,
+      orderId: returnRecord.orderId,
+      shipmentId: returnRecord.shipmentId,
+      returnNumber: returnRecord.returnNumber,
+      status: returnRecord.status,
+      return: returnRecord,
+    },
+  });
+}
+
+export function buildReturnInspectedEvent(
+  returnRecord: Return,
+): DomainEvent<ReturnInspectedPayload> {
+  return createDomainEvent({
+    eventType: "return.inspected",
+    aggregateType: "return",
+    aggregateId: returnRecord.id,
+    storeId: returnRecord.storeId,
+    payload: {
+      returnId: returnRecord.id,
+      orderId: returnRecord.orderId,
+      shipmentId: returnRecord.shipmentId,
+      returnNumber: returnRecord.returnNumber,
+      status: returnRecord.status,
+      return: returnRecord,
+    },
+  });
+}
+
+export function buildReturnCompletedEvent(
+  result: ReturnCompletionResult,
+): DomainEvent<ReturnCompletedPayload> {
+  return createDomainEvent({
+    eventType: "return.completed",
+    aggregateType: "return",
+    aggregateId: result.return.id,
+    storeId: result.return.storeId,
+    payload: {
+      returnId: result.return.id,
+      orderId: result.return.orderId,
+      shipmentId: result.return.shipmentId,
+      returnNumber: result.return.returnNumber,
+      status: result.return.status,
+      stockMovementCount: result.stockMovements.length,
+      result,
     },
   });
 }

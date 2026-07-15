@@ -168,4 +168,52 @@ export class PrismaInventoryItemRepository implements InventoryItemRepository {
 
     return variant !== null;
   }
+
+  async restockForReturn(
+    storeId: string,
+    inventoryItemId: string,
+    quantity: number,
+    context: {
+      returnId: string;
+      returnItemId: string;
+      reference: string;
+    },
+  ): Promise<InventoryAdjustmentResult> {
+    return this.db.$transaction(async (tx) => {
+      const existing = await tx.inventoryItem.findFirst({
+        where: { id: inventoryItemId, storeId, deletedAt: null },
+      });
+
+      if (!existing) {
+        throw new Error(`InventoryItem not found: ${inventoryItemId}`);
+      }
+
+      const newQuantityOnHand = existing.quantityOnHand + quantity;
+      const inventoryItem = await tx.inventoryItem.update({
+        where: { id: existing.id },
+        data: { quantityOnHand: newQuantityOnHand },
+      });
+
+      const stockMovement = await tx.stockMovement.create({
+        data: {
+          storeId,
+          inventoryItemId: existing.id,
+          movementType: "return",
+          quantity,
+          previousQuantityOnHand: existing.quantityOnHand,
+          newQuantityOnHand,
+          reference: context.reference,
+          metadata: {
+            returnId: context.returnId,
+            returnItemId: context.returnItemId,
+          },
+        },
+      });
+
+      return {
+        inventoryItem: toInventoryItem(inventoryItem),
+        stockMovement: toStockMovement(stockMovement),
+      };
+    });
+  }
 }

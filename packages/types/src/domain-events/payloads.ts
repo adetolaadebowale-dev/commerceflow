@@ -27,6 +27,8 @@ import type { InventoryAllocation } from "../inventory-allocation/inventory-allo
 import type { InventoryAllocationStatus } from "../inventory-allocation/inventory-allocation-status";
 import type { ShipmentFulfillmentResult } from "../fulfillment/shipment-fulfillment-result";
 import type { StockMovement } from "../stock-movement/stock-movement";
+import type { Return } from "../returns/return";
+import type { ReturnCompletionResult } from "../returns/return-completion-result";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -546,6 +548,43 @@ export interface StockMovementCreatedPayload {
   readonly shipmentId?: string;
   readonly inventoryAllocationId?: string;
   readonly stockMovement: StockMovement;
+}
+
+export interface ReturnCreatedPayload {
+  readonly returnId: string;
+  readonly orderId: string;
+  readonly shipmentId: string;
+  readonly returnNumber: string;
+  readonly status: Return["status"];
+  readonly return: Return;
+}
+
+export interface ReturnReceivedPayload {
+  readonly returnId: string;
+  readonly orderId: string;
+  readonly shipmentId: string;
+  readonly returnNumber: string;
+  readonly status: Return["status"];
+  readonly return: Return;
+}
+
+export interface ReturnInspectedPayload {
+  readonly returnId: string;
+  readonly orderId: string;
+  readonly shipmentId: string;
+  readonly returnNumber: string;
+  readonly status: Return["status"];
+  readonly return: Return;
+}
+
+export interface ReturnCompletedPayload {
+  readonly returnId: string;
+  readonly orderId: string;
+  readonly shipmentId: string;
+  readonly returnNumber: string;
+  readonly status: Return["status"];
+  readonly stockMovementCount: number;
+  readonly result: ReturnCompletionResult;
 }
 
 export interface ShippingZoneCreatedPayload {

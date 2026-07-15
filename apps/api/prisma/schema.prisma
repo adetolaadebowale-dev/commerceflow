@@ -182,6 +182,23 @@ enum InventoryAllocationStatus {
   fulfilled
 }
 
+/// Mirrors ReturnStatus from @commerceflow/types.
+enum ReturnStatus {
+  requested
+  received
+  inspecting
+  completed
+  rejected
+}
+
+/// Mirrors ReturnCondition from @commerceflow/types.
+enum ReturnCondition {
+  new
+  opened
+  damaged
+  defective
+}
+
 /// Mirrors ShippingZoneStatus from @commerceflow/types.
 enum ShippingZoneStatus {
   active
@@ -286,6 +303,7 @@ model Store {
   shipmentPackages       ShipmentPackage[]
   pickLists              PickList[]
   inventoryAllocations   InventoryAllocation[]
+  returns                Return[]
   shippingZones          ShippingZone[]
   shippingMethods        ShippingMethod[]
 
@@ -428,6 +446,7 @@ model InventoryItem {
   stockMovements   StockMovement[]
   inventoryReservations InventoryReservation[]
   inventoryAllocations    InventoryAllocation[]
+  returnItems             ReturnItem[]
 
   @@unique([storeId, productVariantId])
   @@index([storeId])
@@ -506,6 +525,7 @@ model Order {
   appliedTaxRate   OrderAppliedTaxRate?
   appliedShippingMethod OrderAppliedShippingMethod?
   shipments        Shipment[]
+  returns          Return[]
 
   @@unique([storeId, orderNumber])
   @@index([storeId])
@@ -535,6 +555,7 @@ model OrderItem {
   createdAt        DateTime       @default(now()) @map("created_at")
   inventoryReservation InventoryReservation?
   pickListItems        PickListItem[]
+  returnItems          ReturnItem[]
 
   @@index([orderId])
   @@index([productVariantId])
@@ -945,6 +966,7 @@ model Shipment {
   packages               ShipmentPackage[]
   pickLists              PickList[]
   stockMovements         StockMovement[]
+  returns                Return[]
 
   @@unique([storeId, shipmentNumber])
   @@unique([storeId, orderId])
@@ -1048,6 +1070,57 @@ model InventoryAllocation {
   @@index([storeId, inventoryItemId])
   @@index([status])
   @@map("inventory_allocations")
+}
+
+/// Store-scoped warehouse return linked to a fulfilled shipment.
+model Return {
+  id           String       @id @default(uuid()) @db.Uuid
+  storeId      String       @map("store_id") @db.Uuid
+  store        Store        @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  orderId      String       @map("order_id") @db.Uuid
+  order        Order        @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  shipmentId   String       @map("shipment_id") @db.Uuid
+  shipment     Shipment     @relation(fields: [shipmentId], references: [id], onDelete: Restrict)
+  returnNumber String       @map("return_number")
+  status       ReturnStatus @default(requested)
+  reason       String
+  notes        String?
+  requestedAt  DateTime     @map("requested_at")
+  receivedAt   DateTime?    @map("received_at")
+  completedAt  DateTime?    @map("completed_at")
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+  items        ReturnItem[]
+
+  @@unique([storeId, returnNumber])
+  @@index([storeId])
+  @@index([orderId])
+  @@index([shipmentId])
+  @@index([storeId, orderId])
+  @@index([status])
+  @@map("returns")
+}
+
+/// Line item belonging to a warehouse return.
+model ReturnItem {
+  id                String           @id @default(uuid()) @db.Uuid
+  returnId          String           @map("return_id") @db.Uuid
+  return            Return           @relation(fields: [returnId], references: [id], onDelete: Cascade)
+  orderItemId       String           @map("order_item_id") @db.Uuid
+  orderItem         OrderItem        @relation(fields: [orderItemId], references: [id], onDelete: Restrict)
+  inventoryItemId   String           @map("inventory_item_id") @db.Uuid
+  inventoryItem     InventoryItem    @relation(fields: [inventoryItemId], references: [id], onDelete: Restrict)
+  quantityRequested Int              @map("quantity_requested")
+  quantityReceived  Int              @default(0) @map("quantity_received")
+  quantityRestocked Int              @default(0) @map("quantity_restocked")
+  condition         ReturnCondition?
+  createdAt         DateTime         @default(now()) @map("created_at")
+  updatedAt         DateTime         @updatedAt @map("updated_at")
+
+  @@index([returnId])
+  @@index([orderItemId])
+  @@index([inventoryItemId])
+  @@map("return_items")
 }
 
 /// Append-only shipment tracking timeline entry.

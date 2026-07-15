@@ -25,6 +25,8 @@ export const AUDIT_ACTIONS = [
   "pack",
   "allocate",
   "report_shortage",
+  "receive",
+  "inspect",
   "fulfill",
 ] as const;
 

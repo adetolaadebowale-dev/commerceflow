@@ -112,6 +112,17 @@ export {
   type InventoryAllocationStatus,
 } from "./inventory-allocation";
 export {
+  RETURN_CONDITIONS,
+  RETURN_STATUSES,
+  RESTOCKABLE_RETURN_CONDITIONS,
+  type Return,
+  type ReturnCompletionResult,
+  type ReturnCondition,
+  type ReturnItem,
+  type ReturnStatus,
+  type RestockableReturnCondition,
+} from "./returns";
+export {
   type AppliedCartPromotion,
   type OrderPromotionSnapshot,
 } from "./promotion-redemption";
@@ -202,6 +213,10 @@ export {
   type InventoryShortageReportedPayload,
   type InventoryFulfilledPayload,
   type StockMovementCreatedPayload,
+  type ReturnCreatedPayload,
+  type ReturnReceivedPayload,
+  type ReturnInspectedPayload,
+  type ReturnCompletedPayload,
   type ShippingZoneCreatedPayload,
   type ShippingZoneUpdatedPayload,
   type ShippingZoneDeletedPayload,

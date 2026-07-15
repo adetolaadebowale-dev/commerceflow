@@ -17,6 +17,7 @@ export const DOMAIN_AGGREGATE_TYPES = [
   "pick_list",
   "inventory_allocation",
   "stock_movement",
+  "return",
   "shipping_zone",
   "shipping_method",
 ] as const;
