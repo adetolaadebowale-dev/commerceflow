@@ -110,4 +110,16 @@ export class PrismaInventoryAllocationRepository
 
     return toInventoryAllocation(updated);
   }
+
+  async markFulfilled(
+    storeId: string,
+    id: string,
+  ): Promise<InventoryAllocation> {
+    const updated = await this.db.inventoryAllocation.update({
+      where: { id, storeId },
+      data: { status: "fulfilled" },
+    });
+
+    return toInventoryAllocation(updated);
+  }
 }

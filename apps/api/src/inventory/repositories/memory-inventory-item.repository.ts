@@ -136,10 +136,11 @@ export class MemoryInventoryItemRepository implements InventoryItemRepository {
       id: crypto.randomUUID(),
       storeId: input.storeId,
       inventoryItemId: inventoryItem.id,
-      productVariantId: input.productVariantId,
-      quantityChange: input.initialQuantity,
-      quantityAfter: input.initialQuantity,
-      reason: "initial",
+      movementType: "adjustment",
+      quantity: input.initialQuantity,
+      previousQuantityOnHand: 0,
+      newQuantityOnHand: input.initialQuantity,
+      reference: "initial",
       createdAt: now,
     };
 
@@ -157,16 +158,16 @@ export class MemoryInventoryItemRepository implements InventoryItemRepository {
       throw new Error(`InventoryItem not found: ${input.inventoryItemId}`);
     }
 
-    const quantityAfter = existing.quantityOnHand + input.quantityChange;
+    const newQuantityOnHand = existing.quantityOnHand + input.quantityChange;
 
-    if (quantityAfter < 0) {
+    if (newQuantityOnHand < 0) {
       throw new Error("INSUFFICIENT_STOCK");
     }
 
     const now = new Date().toISOString();
     const inventoryItem: InventoryItem = {
       ...existing,
-      quantityOnHand: quantityAfter,
+      quantityOnHand: newQuantityOnHand,
       updatedAt: now,
     };
 
@@ -181,10 +182,11 @@ export class MemoryInventoryItemRepository implements InventoryItemRepository {
       id: crypto.randomUUID(),
       storeId: input.storeId,
       inventoryItemId: inventoryItem.id,
-      productVariantId: inventoryItem.productVariantId,
-      quantityChange: input.quantityChange,
-      quantityAfter,
-      reason: input.reason,
+      movementType: "adjustment",
+      quantity: input.quantityChange,
+      previousQuantityOnHand: existing.quantityOnHand,
+      newQuantityOnHand,
+      reference: input.reason,
       createdAt: now,
     };
 
@@ -215,11 +217,11 @@ export class MemoryInventoryItemRepository implements InventoryItemRepository {
       throw new Error("INSUFFICIENT_RESERVED_STOCK");
     }
 
-    const quantityAfter = existing.quantityOnHand - quantity;
+    const newQuantityOnHand = existing.quantityOnHand - quantity;
     const now = new Date().toISOString();
     const inventoryItem: InventoryItem = {
       ...existing,
-      quantityOnHand: quantityAfter,
+      quantityOnHand: newQuantityOnHand,
       updatedAt: now,
     };
 
@@ -227,10 +229,58 @@ export class MemoryInventoryItemRepository implements InventoryItemRepository {
       id: crypto.randomUUID(),
       storeId,
       inventoryItemId: inventoryItem.id,
-      productVariantId: inventoryItem.productVariantId,
-      quantityChange: -quantity,
-      quantityAfter,
-      reason: "sale_fulfilled",
+      movementType: "fulfillment",
+      quantity: -quantity,
+      previousQuantityOnHand: existing.quantityOnHand,
+      newQuantityOnHand,
+      createdAt: now,
+    };
+
+    this.itemsById.set(inventoryItem.id, inventoryItem);
+    this.movementsById.set(stockMovement.id, stockMovement);
+
+    return { inventoryItem, stockMovement };
+  }
+
+  async deductForShipmentFulfillment(
+    storeId: string,
+    inventoryItemId: string,
+    quantity: number,
+    context: {
+      shipmentId: string;
+      inventoryAllocationId: string;
+      reference: string;
+    },
+  ): Promise<InventoryAdjustmentResult> {
+    const existing = await this.findById(storeId, inventoryItemId);
+
+    if (!existing) {
+      throw new Error(`InventoryItem not found: ${inventoryItemId}`);
+    }
+
+    if (existing.quantityOnHand < quantity) {
+      throw new Error("INSUFFICIENT_STOCK");
+    }
+
+    const newQuantityOnHand = existing.quantityOnHand - quantity;
+    const now = new Date().toISOString();
+    const inventoryItem: InventoryItem = {
+      ...existing,
+      quantityOnHand: newQuantityOnHand,
+      updatedAt: now,
+    };
+
+    const stockMovement: StockMovement = {
+      id: crypto.randomUUID(),
+      storeId,
+      inventoryItemId: inventoryItem.id,
+      shipmentId: context.shipmentId,
+      inventoryAllocationId: context.inventoryAllocationId,
+      movementType: "fulfillment",
+      quantity: -quantity,
+      previousQuantityOnHand: existing.quantityOnHand,
+      newQuantityOnHand,
+      reference: context.reference,
       createdAt: now,
     };
 

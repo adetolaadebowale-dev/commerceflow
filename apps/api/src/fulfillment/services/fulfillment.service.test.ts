@@ -31,9 +31,10 @@ describe("FulfillmentService", () => {
     expect(result.stockMovements).toHaveLength(1);
     expect(result.stockMovements[0]).toMatchObject({
       inventoryItemId: inventoryItem.id,
-      quantityChange: -2,
-      quantityAfter: 8,
-      reason: "sale_fulfilled",
+      movementType: "fulfillment",
+      quantity: -2,
+      previousQuantityOnHand: 10,
+      newQuantityOnHand: 8,
     });
     expect(result.inventoryItems[0]?.quantityOnHand).toBe(8);
   });
@@ -70,7 +71,7 @@ describe("FulfillmentService", () => {
     expect(movements.some((movement) => movement.id === result.stockMovements[0]?.id)).toBe(
       true,
     );
-    expect(result.stockMovements[0]?.reason).toBe("sale_fulfilled");
+    expect(result.stockMovements[0]?.movementType).toBe("fulfillment");
   });
 
   it("finalizes reservations while keeping them queryable", async () => {
@@ -163,7 +164,10 @@ describe("FulfillmentService", () => {
         { storeId: TEST_STORE_A_ID },
         confirmed.id,
       ),
-    ).rejects.toThrow("simulated fulfillment failure");
+    ).rejects.toMatchObject({
+      code: FULFILLMENT_ERROR_CODES.TRANSACTION_FAILED,
+      status: 500,
+    });
 
     const order = await services.orderService.getOrder(
       TEST_STORE_A_ID,

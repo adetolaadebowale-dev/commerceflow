@@ -1,25 +1,31 @@
 import {
-  type PrismaClient,
+  type InventoryAllocation as PrismaInventoryAllocation,
   type InventoryItem as PrismaInventoryItem,
   type InventoryReservation as PrismaInventoryReservation,
   type Order as PrismaOrder,
   type OrderItem as PrismaOrderItem,
-  type StockMovement as PrismaStockMovement,
+  type PrismaClient,
+  type Shipment as PrismaShipment,
 } from "@prisma/client";
 import type {
+  InventoryAllocation,
   InventoryItem,
   InventoryReservation,
   Order,
   OrderFulfillmentResult,
   OrderItem,
+  Shipment,
+  ShipmentFulfillmentResult,
   StockMovement,
 } from "@commerceflow/types";
 
+import { toStockMovement } from "@/lib/stock-movement-mapper";
 import type { FulfillmentRepository } from "./fulfillment.repository";
 
 type OrderWithItems = PrismaOrder & {
   items: PrismaOrderItem[];
 };
+
 
 const itemsInclude = {
   orderBy: { createdAt: "asc" as const },
@@ -88,16 +94,45 @@ function toInventoryItem(record: PrismaInventoryItem): InventoryItem {
   };
 }
 
-function toStockMovement(record: PrismaStockMovement): StockMovement {
+function toShipment(record: PrismaShipment): Shipment {
   return {
     id: record.id,
     storeId: record.storeId,
-    inventoryItemId: record.inventoryItemId,
-    productVariantId: record.productVariantId,
-    quantityChange: record.quantityChange,
-    quantityAfter: record.quantityAfter,
-    reason: record.reason,
+    orderId: record.orderId,
+    shipmentNumber: record.shipmentNumber,
+    carrier: record.carrier,
+    trackingNumber: record.trackingNumber ?? undefined,
+    shippingRecipientName: record.shippingRecipientName,
+    shippingPhone: record.shippingPhone,
+    shippingAddressLine1: record.shippingAddressLine1,
+    shippingAddressLine2: record.shippingAddressLine2 ?? undefined,
+    shippingCity: record.shippingCity,
+    shippingStateProvince: record.shippingStateProvince,
+    shippingPostalCode: record.shippingPostalCode,
+    shippingCountryCode: record.shippingCountryCode,
+    status: record.status,
+    shippedAt: record.shippedAt?.toISOString(),
+    deliveredAt: record.deliveredAt?.toISOString(),
+    fulfilledAt: record.fulfilledAt?.toISOString(),
     createdAt: record.createdAt.toISOString(),
+    updatedAt: record.updatedAt.toISOString(),
+  };
+}
+
+function toInventoryAllocation(
+  record: PrismaInventoryAllocation,
+): InventoryAllocation {
+  return {
+    id: record.id,
+    storeId: record.storeId,
+    pickListItemId: record.pickListItemId,
+    inventoryItemId: record.inventoryItemId,
+    quantityAllocated: record.quantityAllocated,
+    quantityPicked: record.quantityPicked,
+    status: record.status,
+    shortageReason: record.shortageReason ?? undefined,
+    createdAt: record.createdAt.toISOString(),
+    updatedAt: record.updatedAt.toISOString(),
   };
 }
 
@@ -180,22 +215,23 @@ export class PrismaFulfillmentRepository implements FulfillmentRepository {
           throw new Error("INSUFFICIENT_RESERVED_STOCK");
         }
 
-        const quantityAfter =
+        const newQuantityOnHand =
           inventoryItem.quantityOnHand - reservation.reservedQuantity;
 
         const updatedInventoryItem = await tx.inventoryItem.update({
           where: { id: inventoryItem.id },
-          data: { quantityOnHand: quantityAfter },
+          data: { quantityOnHand: newQuantityOnHand },
         });
 
         const stockMovement = await tx.stockMovement.create({
           data: {
             storeId,
             inventoryItemId: inventoryItem.id,
-            productVariantId: inventoryItem.productVariantId,
-            quantityChange: -reservation.reservedQuantity,
-            quantityAfter,
-            reason: "sale_fulfilled",
+            movementType: "fulfillment",
+            quantity: -reservation.reservedQuantity,
+            previousQuantityOnHand: inventoryItem.quantityOnHand,
+            newQuantityOnHand,
+            reference: order.orderNumber,
           },
         });
 
@@ -226,6 +262,126 @@ export class PrismaFulfillmentRepository implements FulfillmentRepository {
         reservations: fulfilledReservations,
         stockMovements,
         inventoryItems,
+      };
+    });
+  }
+
+  async fulfillShipment(
+    storeId: string,
+    shipmentId: string,
+  ): Promise<ShipmentFulfillmentResult> {
+    return this.db.$transaction(async (tx) => {
+      const shipment = await tx.shipment.findFirst({
+        where: { id: shipmentId, storeId },
+      });
+
+      if (!shipment) {
+        throw new Error(`Shipment not found: ${shipmentId}`);
+      }
+
+      if (shipment.fulfilledAt) {
+        throw new Error("SHIPMENT_ALREADY_FULFILLED");
+      }
+
+      const pickList = await tx.pickList.findFirst({
+        where: { storeId, shipmentId, status: "packed" },
+        include: {
+          items: { orderBy: [{ createdAt: "asc" }, { id: "asc" }] },
+        },
+      });
+
+      if (!pickList) {
+        throw new Error("PICK_LIST_NOT_PACKED");
+      }
+
+      const allocations: InventoryAllocation[] = [];
+      const stockMovements: StockMovement[] = [];
+      const inventoryItems: InventoryItem[] = [];
+      const now = new Date();
+
+      for (const item of pickList.items) {
+        const itemAllocations = await tx.inventoryAllocation.findMany({
+          where: { storeId, pickListItemId: item.id },
+          orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+        });
+
+        if (itemAllocations.length === 0) {
+          throw new Error("INCOMPLETE_ALLOCATIONS");
+        }
+
+        const pickedQuantity = itemAllocations.reduce(
+          (total, allocation) => total + allocation.quantityPicked,
+          0,
+        );
+
+        if (pickedQuantity !== item.quantityRequired) {
+          throw new Error("INCOMPLETE_ALLOCATIONS");
+        }
+
+        for (const allocation of itemAllocations) {
+          if (allocation.status !== "picked") {
+            throw new Error("INCOMPLETE_ALLOCATIONS");
+          }
+
+          const inventoryItem = await tx.inventoryItem.findFirst({
+            where: {
+              id: allocation.inventoryItemId,
+              storeId,
+              deletedAt: null,
+            },
+          });
+
+          if (!inventoryItem) {
+            throw new Error("INSUFFICIENT_STOCK");
+          }
+
+          if (inventoryItem.quantityOnHand < allocation.quantityPicked) {
+            throw new Error("INSUFFICIENT_STOCK");
+          }
+
+          const newQuantityOnHand =
+            inventoryItem.quantityOnHand - allocation.quantityPicked;
+
+          const updatedInventoryItem = await tx.inventoryItem.update({
+            where: { id: inventoryItem.id },
+            data: { quantityOnHand: newQuantityOnHand },
+          });
+
+          const stockMovement = await tx.stockMovement.create({
+            data: {
+              storeId,
+              inventoryItemId: inventoryItem.id,
+              shipmentId,
+              inventoryAllocationId: allocation.id,
+              movementType: "fulfillment",
+              quantity: -allocation.quantityPicked,
+              previousQuantityOnHand: inventoryItem.quantityOnHand,
+              newQuantityOnHand,
+              reference: shipment.shipmentNumber,
+            },
+          });
+
+          const updatedAllocation = await tx.inventoryAllocation.update({
+            where: { id: allocation.id },
+            data: { status: "fulfilled" },
+          });
+
+          allocations.push(toInventoryAllocation(updatedAllocation));
+          stockMovements.push(toStockMovement(stockMovement));
+          inventoryItems.push(toInventoryItem(updatedInventoryItem));
+        }
+      }
+
+      const updatedShipment = await tx.shipment.update({
+        where: { id: shipmentId, storeId },
+        data: { fulfilledAt: now },
+      });
+
+      return {
+        shipment: toShipment(updatedShipment),
+        stockMovements,
+        inventoryItems,
+        allocations,
       };
     });
   }

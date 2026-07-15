@@ -39,9 +39,10 @@ export async function handleCreateStockMovement(
       action: "adjust",
       metadata: {
         inventoryItemId: result.inventoryItem.id,
-        quantityChange: result.stockMovement.quantityChange,
-        quantityAfter: result.stockMovement.quantityAfter,
-        reason: result.stockMovement.reason,
+        movementType: result.stockMovement.movementType,
+        quantity: result.stockMovement.quantity,
+        previousQuantityOnHand: result.stockMovement.previousQuantityOnHand,
+        newQuantityOnHand: result.stockMovement.newQuantityOnHand,
       },
     });
     return jsonSuccess(result, 201);

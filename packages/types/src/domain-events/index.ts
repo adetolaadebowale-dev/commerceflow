@@ -57,6 +57,8 @@ export type {
   InventoryPartiallyPickedPayload,
   InventoryPickedPayload,
   InventoryShortageReportedPayload,
+  InventoryFulfilledPayload,
+  StockMovementCreatedPayload,
   ShippingZoneCreatedPayload,
   ShippingZoneUpdatedPayload,
   ShippingZoneDeletedPayload,

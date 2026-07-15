@@ -18,10 +18,12 @@ export type {
   InventoryItem,
   StockMovement,
   StockMovementReason,
+  StockMovementType,
 } from "./inventory";
 export {
   ADJUSTMENT_STOCK_MOVEMENT_REASONS,
   STOCK_MOVEMENT_REASONS,
+  STOCK_MOVEMENT_TYPES,
 } from "./inventory";
 export type { Order, OrderItem, OrderAddressSnapshot, OrderStatus } from "./orders";
 export { ORDER_STATUSES } from "./orders";
@@ -30,7 +32,10 @@ export type {
   ReservationStatus,
 } from "./reservations";
 export { RESERVATION_STATUSES } from "./reservations";
-export type { OrderFulfillmentResult } from "./fulfillment";
+export type {
+  OrderFulfillmentResult,
+  ShipmentFulfillmentResult,
+} from "./fulfillment";
 export type { CheckoutResult } from "./checkout";
 export {
   PAYMENT_PROVIDERS,
@@ -195,6 +200,8 @@ export {
   type InventoryPartiallyPickedPayload,
   type InventoryPickedPayload,
   type InventoryShortageReportedPayload,
+  type InventoryFulfilledPayload,
+  type StockMovementCreatedPayload,
   type ShippingZoneCreatedPayload,
   type ShippingZoneUpdatedPayload,
   type ShippingZoneDeletedPayload,

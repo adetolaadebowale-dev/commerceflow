@@ -4,6 +4,7 @@ export const INVENTORY_ALLOCATION_STATUSES = [
   "partially_picked",
   "picked",
   "shortage",
+  "fulfilled",
 ] as const;
 
 export type InventoryAllocationStatus =

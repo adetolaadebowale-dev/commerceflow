@@ -81,6 +81,10 @@ import type {
   InventoryPartiallyPickedPayload,
   InventoryPickedPayload,
   InventoryShortageReportedPayload,
+  InventoryFulfilledPayload,
+  ShipmentFulfillmentResult,
+  StockMovement,
+  StockMovementCreatedPayload,
   ShippingZone,
   ShippingMethod,
   ShippingZoneCreatedPayload,
@@ -1160,6 +1164,46 @@ export function buildInventoryShortageReportedEvent(
       quantityPicked: allocation.quantityPicked,
       quantityAllocated: allocation.quantityAllocated,
       inventoryAllocation: allocation,
+    },
+  });
+}
+
+export function buildInventoryFulfilledEvent(
+  result: ShipmentFulfillmentResult,
+): DomainEvent<InventoryFulfilledPayload> {
+  return createDomainEvent({
+    eventType: "inventory.fulfilled",
+    aggregateType: "shipment",
+    aggregateId: result.shipment.id,
+    storeId: result.shipment.storeId,
+    payload: {
+      shipmentId: result.shipment.id,
+      shipmentNumber: result.shipment.shipmentNumber,
+      stockMovementCount: result.stockMovements.length,
+      allocationCount: result.allocations.length,
+      result,
+    },
+  });
+}
+
+export function buildStockMovementCreatedEvent(
+  stockMovement: StockMovement,
+): DomainEvent<StockMovementCreatedPayload> {
+  return createDomainEvent({
+    eventType: "stock-movement.created",
+    aggregateType: "stock_movement",
+    aggregateId: stockMovement.id,
+    storeId: stockMovement.storeId,
+    payload: {
+      stockMovementId: stockMovement.id,
+      inventoryItemId: stockMovement.inventoryItemId,
+      movementType: stockMovement.movementType,
+      quantity: stockMovement.quantity,
+      previousQuantityOnHand: stockMovement.previousQuantityOnHand,
+      newQuantityOnHand: stockMovement.newQuantityOnHand,
+      shipmentId: stockMovement.shipmentId,
+      inventoryAllocationId: stockMovement.inventoryAllocationId,
+      stockMovement,
     },
   });
 }

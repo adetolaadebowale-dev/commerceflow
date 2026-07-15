@@ -33,6 +33,7 @@ function toShipment(record: PrismaShipment): Shipment {
     status: record.status,
     shippedAt: record.shippedAt?.toISOString(),
     deliveredAt: record.deliveredAt?.toISOString(),
+    fulfilledAt: record.fulfilledAt?.toISOString(),
     createdAt: record.createdAt.toISOString(),
     updatedAt: record.updatedAt.toISOString(),
   };

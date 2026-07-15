@@ -1,13 +1,22 @@
 import { describe, expect, it } from "vitest";
 
-import { orderFulfillmentActionSchema } from "./fulfillment.schemas";
-
-const TEST_STORE_ID = "11111111-1111-1111-1111-111111111111";
+import {
+  createFulfillmentSchema,
+  stockMovementIdQuerySchema,
+} from "./fulfillment.schemas";
 
 describe("fulfillment schemas", () => {
-  it("validates order fulfillment action query params", () => {
-    const parsed = orderFulfillmentActionSchema.safeParse({
-      storeId: TEST_STORE_ID,
+  it("validates create fulfillment input", () => {
+    const parsed = createFulfillmentSchema.safeParse({
+      storeId: "11111111-1111-1111-1111-111111111111",
+    });
+
+    expect(parsed.success).toBe(true);
+  });
+
+  it("validates stock movement id query", () => {
+    const parsed = stockMovementIdQuerySchema.safeParse({
+      storeId: "11111111-1111-1111-1111-111111111111",
     });
 
     expect(parsed.success).toBe(true);

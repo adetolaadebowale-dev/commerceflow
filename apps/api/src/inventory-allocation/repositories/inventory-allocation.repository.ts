@@ -27,4 +27,5 @@ export interface InventoryAllocationRepository {
     id: string,
     update: ReportInventoryAllocationShortageRecord,
   ): Promise<InventoryAllocation>;
+  markFulfilled(storeId: string, id: string): Promise<InventoryAllocation>;
 }

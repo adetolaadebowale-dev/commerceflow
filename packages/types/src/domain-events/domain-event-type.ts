@@ -9,6 +9,8 @@ export const DOMAIN_EVENT_TYPES = [
   "inventory.partially-picked",
   "inventory.picked",
   "inventory.shortage-reported",
+  "inventory.fulfilled",
+  "stock-movement.created",
   "customer.created",
   "customer.updated",
   "customer.address.created",

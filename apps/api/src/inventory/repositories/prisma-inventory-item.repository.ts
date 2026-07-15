@@ -1,20 +1,15 @@
-import {
-  Prisma,
-  type PrismaClient,
-  type InventoryItem as PrismaInventoryItem,
-  type StockMovement as PrismaStockMovement,
-} from "@prisma/client";
-import {
-  buildCatalogueListResult,
-  type InventoryItem,
-  type StockMovement,
-} from "@commerceflow/types";
+import { Prisma, type PrismaClient, type InventoryItem as PrismaInventoryItem } from "@prisma/client";
+import { buildCatalogueListResult, type InventoryItem } from "@commerceflow/types";
 import type {
   CreateInventoryItemInput,
   CreateStockMovementInput,
   ListInventoryItemsQuery,
 } from "@commerceflow/validation";
 
+import {
+  adjustmentMovementTypeFromReason,
+  toStockMovement,
+} from "@/lib/stock-movement-mapper";
 import type { InventoryAdjustmentResult } from "./inventory-adjustment-result";
 import type { InventoryItemRepository } from "./inventory-item.repository";
 
@@ -26,19 +21,6 @@ function toInventoryItem(record: PrismaInventoryItem): InventoryItem {
     quantityOnHand: record.quantityOnHand,
     createdAt: record.createdAt.toISOString(),
     updatedAt: record.updatedAt.toISOString(),
-  };
-}
-
-function toStockMovement(record: PrismaStockMovement): StockMovement {
-  return {
-    id: record.id,
-    storeId: record.storeId,
-    inventoryItemId: record.inventoryItemId,
-    productVariantId: record.productVariantId,
-    quantityChange: record.quantityChange,
-    quantityAfter: record.quantityAfter,
-    reason: record.reason,
-    createdAt: record.createdAt.toISOString(),
   };
 }
 
@@ -114,10 +96,11 @@ export class PrismaInventoryItemRepository implements InventoryItemRepository {
         data: {
           storeId: input.storeId,
           inventoryItemId: inventoryItem.id,
-          productVariantId: input.productVariantId,
-          quantityChange: input.initialQuantity,
-          quantityAfter: input.initialQuantity,
-          reason: "initial",
+          movementType: "adjustment",
+          quantity: input.initialQuantity,
+          previousQuantityOnHand: 0,
+          newQuantityOnHand: input.initialQuantity,
+          reference: "initial",
         },
       });
 
@@ -144,25 +127,26 @@ export class PrismaInventoryItemRepository implements InventoryItemRepository {
         throw new Error(`InventoryItem not found: ${input.inventoryItemId}`);
       }
 
-      const quantityAfter = existing.quantityOnHand + input.quantityChange;
+      const newQuantityOnHand = existing.quantityOnHand + input.quantityChange;
 
-      if (quantityAfter < 0) {
+      if (newQuantityOnHand < 0) {
         throw new Error("INSUFFICIENT_STOCK");
       }
 
       const inventoryItem = await tx.inventoryItem.update({
         where: { id: existing.id },
-        data: { quantityOnHand: quantityAfter },
+        data: { quantityOnHand: newQuantityOnHand },
       });
 
       const stockMovement = await tx.stockMovement.create({
         data: {
           storeId: input.storeId,
           inventoryItemId: existing.id,
-          productVariantId: existing.productVariantId,
-          quantityChange: input.quantityChange,
-          quantityAfter,
-          reason: input.reason,
+          movementType: adjustmentMovementTypeFromReason(input.reason),
+          quantity: input.quantityChange,
+          previousQuantityOnHand: existing.quantityOnHand,
+          newQuantityOnHand,
+          reference: input.reason,
         },
       });
 

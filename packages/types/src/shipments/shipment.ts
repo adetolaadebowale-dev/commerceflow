@@ -22,6 +22,7 @@ export interface Shipment {
   readonly packages?: readonly ShipmentPackage[];
   readonly shippedAt?: string;
   readonly deliveredAt?: string;
+  readonly fulfilledAt?: string;
   readonly createdAt: string;
   readonly updatedAt: string;
 }

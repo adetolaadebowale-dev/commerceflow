@@ -54,5 +54,4 @@ export interface ListStockMovementsParams extends StoreScopedParams {
   readonly page?: number;
   readonly limit?: number;
   readonly inventoryItemId?: string;
-  readonly productVariantId?: string;
 }

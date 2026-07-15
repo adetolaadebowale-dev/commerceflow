@@ -13,6 +13,14 @@ export class MemoryStockMovementRepository implements StockMovementRepository {
     private readonly inventoryItemRepository: MemoryInventoryItemRepository,
   ) {}
 
+  async findById(storeId: string, id: string) {
+    const movement = this.inventoryItemRepository
+      .getAllMovements()
+      .find((entry) => entry.id === id && entry.storeId === storeId);
+
+    return movement ?? null;
+  }
+
   async list(
     query: ListStockMovementsQuery,
   ): Promise<CatalogueListResult<StockMovement>> {
@@ -23,12 +31,6 @@ export class MemoryStockMovementRepository implements StockMovementRepository {
     if (query.inventoryItemId) {
       items = items.filter(
         (movement) => movement.inventoryItemId === query.inventoryItemId,
-      );
-    }
-
-    if (query.productVariantId) {
-      items = items.filter(
-        (movement) => movement.productVariantId === query.productVariantId,
       );
     }
 

@@ -25,6 +25,8 @@ import type { PickList } from "../pick-lists/pick-list";
 import type { PickListStatus } from "../pick-lists/pick-list-status";
 import type { InventoryAllocation } from "../inventory-allocation/inventory-allocation";
 import type { InventoryAllocationStatus } from "../inventory-allocation/inventory-allocation-status";
+import type { ShipmentFulfillmentResult } from "../fulfillment/shipment-fulfillment-result";
+import type { StockMovement } from "../stock-movement/stock-movement";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -524,6 +526,26 @@ export interface InventoryShortageReportedPayload {
   readonly quantityPicked: number;
   readonly quantityAllocated: number;
   readonly inventoryAllocation: InventoryAllocation;
+}
+
+export interface InventoryFulfilledPayload {
+  readonly shipmentId: string;
+  readonly shipmentNumber: string;
+  readonly stockMovementCount: number;
+  readonly allocationCount: number;
+  readonly result: ShipmentFulfillmentResult;
+}
+
+export interface StockMovementCreatedPayload {
+  readonly stockMovementId: string;
+  readonly inventoryItemId: string;
+  readonly movementType: StockMovement["movementType"];
+  readonly quantity: number;
+  readonly previousQuantityOnHand: number;
+  readonly newQuantityOnHand: number;
+  readonly shipmentId?: string;
+  readonly inventoryAllocationId?: string;
+  readonly stockMovement: StockMovement;
 }
 
 export interface ShippingZoneCreatedPayload {

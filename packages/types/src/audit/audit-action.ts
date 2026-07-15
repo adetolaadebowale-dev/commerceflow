@@ -25,6 +25,7 @@ export const AUDIT_ACTIONS = [
   "pack",
   "allocate",
   "report_shortage",
+  "fulfill",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];

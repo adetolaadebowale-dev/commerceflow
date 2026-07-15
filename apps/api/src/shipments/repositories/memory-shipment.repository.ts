@@ -125,4 +125,22 @@ export class MemoryShipmentRepository implements ShipmentRepository {
     this.shipmentsById.set(id, updated);
     return updated;
   }
+
+  async markWarehouseFulfilled(storeId: string, id: string): Promise<Shipment> {
+    const shipment = await this.findById(storeId, id);
+
+    if (!shipment) {
+      throw new Error(`Shipment not found: ${id}`);
+    }
+
+    const now = new Date().toISOString();
+    const updated: Shipment = {
+      ...shipment,
+      fulfilledAt: now,
+      updatedAt: now,
+    };
+
+    this.shipmentsById.set(id, updated);
+    return updated;
+  }
 }

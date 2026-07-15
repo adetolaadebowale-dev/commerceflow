@@ -130,6 +130,30 @@ export class MemoryInventoryAllocationRepository
     return updated;
   }
 
+  async markFulfilled(
+    storeId: string,
+    id: string,
+  ): Promise<InventoryAllocation> {
+    if (this.transactionFailure) {
+      throw this.transactionFailure;
+    }
+
+    const existing = await this.findById(storeId, id);
+
+    if (!existing) {
+      throw new Error(`InventoryAllocation not found: ${id}`);
+    }
+
+    const updated: InventoryAllocation = {
+      ...existing,
+      status: "fulfilled",
+      updatedAt: new Date().toISOString(),
+    };
+
+    this.allocationsById.set(id, updated);
+    return updated;
+  }
+
   /** Exposed for tests to inspect derived status without persisting. */
   deriveStatus(quantityAllocated: number, quantityPicked: number) {
     return InventoryAllocationStatusPolicy.deriveStatus(

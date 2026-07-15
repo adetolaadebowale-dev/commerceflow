@@ -39,12 +39,12 @@ enum ProductStatus {
   archived
 }
 
-/// Mirrors StockMovementReason from @commerceflow/types.
-enum StockMovementReason {
-  initial
-  manual_adjustment
-  sale_reserved_ready
-  sale_fulfilled
+/// Immutable stock movement types for physical inventory ledger entries.
+enum StockMovementType {
+  fulfillment
+  adjustment
+  return
+  transfer
 }
 
 /// Mirrors OrderStatus from @commerceflow/types.
@@ -179,6 +179,7 @@ enum InventoryAllocationStatus {
   partially_picked
   picked
   shortage
+  fulfilled
 }
 
 /// Mirrors ShippingZoneStatus from @commerceflow/types.
@@ -437,22 +438,30 @@ model InventoryItem {
 
 /// Immutable ledger entry for an inventory quantity change.
 model StockMovement {
-  id               String              @id @default(uuid()) @db.Uuid
-  storeId          String              @map("store_id") @db.Uuid
-  store            Store               @relation(fields: [storeId], references: [id], onDelete: Restrict)
-  inventoryItemId  String              @map("inventory_item_id") @db.Uuid
-  inventoryItem    InventoryItem       @relation(fields: [inventoryItemId], references: [id], onDelete: Restrict)
-  productVariantId String              @map("product_variant_id") @db.Uuid
-  quantityChange   Int                 @map("quantity_change")
-  quantityAfter    Int                 @map("quantity_after")
-  reason           StockMovementReason
-  createdAt        DateTime            @default(now()) @map("created_at")
+  id                    String            @id @default(uuid()) @db.Uuid
+  storeId               String            @map("store_id") @db.Uuid
+  store                 Store               @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  inventoryItemId       String            @map("inventory_item_id") @db.Uuid
+  inventoryItem         InventoryItem       @relation(fields: [inventoryItemId], references: [id], onDelete: Restrict)
+  shipmentId            String?           @map("shipment_id") @db.Uuid
+  shipment              Shipment?           @relation(fields: [shipmentId], references: [id], onDelete: Restrict)
+  inventoryAllocationId String?           @map("inventory_allocation_id") @db.Uuid
+  inventoryAllocation   InventoryAllocation? @relation(fields: [inventoryAllocationId], references: [id], onDelete: Restrict)
+  movementType          StockMovementType @map("movement_type")
+  quantity              Int
+  previousQuantityOnHand Int              @map("previous_quantity_on_hand")
+  newQuantityOnHand     Int               @map("new_quantity_on_hand")
+  reference             String?
+  metadata              Json?
+  createdAt             DateTime          @default(now()) @map("created_at")
 
   @@index([storeId])
   @@index([inventoryItemId])
-  @@index([productVariantId])
+  @@index([shipmentId])
+  @@index([inventoryAllocationId])
   @@index([storeId, inventoryItemId])
-  @@index([storeId, productVariantId])
+  @@index([storeId, shipmentId])
+  @@index([movementType])
   @@index([createdAt])
   @@map("stock_movements")
 }
@@ -929,11 +938,13 @@ model Shipment {
   status                 ShipmentStatus  @default(pending)
   shippedAt              DateTime?       @map("shipped_at")
   deliveredAt            DateTime?       @map("delivered_at")
+  fulfilledAt            DateTime?       @map("fulfilled_at")
   createdAt              DateTime        @default(now()) @map("created_at")
   updatedAt              DateTime        @updatedAt @map("updated_at")
   trackingEvents         ShipmentTrackingEvent[]
   packages               ShipmentPackage[]
   pickLists              PickList[]
+  stockMovements         StockMovement[]
 
   @@unique([storeId, shipmentNumber])
   @@unique([storeId, orderId])
@@ -1028,6 +1039,7 @@ model InventoryAllocation {
   shortageReason    String?                   @map("shortage_reason")
   createdAt         DateTime                  @default(now()) @map("created_at")
   updatedAt         DateTime                  @updatedAt @map("updated_at")
+  stockMovements    StockMovement[]
 
   @@index([storeId])
   @@index([pickListItemId])

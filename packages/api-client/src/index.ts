@@ -75,7 +75,13 @@ export {
 export type {
   FulfillOrderRequest,
   FulfillOrderResponse,
-} from "./fulfillment/contracts";
+  FulfillShipmentRequest,
+  FulfillShipmentResponse,
+  GetStockMovementParams,
+  GetStockMovementResponse,
+  ListInventoryItemStockMovementsParams,
+  ListInventoryItemStockMovementsResponse,
+} from "./fulfillment/fulfillment-client";
 export {
   createFulfillmentClient,
   type FulfillmentClient,

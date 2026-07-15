@@ -32,9 +32,10 @@ describe("InventoryService", () => {
     );
 
     expect(result.inventoryItem.quantityOnHand).toBe(25);
-    expect(result.stockMovement.reason).toBe("initial");
-    expect(result.stockMovement.quantityChange).toBe(25);
-    expect(result.stockMovement.quantityAfter).toBe(25);
+    expect(result.stockMovement.movementType).toBe("adjustment");
+    expect(result.stockMovement.quantity).toBe(25);
+    expect(result.stockMovement.previousQuantityOnHand).toBe(0);
+    expect(result.stockMovement.newQuantityOnHand).toBe(25);
   });
 
   it("increases stock and records a movement", async () => {
@@ -54,8 +55,8 @@ describe("InventoryService", () => {
     );
 
     expect(adjusted.inventoryItem.quantityOnHand).toBe(17);
-    expect(adjusted.stockMovement.quantityChange).toBe(7);
-    expect(adjusted.stockMovement.quantityAfter).toBe(17);
+    expect(adjusted.stockMovement.quantity).toBe(7);
+    expect(adjusted.stockMovement.newQuantityOnHand).toBe(17);
   });
 
   it("decreases stock and records a movement", async () => {
@@ -75,8 +76,8 @@ describe("InventoryService", () => {
     );
 
     expect(adjusted.inventoryItem.quantityOnHand).toBe(12);
-    expect(adjusted.stockMovement.quantityChange).toBe(-8);
-    expect(adjusted.stockMovement.quantityAfter).toBe(12);
+    expect(adjusted.stockMovement.quantity).toBe(-8);
+    expect(adjusted.stockMovement.newQuantityOnHand).toBe(12);
   });
 
   it("prevents stock from becoming negative", async () => {

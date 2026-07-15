@@ -1,28 +1,9 @@
-import {
-  Prisma,
-  type PrismaClient,
-  type StockMovement as PrismaStockMovement,
-} from "@prisma/client";
-import {
-  buildCatalogueListResult,
-  type StockMovement,
-} from "@commerceflow/types";
+import { Prisma, type PrismaClient } from "@prisma/client";
+import { buildCatalogueListResult } from "@commerceflow/types";
 import type { ListStockMovementsQuery } from "@commerceflow/validation";
 
+import { toStockMovement } from "@/lib/stock-movement-mapper";
 import type { StockMovementRepository } from "./stock-movement.repository";
-
-function toStockMovement(record: PrismaStockMovement): StockMovement {
-  return {
-    id: record.id,
-    storeId: record.storeId,
-    inventoryItemId: record.inventoryItemId,
-    productVariantId: record.productVariantId,
-    quantityChange: record.quantityChange,
-    quantityAfter: record.quantityAfter,
-    reason: record.reason,
-    createdAt: record.createdAt.toISOString(),
-  };
-}
 
 function buildListWhere(
   query: ListStockMovementsQuery,
@@ -32,14 +13,19 @@ function buildListWhere(
     ...(query.inventoryItemId
       ? { inventoryItemId: query.inventoryItemId }
       : {}),
-    ...(query.productVariantId
-      ? { productVariantId: query.productVariantId }
-      : {}),
   };
 }
 
 export class PrismaStockMovementRepository implements StockMovementRepository {
   constructor(private readonly db: PrismaClient) {}
+
+  async findById(storeId: string, id: string) {
+    const record = await this.db.stockMovement.findFirst({
+      where: { id, storeId },
+    });
+
+    return record ? toStockMovement(record) : null;
+  }
 
   async list(query: ListStockMovementsQuery) {
     const where = buildListWhere(query);
@@ -48,7 +34,7 @@ export class PrismaStockMovementRepository implements StockMovementRepository {
     const [records, total] = await Promise.all([
       this.db.stockMovement.findMany({
         where,
-        orderBy: { createdAt: "desc" },
+        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
         skip,
         take: query.limit,
       }),
