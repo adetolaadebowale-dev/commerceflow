@@ -29,6 +29,7 @@ describe("CheckoutService", () => {
     expect(result.order.items[0]?.unitPrice).toBe("19.99");
     expect(result.order.items[0]?.lineSubtotal).toBe("39.98");
     expect(result.order.subtotal).toBe("39.98");
+    expect(result.order.total).toBe("39.98");
     expect(result.order.shippingAddress).toMatchObject({
       recipientName: address.recipientName,
       addressLine1: address.addressLine1,
@@ -91,6 +92,7 @@ describe("CheckoutService", () => {
     );
 
     expect(result.order.subtotal).toBe("39.98");
+    expect(result.order.total).toBe("39.98");
     expect(result.order.subtotal).not.toBe("1.00");
   });
 

@@ -47,6 +47,9 @@ import type {
   PromotionCreatedPayload,
   PromotionDeletedPayload,
   PromotionUpdatedPayload,
+  PromotionAppliedPayload,
+  PromotionRemovedPayload,
+  AppliedCartPromotion,
 } from "@commerceflow/types";
 
 export function createDomainEvent<TPayload>(input: {
@@ -655,6 +658,44 @@ export function buildPromotionDeletedEvent(
       name: promotion.name,
       status: promotion.status,
       promotion,
+    },
+  });
+}
+
+export function buildPromotionAppliedEvent(
+  cart: Cart,
+  applied: AppliedCartPromotion,
+): DomainEvent<PromotionAppliedPayload> {
+  return createDomainEvent({
+    eventType: "promotion.applied",
+    aggregateType: "promotion",
+    aggregateId: applied.promotionId,
+    storeId: cart.storeId,
+    payload: {
+      cartId: cart.id,
+      promotionId: applied.promotionId,
+      promotionCodeSnapshot: applied.promotionCodeSnapshot,
+      promotionTypeSnapshot: applied.promotionTypeSnapshot,
+      promotionValueSnapshot: applied.promotionValueSnapshot,
+      discountAmount: applied.discountAmount,
+      cartSubtotal: cart.subtotal,
+    },
+  });
+}
+
+export function buildPromotionRemovedEvent(
+  cart: Cart,
+  applied: AppliedCartPromotion,
+): DomainEvent<PromotionRemovedPayload> {
+  return createDomainEvent({
+    eventType: "promotion.removed",
+    aggregateType: "promotion",
+    aggregateId: applied.promotionId,
+    storeId: cart.storeId,
+    payload: {
+      cartId: cart.id,
+      promotionId: applied.promotionId,
+      promotionCodeSnapshot: applied.promotionCodeSnapshot,
     },
   });
 }

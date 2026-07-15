@@ -1,63 +1,23 @@
 import {
   type PrismaClient,
-  type Order as PrismaOrder,
-  type OrderItem as PrismaOrderItem,
 } from "@prisma/client";
 import {
   buildCatalogueListResult,
   type Order,
-  type OrderItem,
 } from "@commerceflow/types";
 import type { ListOrdersQuery } from "@commerceflow/validation";
 
 import type { CreateOrderRecord } from "./order-create-record";
 import type { OrderRepository } from "./order.repository";
 import type { OrderStatusTransitionInput } from "./order-status-transition";
-import { toOrderAddressSnapshot } from "./order-address.mapper";
+import {
+  mapPrismaOrder,
+  orderWithPromotionInclude,
+} from "./order.mapper";
 import { generateOrderNumber } from "../services/order-pricing";
 import { isUniqueOrderNumberViolation } from "./prisma-order-variant-snapshot.reader";
 
-type OrderWithItems = PrismaOrder & {
-  items: PrismaOrderItem[];
-};
-
 const MAX_ORDER_NUMBER_ATTEMPTS = 5;
-
-function toOrderItem(record: PrismaOrderItem): OrderItem {
-  return {
-    id: record.id,
-    orderId: record.orderId,
-    productVariantId: record.productVariantId,
-    productName: record.productName,
-    sku: record.sku,
-    unitPrice: record.unitPrice.toString(),
-    currency: record.currency,
-    quantity: record.quantity,
-    lineSubtotal: record.lineSubtotal.toString(),
-    createdAt: record.createdAt.toISOString(),
-  };
-}
-
-function toOrder(record: OrderWithItems): Order {
-  return {
-    id: record.id,
-    storeId: record.storeId,
-    customerId: record.customerId ?? undefined,
-    customerProfileId: record.customerProfileId ?? undefined,
-    sourceCartId: record.sourceCartId ?? undefined,
-    orderNumber: record.orderNumber,
-    status: record.status,
-    subtotal: record.subtotal.toString(),
-    currency: record.currency,
-    shippingAddress: toOrderAddressSnapshot(record),
-    items: record.items.map(toOrderItem),
-    confirmedAt: record.confirmedAt?.toISOString(),
-    cancelledAt: record.cancelledAt?.toISOString(),
-    fulfilledAt: record.fulfilledAt?.toISOString(),
-    createdAt: record.createdAt.toISOString(),
-    updatedAt: record.updatedAt.toISOString(),
-  };
-}
 
 function buildListWhere(query: ListOrdersQuery) {
   return {
@@ -67,20 +27,16 @@ function buildListWhere(query: ListOrdersQuery) {
   };
 }
 
-const itemsInclude = {
-  orderBy: { createdAt: "asc" as const },
-};
-
 export class PrismaOrderRepository implements OrderRepository {
   constructor(private readonly db: PrismaClient) {}
 
   async findById(storeId: string, id: string): Promise<Order | null> {
     const record = await this.db.order.findFirst({
       where: { id, storeId },
-      include: { items: itemsInclude },
+      include: orderWithPromotionInclude,
     });
 
-    return record ? toOrder(record) : null;
+    return record ? mapPrismaOrder(record) : null;
   }
 
   async list(query: ListOrdersQuery) {
@@ -90,7 +46,7 @@ export class PrismaOrderRepository implements OrderRepository {
     const [records, total] = await Promise.all([
       this.db.order.findMany({
         where,
-        include: { items: itemsInclude },
+        include: orderWithPromotionInclude,
         orderBy: { createdAt: "desc" },
         skip,
         take: query.limit,
@@ -99,7 +55,7 @@ export class PrismaOrderRepository implements OrderRepository {
     ]);
 
     return buildCatalogueListResult({
-      items: records.map(toOrder),
+      items: records.map(mapPrismaOrder),
       total,
       page: query.page,
       limit: query.limit,
@@ -119,6 +75,7 @@ export class PrismaOrderRepository implements OrderRepository {
               orderNumber,
               status: record.status,
               subtotal: record.subtotal,
+              total: record.subtotal,
               currency: record.currency,
               items: {
                 create: record.items.map((item) => ({
@@ -132,11 +89,11 @@ export class PrismaOrderRepository implements OrderRepository {
                 })),
               },
             },
-            include: { items: itemsInclude },
+            include: orderWithPromotionInclude,
           });
         });
 
-        return toOrder(created);
+        return mapPrismaOrder(created);
       } catch (error) {
         if (isUniqueOrderNumberViolation(error) && attempt < MAX_ORDER_NUMBER_ATTEMPTS - 1) {
           continue;
@@ -189,10 +146,10 @@ export class PrismaOrderRepository implements OrderRepository {
 
       const record = await tx.order.findFirstOrThrow({
         where: { id, storeId },
-        include: { items: itemsInclude },
+        include: orderWithPromotionInclude,
       });
 
-      return toOrder(record);
+      return mapPrismaOrder(record);
     });
   }
 }

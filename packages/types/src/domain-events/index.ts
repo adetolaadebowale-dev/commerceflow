@@ -34,4 +34,6 @@ export type {
   PromotionCreatedPayload,
   PromotionDeletedPayload,
   PromotionUpdatedPayload,
+  PromotionAppliedPayload,
+  PromotionRemovedPayload,
 } from "./payloads";

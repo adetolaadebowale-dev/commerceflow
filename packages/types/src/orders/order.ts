@@ -1,3 +1,4 @@
+import type { OrderPromotionSnapshot } from "../promotion-redemption/order-promotion-snapshot";
 import type { OrderAddressSnapshot } from "./order-address-snapshot";
 import type { OrderStatus } from "./order-status";
 import type { OrderItem } from "./order-item";
@@ -14,7 +15,10 @@ export interface Order {
   readonly orderNumber: string;
   readonly status: OrderStatus;
   readonly subtotal: string;
+  readonly discountAmount?: string;
+  readonly total: string;
   readonly currency: string;
+  readonly appliedPromotion?: OrderPromotionSnapshot;
   readonly shippingAddress?: OrderAddressSnapshot;
   readonly items: readonly OrderItem[];
   readonly confirmedAt?: string;

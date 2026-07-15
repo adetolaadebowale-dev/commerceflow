@@ -29,6 +29,8 @@ export const DOMAIN_EVENT_TYPES = [
   "promotion.created",
   "promotion.updated",
   "promotion.deleted",
+  "promotion.applied",
+  "promotion.removed",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

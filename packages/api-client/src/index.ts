@@ -120,11 +120,14 @@ export { createCustomerClient, type CustomerClient } from "./customers/customer-
 export type {
   AddCartItemRequest,
   AddCartItemResponse,
+  ApplyCartPromotionRequest,
+  ApplyCartPromotionResponse,
   CreateCartRequest,
   CreateCartResponse,
   GetCartResponse,
   GetCustomerCartResponse,
   RemoveCartItemResponse,
+  RemoveCartPromotionResponse,
   UpdateCartItemRequest,
   UpdateCartItemResponse,
 } from "./shopping-cart/contracts";

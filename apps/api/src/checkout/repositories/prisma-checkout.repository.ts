@@ -1,22 +1,21 @@
 import {
   type Cart as PrismaCart,
   type CartItem as PrismaCartItem,
-  type Order as PrismaOrder,
-  type OrderItem as PrismaOrderItem,
   type PrismaClient,
 } from "@prisma/client";
-import type { Cart, CheckoutResult, Order, OrderItem } from "@commerceflow/types";
+import type { Cart, CheckoutResult } from "@commerceflow/types";
 
-import { toOrderAddressSnapshot } from "@/orders/repositories/order-address.mapper";
+import {
+  mapPrismaOrder,
+  orderWithPromotionInclude,
+} from "@/orders/repositories/order.mapper";
 import { buildShippingAddressCreateData } from "@/orders/repositories/order-address.mapper";
 import { generateOrderNumber } from "@/orders/services/order-pricing";
 import { isUniqueOrderNumberViolation } from "@/orders/repositories/prisma-order-variant-snapshot.reader";
 import type { CheckoutRecord, CheckoutRepository } from "./checkout.repository";
 
 type CartWithItems = PrismaCart & { items: PrismaCartItem[] };
-type OrderWithItems = PrismaOrder & { items: PrismaOrderItem[] };
 
-const MAX_ORDER_NUMBER_ATTEMPTS = 5;
 const itemsInclude = { orderBy: { createdAt: "asc" as const } };
 
 function toCartItem(record: PrismaCartItem) {
@@ -47,47 +46,11 @@ function toCart(record: CartWithItems): Cart {
   };
 }
 
-function toOrderItem(record: PrismaOrderItem): OrderItem {
-  return {
-    id: record.id,
-    orderId: record.orderId,
-    productVariantId: record.productVariantId,
-    productName: record.productName,
-    sku: record.sku,
-    unitPrice: record.unitPrice.toString(),
-    currency: record.currency,
-    quantity: record.quantity,
-    lineSubtotal: record.lineSubtotal.toString(),
-    createdAt: record.createdAt.toISOString(),
-  };
-}
-
-function toOrder(record: OrderWithItems): Order {
-  return {
-    id: record.id,
-    storeId: record.storeId,
-    customerId: record.customerId ?? undefined,
-    customerProfileId: record.customerProfileId ?? undefined,
-    sourceCartId: record.sourceCartId ?? undefined,
-    orderNumber: record.orderNumber,
-    status: record.status,
-    subtotal: record.subtotal.toString(),
-    currency: record.currency,
-    shippingAddress: toOrderAddressSnapshot(record),
-    items: record.items.map(toOrderItem),
-    confirmedAt: record.confirmedAt?.toISOString(),
-    cancelledAt: record.cancelledAt?.toISOString(),
-    fulfilledAt: record.fulfilledAt?.toISOString(),
-    createdAt: record.createdAt.toISOString(),
-    updatedAt: record.updatedAt.toISOString(),
-  };
-}
-
 export class PrismaCheckoutRepository implements CheckoutRepository {
   constructor(private readonly db: PrismaClient) {}
 
   async completeCheckout(record: CheckoutRecord): Promise<CheckoutResult> {
-    for (let attempt = 0; attempt < MAX_ORDER_NUMBER_ATTEMPTS; attempt += 1) {
+    for (let attempt = 0; attempt < 5; attempt += 1) {
       const orderNumber = generateOrderNumber();
 
       try {
@@ -113,6 +76,8 @@ export class PrismaCheckoutRepository implements CheckoutRepository {
               orderNumber,
               status: "draft",
               subtotal: record.subtotal,
+              discountAmount: record.discountAmount ?? null,
+              total: record.total,
               currency: record.currency,
               ...buildShippingAddressCreateData(record.shippingAddress),
               items: {
@@ -126,8 +91,25 @@ export class PrismaCheckoutRepository implements CheckoutRepository {
                   lineSubtotal: item.lineSubtotal,
                 })),
               },
+              ...(record.appliedPromotion
+                ? {
+                    appliedPromotion: {
+                      create: {
+                        storeId: record.storeId,
+                        promotionId: record.appliedPromotion.promotionId,
+                        promotionCodeSnapshot:
+                          record.appliedPromotion.promotionCodeSnapshot,
+                        promotionTypeSnapshot:
+                          record.appliedPromotion.promotionTypeSnapshot,
+                        promotionValueSnapshot:
+                          record.appliedPromotion.promotionValueSnapshot,
+                        discountAmount: record.appliedPromotion.discountAmount,
+                      },
+                    },
+                  }
+                : {}),
             },
-            include: { items: itemsInclude },
+            include: orderWithPromotionInclude,
           });
 
           const converted = await tx.cart.updateMany({
@@ -143,18 +125,22 @@ export class PrismaCheckoutRepository implements CheckoutRepository {
             throw new Error(`Checkout cart conversion failed: ${record.cartId}`);
           }
 
+          await tx.cartPromotion.deleteMany({
+            where: { storeId: record.storeId, cartId: record.cartId },
+          });
+
           const updatedCart = await tx.cart.findFirstOrThrow({
             where: { id: record.cartId, storeId: record.storeId },
             include: { items: itemsInclude },
           });
 
           return {
-            order: toOrder(created),
+            order: mapPrismaOrder(created),
             cart: toCart(updatedCart),
           };
         });
       } catch (error) {
-        if (isUniqueOrderNumberViolation(error) && attempt < MAX_ORDER_NUMBER_ATTEMPTS - 1) {
+        if (isUniqueOrderNumberViolation(error) && attempt < 4) {
           continue;
         }
 

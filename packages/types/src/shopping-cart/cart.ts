@@ -1,3 +1,4 @@
+import type { AppliedCartPromotion } from "../promotion-redemption/applied-cart-promotion";
 import type { CartItem } from "./cart-item";
 import type { CartStatus } from "./cart-status";
 
@@ -10,6 +11,9 @@ export interface Cart {
   readonly subtotal: string;
   readonly currency: string;
   readonly items: readonly CartItem[];
+  readonly appliedPromotion?: AppliedCartPromotion;
+  readonly discountAmount?: string;
+  readonly total?: string;
   readonly createdAt: string;
   readonly updatedAt: string;
 }

@@ -48,6 +48,8 @@ function toOrder(record: OrderWithItems): Order {
     orderNumber: record.orderNumber,
     status: record.status,
     subtotal: record.subtotal.toString(),
+    discountAmount: record.discountAmount?.toString(),
+    total: record.total.toString(),
     currency: record.currency,
     items: record.items.map(toOrderItem),
     confirmedAt: record.confirmedAt?.toISOString(),

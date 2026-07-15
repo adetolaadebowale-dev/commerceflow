@@ -1,11 +1,14 @@
 import type {
   AddCartItemRequest,
   AddCartItemResponse,
+  ApplyCartPromotionRequest,
+  ApplyCartPromotionResponse,
   CreateCartRequest,
   CreateCartResponse,
   GetCartResponse,
   GetCustomerCartResponse,
   RemoveCartItemResponse,
+  RemoveCartPromotionResponse,
   StoreScopedParams,
   UpdateCartItemRequest,
   UpdateCartItemResponse,
@@ -44,6 +47,15 @@ export interface CartClient {
     id: string,
     params: StoreScopedParams,
   ): Promise<RemoveCartItemResponse["data"]>;
+  applyCartPromotion(
+    cartId: string,
+    input: ApplyCartPromotionRequest,
+    params: StoreScopedParams,
+  ): Promise<ApplyCartPromotionResponse["data"]>;
+  removeCartPromotion(
+    cartId: string,
+    params: StoreScopedParams,
+  ): Promise<RemoveCartPromotionResponse["data"]>;
 }
 
 export function createCartClient(config: ApiClientConfig): CartClient {
@@ -90,6 +102,21 @@ export function createCartClient(config: ApiClientConfig): CartClient {
       apiRequest<RemoveCartItemResponse["data"]>(config, {
         method: "DELETE",
         path: `/api/cart-items/${id}${toQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    applyCartPromotion: (cartId, input, params) =>
+      apiRequest<ApplyCartPromotionResponse["data"]>(config, {
+        method: "POST",
+        path: `/api/carts/${cartId}/apply-promotion${toQueryString(params)}`,
+        body: input,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    removeCartPromotion: (cartId, params) =>
+      apiRequest<RemoveCartPromotionResponse["data"]>(config, {
+        method: "DELETE",
+        path: `/api/carts/${cartId}/promotion${toQueryString(params)}`,
         accessToken: config.getAccessToken?.(),
       }),
   };

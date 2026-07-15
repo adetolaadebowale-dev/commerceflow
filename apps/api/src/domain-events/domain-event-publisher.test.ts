@@ -18,6 +18,7 @@ const sampleOrder: Order = {
   orderNumber: "ORD-1001",
   status: "confirmed",
   subtotal: "39.98",
+  total: "39.98",
   currency: "USD",
   items: [
     {

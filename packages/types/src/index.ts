@@ -61,6 +61,10 @@ export {
   type PromotionType,
 } from "./promotions";
 export {
+  type AppliedCartPromotion,
+  type OrderPromotionSnapshot,
+} from "./promotion-redemption";
+export {
   CUSTOMER_STATUSES,
   type Customer,
   type CustomerAddress,
@@ -122,4 +126,6 @@ export {
   type PromotionCreatedPayload,
   type PromotionDeletedPayload,
   type PromotionUpdatedPayload,
+  type PromotionAppliedPayload,
+  type PromotionRemovedPayload,
 } from "./domain-events";

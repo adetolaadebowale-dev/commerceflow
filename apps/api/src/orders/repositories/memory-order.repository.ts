@@ -112,6 +112,7 @@ export class MemoryOrderRepository implements OrderRepository {
         orderNumber,
         status: record.status,
         subtotal: record.subtotal,
+        total: record.subtotal,
         currency: record.currency,
         items,
         createdAt: now,

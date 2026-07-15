@@ -6,6 +6,8 @@ import { CustomerService } from "@/customers/services/customer.service";
 import { validCustomerInput } from "@/customers/testing/customer-test-utils";
 import { MemoryOrderVariantSnapshotReader } from "@/orders/repositories/memory-order-variant-snapshot.reader";
 import { seedVariant } from "@/orders/testing/order-test-utils";
+import { MemoryCartPromotionRepository } from "@/promotion-redemption/repositories/memory-cart-promotion.repository";
+import { PromotionRedemptionService } from "@/promotion-redemption/services/promotion-redemption.service";
 import { MemoryCartRepository } from "../repositories/memory-cart.repository";
 import { CartService } from "../services/cart.service";
 
@@ -20,16 +22,25 @@ export function createMemoryCartModule(dependencies: {
   const cartRepository = new MemoryCartRepository();
   const customerRepository = new MemoryCustomerRepository();
   const variantSnapshotReader = new MemoryOrderVariantSnapshotReader();
+  const cartPromotionRepository = new MemoryCartPromotionRepository();
+  const promotionRedemptionService = new PromotionRedemptionService({
+    cartRepository,
+    cartPromotionRepository,
+    domainEventPublisher: dependencies.domainEventPublisher,
+  });
 
   return {
     cartRepository,
     customerRepository,
     variantSnapshotReader,
+    cartPromotionRepository,
+    promotionRedemptionService,
     customerService: new CustomerService({ customerRepository }),
     cartService: new CartService({
       cartRepository,
       customerRepository,
       variantSnapshotReader,
+      promotionRedemptionService,
       ...dependencies,
     }),
   };

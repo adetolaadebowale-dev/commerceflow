@@ -31,6 +31,8 @@ import {
   buildPromotionCreatedEvent,
   buildPromotionDeletedEvent,
   buildPromotionUpdatedEvent,
+  buildPromotionAppliedEvent,
+  buildPromotionRemovedEvent,
 } from "./domain-event-factory";
 import type {
   Cart,
@@ -49,6 +51,7 @@ import type {
   Refund,
   RefundStatus,
   Promotion,
+  AppliedCartPromotion,
 } from "@commerceflow/types";
 
 export interface DomainEventPublisherDependencies {
@@ -225,6 +228,14 @@ export class DomainEventPublisher {
 
   publishPromotionDeleted(promotion: Promotion): void {
     this.dispatch(buildPromotionDeletedEvent(promotion));
+  }
+
+  publishPromotionApplied(cart: Cart, applied: AppliedCartPromotion): void {
+    this.dispatch(buildPromotionAppliedEvent(cart, applied));
+  }
+
+  publishPromotionRemoved(cart: Cart, applied: AppliedCartPromotion): void {
+    this.dispatch(buildPromotionRemovedEvent(cart, applied));
   }
 
   private dispatch(event: DomainEvent): void {

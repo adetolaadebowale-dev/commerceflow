@@ -146,3 +146,9 @@ export {
   type ListPromotionsQuery,
   type UpdatePromotionInput,
 } from "./promotions";
+export {
+  applyCartPromotionSchema,
+  cartPromotionActionSchema,
+  type ApplyCartPromotionInput,
+  type CartPromotionActionQuery,
+} from "./promotion-redemption";

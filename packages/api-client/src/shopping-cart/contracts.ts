@@ -1,6 +1,7 @@
 import type { Cart } from "@commerceflow/types";
 import type {
   AddCartItemInput,
+  ApplyCartPromotionInput,
   CreateCartInput,
   UpdateCartItemInput,
 } from "@commerceflow/validation";
@@ -27,6 +28,13 @@ export type UpdateCartItemResponse = ApiSuccessResponse<{ cart: Cart }>;
 
 /** DELETE /cart-items/:id */
 export type RemoveCartItemResponse = ApiSuccessResponse<{ cart: Cart }>;
+
+/** POST /carts/:id/apply-promotion */
+export type ApplyCartPromotionRequest = ApplyCartPromotionInput;
+export type ApplyCartPromotionResponse = ApiSuccessResponse<{ cart: Cart }>;
+
+/** DELETE /carts/:id/promotion */
+export type RemoveCartPromotionResponse = ApiSuccessResponse<{ cart: Cart }>;
 
 export interface StoreScopedParams {
   readonly storeId: string;

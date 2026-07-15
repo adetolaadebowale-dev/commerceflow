@@ -20,7 +20,12 @@ import {
   getOrderVariantSnapshotReader,
   type OrderVariantSnapshotReader,
 } from "@/orders/repositories";
-import { multiplyPrice, sumPrices } from "@/orders/services/order-pricing";
+import {
+  calculatePromotionDiscountFromSnapshot,
+  getPromotionRedemptionService,
+  type PromotionRedemptionService,
+} from "@/promotion-redemption/services";
+import { multiplyPrice, subtractPrice, sumPrices } from "@/orders/services/order-pricing";
 import {
   getCartRepository,
   type CartRepository,
@@ -35,6 +40,7 @@ export interface CheckoutServiceDependencies {
   readonly customerAddressRepository?: CustomerAddressRepository;
   readonly variantSnapshotReader?: OrderVariantSnapshotReader;
   readonly domainEventPublisher?: DomainEventPublisher;
+  readonly promotionRedemptionService?: PromotionRedemptionService;
 }
 
 export class CheckoutService {
@@ -44,6 +50,7 @@ export class CheckoutService {
   private readonly customerAddressRepository: CustomerAddressRepository;
   private readonly variantSnapshotReader: OrderVariantSnapshotReader;
   private readonly domainEventPublisher: DomainEventPublisher;
+  private readonly promotionRedemptionService: PromotionRedemptionService;
 
   constructor(dependencies: CheckoutServiceDependencies = {}) {
     this.checkoutRepository =
@@ -58,6 +65,8 @@ export class CheckoutService {
       dependencies.variantSnapshotReader ?? getOrderVariantSnapshotReader();
     this.domainEventPublisher =
       dependencies.domainEventPublisher ?? getDomainEventPublisher();
+    this.promotionRedemptionService =
+      dependencies.promotionRedemptionService ?? getPromotionRedemptionService();
   }
 
   async checkoutCart(
@@ -130,6 +139,29 @@ export class CheckoutService {
     const currency = preparedItems[0]?.currency ?? "USD";
     const shippingAddress = toOrderAddressSnapshot(address);
 
+    const appliedPromotion =
+      await this.promotionRedemptionService.getAppliedPromotion(storeId, cartId);
+
+    let discountAmount: string | undefined;
+    let appliedPromotionSnapshot;
+    let total = subtotal;
+
+    if (appliedPromotion) {
+      discountAmount = calculatePromotionDiscountFromSnapshot(
+        subtotal,
+        appliedPromotion,
+        currency,
+      );
+      total = subtractPrice(subtotal, discountAmount);
+      appliedPromotionSnapshot = {
+        promotionId: appliedPromotion.promotionId,
+        promotionCodeSnapshot: appliedPromotion.promotionCodeSnapshot,
+        promotionTypeSnapshot: appliedPromotion.promotionTypeSnapshot,
+        promotionValueSnapshot: appliedPromotion.promotionValueSnapshot,
+        discountAmount,
+      };
+    }
+
     try {
       const result = await this.checkoutRepository.completeCheckout({
         storeId,
@@ -138,8 +170,11 @@ export class CheckoutService {
         customerAddressId: input.customerAddressId,
         shippingAddress,
         subtotal,
+        discountAmount,
+        total,
         currency,
         items: preparedItems,
+        appliedPromotion: appliedPromotionSnapshot,
       });
 
       this.domainEventPublisher.publishCheckoutCompleted(

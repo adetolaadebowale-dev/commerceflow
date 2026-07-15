@@ -17,6 +17,10 @@ import {
   getOrderVariantSnapshotReader,
   type OrderVariantSnapshotReader,
 } from "@/orders/repositories";
+import {
+  getPromotionRedemptionService,
+  type PromotionRedemptionService,
+} from "@/promotion-redemption/services";
 import { CART_ERROR_CODES, CartError } from "../errors";
 import { getCartRepository, type CartRepository } from "../repositories";
 import { buildLineSubtotal } from "./cart-pricing";
@@ -26,6 +30,7 @@ export interface CartServiceDependencies {
   readonly customerRepository?: CustomerRepository;
   readonly variantSnapshotReader?: OrderVariantSnapshotReader;
   readonly domainEventPublisher?: DomainEventPublisher;
+  readonly promotionRedemptionService?: PromotionRedemptionService;
 }
 
 export class CartService {
@@ -33,6 +38,7 @@ export class CartService {
   private readonly customerRepository: CustomerRepository;
   private readonly variantSnapshotReader: OrderVariantSnapshotReader;
   private readonly domainEventPublisher: DomainEventPublisher;
+  private readonly promotionRedemptionService: PromotionRedemptionService;
 
   constructor(dependencies: CartServiceDependencies = {}) {
     this.cartRepository = dependencies.cartRepository ?? getCartRepository();
@@ -42,6 +48,8 @@ export class CartService {
       dependencies.variantSnapshotReader ?? getOrderVariantSnapshotReader();
     this.domainEventPublisher =
       dependencies.domainEventPublisher ?? getDomainEventPublisher();
+    this.promotionRedemptionService =
+      dependencies.promotionRedemptionService ?? getPromotionRedemptionService();
   }
 
   async createCart(input: CreateCartInput): Promise<Cart> {
@@ -91,7 +99,7 @@ export class CartService {
       );
     }
 
-    return cart;
+    return this.promotionRedemptionService.enrichCartWithPromotion(cart);
   }
 
   async getActiveCartByCustomerId(
@@ -113,7 +121,7 @@ export class CartService {
       );
     }
 
-    return cart;
+    return this.promotionRedemptionService.enrichCartWithPromotion(cart);
   }
 
   async addCartItem(
@@ -158,7 +166,7 @@ export class CartService {
         );
       }
 
-      return result.cart;
+      return this.promotionRedemptionService.recalculateForCart(result.cart);
     } catch (error) {
       throw this.mapRepositoryError(error);
     }
@@ -185,7 +193,7 @@ export class CartService {
         result.cart,
         result.cartItem,
       );
-      return result.cart;
+      return this.promotionRedemptionService.recalculateForCart(result.cart);
     } catch (error) {
       throw this.mapRepositoryError(error);
     }
@@ -203,7 +211,7 @@ export class CartService {
         result.removedItemId,
         removedItem.productVariantId,
       );
-      return result.cart;
+      return this.promotionRedemptionService.recalculateForCart(result.cart);
     } catch (error) {
       throw this.mapRepositoryError(error);
     }

@@ -299,3 +299,19 @@ export interface PromotionDeletedPayload {
   readonly status: Promotion["status"];
   readonly promotion: Promotion;
 }
+
+export interface PromotionAppliedPayload {
+  readonly cartId: string;
+  readonly promotionId: string;
+  readonly promotionCodeSnapshot: string;
+  readonly promotionTypeSnapshot: Promotion["type"];
+  readonly promotionValueSnapshot: string;
+  readonly discountAmount: string;
+  readonly cartSubtotal: string;
+}
+
+export interface PromotionRemovedPayload {
+  readonly cartId: string;
+  readonly promotionId: string;
+  readonly promotionCodeSnapshot: string;
+}
