@@ -40,4 +40,8 @@ export type {
   TaxUpdatedPayload,
   TaxActivatedPayload,
   TaxDeactivatedPayload,
+  ShipmentCreatedPayload,
+  ShipmentShippedPayload,
+  ShipmentDeliveredPayload,
+  ShipmentCancelledPayload,
 } from "./payloads";

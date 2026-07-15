@@ -161,3 +161,13 @@ export {
   type ApplyCartPromotionInput,
   type CartPromotionActionQuery,
 } from "./promotion-redemption";
+export {
+  createShipmentSchema,
+  listOrderShipmentsQuerySchema,
+  orderShipmentActionSchema,
+  shipmentIdQuerySchema,
+  type CreateShipmentInput,
+  type ListOrderShipmentsQuery,
+  type OrderShipmentActionQuery,
+  type ShipmentIdQuery,
+} from "./shipments";

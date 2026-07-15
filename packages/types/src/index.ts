@@ -67,6 +67,13 @@ export {
   type OrderTaxRateSnapshot,
 } from "./tax-rates";
 export {
+  SHIPMENT_CARRIERS,
+  SHIPMENT_STATUSES,
+  type Shipment,
+  type ShipmentCarrier,
+  type ShipmentStatus,
+} from "./shipments";
+export {
   type AppliedCartPromotion,
   type OrderPromotionSnapshot,
 } from "./promotion-redemption";
@@ -138,4 +145,8 @@ export {
   type TaxUpdatedPayload,
   type TaxActivatedPayload,
   type TaxDeactivatedPayload,
+  type ShipmentCreatedPayload,
+  type ShipmentShippedPayload,
+  type ShipmentDeliveredPayload,
+  type ShipmentCancelledPayload,
 } from "./domain-events";

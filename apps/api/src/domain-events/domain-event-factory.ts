@@ -56,6 +56,12 @@ import type {
   TaxUpdatedPayload,
   TaxActivatedPayload,
   TaxDeactivatedPayload,
+  Shipment,
+  ShipmentStatus,
+  ShipmentCreatedPayload,
+  ShipmentShippedPayload,
+  ShipmentDeliveredPayload,
+  ShipmentCancelledPayload,
 } from "@commerceflow/types";
 
 export function createDomainEvent<TPayload>(input: {
@@ -790,6 +796,87 @@ export function buildTaxDeactivatedEvent(
       previousStatus,
       status: "inactive",
       taxRate,
+    },
+  });
+}
+
+export function buildShipmentCreatedEvent(
+  shipment: Shipment,
+): DomainEvent<ShipmentCreatedPayload> {
+  return createDomainEvent({
+    eventType: "shipment.created",
+    aggregateType: "shipment",
+    aggregateId: shipment.id,
+    storeId: shipment.storeId,
+    payload: {
+      shipmentId: shipment.id,
+      orderId: shipment.orderId,
+      shipmentNumber: shipment.shipmentNumber,
+      status: shipment.status,
+      carrier: shipment.carrier,
+      shipment,
+    },
+  });
+}
+
+export function buildShipmentShippedEvent(
+  shipment: Shipment,
+  previousStatus: ShipmentStatus,
+): DomainEvent<ShipmentShippedPayload> {
+  return createDomainEvent({
+    eventType: "shipment.shipped",
+    aggregateType: "shipment",
+    aggregateId: shipment.id,
+    storeId: shipment.storeId,
+    payload: {
+      shipmentId: shipment.id,
+      orderId: shipment.orderId,
+      shipmentNumber: shipment.shipmentNumber,
+      previousStatus,
+      status: "shipped",
+      shippedAt: shipment.shippedAt,
+      shipment,
+    },
+  });
+}
+
+export function buildShipmentDeliveredEvent(
+  shipment: Shipment,
+  previousStatus: ShipmentStatus,
+): DomainEvent<ShipmentDeliveredPayload> {
+  return createDomainEvent({
+    eventType: "shipment.delivered",
+    aggregateType: "shipment",
+    aggregateId: shipment.id,
+    storeId: shipment.storeId,
+    payload: {
+      shipmentId: shipment.id,
+      orderId: shipment.orderId,
+      shipmentNumber: shipment.shipmentNumber,
+      previousStatus,
+      status: "delivered",
+      deliveredAt: shipment.deliveredAt,
+      shipment,
+    },
+  });
+}
+
+export function buildShipmentCancelledEvent(
+  shipment: Shipment,
+  previousStatus: ShipmentStatus,
+): DomainEvent<ShipmentCancelledPayload> {
+  return createDomainEvent({
+    eventType: "shipment.cancelled",
+    aggregateType: "shipment",
+    aggregateId: shipment.id,
+    storeId: shipment.storeId,
+    payload: {
+      shipmentId: shipment.id,
+      orderId: shipment.orderId,
+      shipmentNumber: shipment.shipmentNumber,
+      previousStatus,
+      status: "cancelled",
+      shipment,
     },
   });
 }

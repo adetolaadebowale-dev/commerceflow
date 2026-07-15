@@ -200,5 +200,18 @@ export {
   createTaxRateClient,
   type TaxRateClient,
 } from "./tax-rates/tax-rate-client";
+export type {
+  CreateShipmentRequest,
+  CreateShipmentResponse,
+  GetShipmentResponse,
+  ListOrderShipmentsParams,
+  ListOrderShipmentsResponse,
+  ShipmentActionResponse,
+  ShipmentStoreScopedParams,
+} from "./shipments/contracts";
+export {
+  createShipmentClient,
+  type ShipmentClient,
+} from "./shipments/shipment-client";
 export { ApiClientError } from "./http/api-error";
 export { apiRequest, type ApiClientConfig } from "./http/request";

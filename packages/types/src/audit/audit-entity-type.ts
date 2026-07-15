@@ -18,6 +18,7 @@ export const AUDIT_ENTITY_TYPES = [
   "promotion",
   "promotion_redemption",
   "tax_rate",
+  "shipment",
 ] as const;
 
 export type AuditEntityType = (typeof AUDIT_ENTITY_TYPES)[number];

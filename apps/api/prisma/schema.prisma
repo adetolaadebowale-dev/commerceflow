@@ -125,6 +125,21 @@ enum TaxRateStatus {
   inactive
 }
 
+/// Mirrors ShipmentStatus from @commerceflow/types.
+enum ShipmentStatus {
+  pending
+  packed
+  shipped
+  delivered
+  cancelled
+}
+
+/// Mirrors ShipmentCarrier from @commerceflow/types.
+enum ShipmentCarrier {
+  internal
+  manual
+}
+
 /// Persists User contract fields plus passwordHash (API-internal).
 model User {
   id              String        @id @default(uuid()) @db.Uuid
@@ -211,6 +226,7 @@ model Store {
   cartPromotions        CartPromotion[]
   orderAppliedPromotions OrderAppliedPromotion[]
   orderAppliedTaxRates  OrderAppliedTaxRate[]
+  shipments             Shipment[]
 
   @@unique([organizationId, slug])
   @@index([organizationId])
@@ -417,6 +433,7 @@ model Order {
   invoices    Invoice[]
   appliedPromotion OrderAppliedPromotion?
   appliedTaxRate   OrderAppliedTaxRate?
+  shipments        Shipment[]
 
   @@unique([storeId, orderNumber])
   @@index([storeId])
@@ -791,4 +808,38 @@ model OrderAppliedTaxRate {
   @@index([orderId])
   @@index([taxRateId])
   @@map("order_applied_tax_rates")
+}
+
+/// Store-scoped shipment linked to a fulfilled order with snapshotted shipping address.
+model Shipment {
+  id                     String          @id @default(uuid()) @db.Uuid
+  storeId                String          @map("store_id") @db.Uuid
+  store                  Store           @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  orderId                String          @map("order_id") @db.Uuid
+  order                  Order           @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  shipmentNumber         String          @map("shipment_number")
+  carrier                ShipmentCarrier
+  trackingNumber         String?         @map("tracking_number")
+  shippingRecipientName  String          @map("shipping_recipient_name")
+  shippingPhone          String          @map("shipping_phone")
+  shippingAddressLine1   String          @map("shipping_address_line1")
+  shippingAddressLine2   String?         @map("shipping_address_line2")
+  shippingCity           String          @map("shipping_city")
+  shippingStateProvince  String          @map("shipping_state_province")
+  shippingPostalCode     String          @map("shipping_postal_code")
+  shippingCountryCode    String          @map("shipping_country_code") @db.Char(2)
+  status                 ShipmentStatus  @default(pending)
+  shippedAt              DateTime?       @map("shipped_at")
+  deliveredAt            DateTime?       @map("delivered_at")
+  createdAt              DateTime        @default(now()) @map("created_at")
+  updatedAt              DateTime        @updatedAt @map("updated_at")
+
+  @@unique([storeId, shipmentNumber])
+  @@unique([storeId, orderId])
+  @@index([storeId])
+  @@index([orderId])
+  @@index([storeId, orderId])
+  @@index([status])
+  @@index([storeId, status])
+  @@map("shipments")
 }

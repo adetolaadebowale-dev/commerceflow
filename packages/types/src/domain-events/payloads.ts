@@ -14,6 +14,8 @@ import type { Refund } from "../refunds/refund";
 import type { RefundStatus } from "../refunds/refund-status";
 import type { Promotion } from "../promotions/promotion";
 import type { TaxRate } from "../tax-rates/tax-rate";
+import type { Shipment } from "../shipments/shipment";
+import type { ShipmentStatus } from "../shipments/shipment-status";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -361,4 +363,42 @@ export interface TaxDeactivatedPayload {
   readonly previousStatus: TaxRate["status"];
   readonly status: "inactive";
   readonly taxRate: TaxRate;
+}
+
+export interface ShipmentCreatedPayload {
+  readonly shipmentId: string;
+  readonly orderId: string;
+  readonly shipmentNumber: string;
+  readonly status: ShipmentStatus;
+  readonly carrier: Shipment["carrier"];
+  readonly shipment: Shipment;
+}
+
+export interface ShipmentShippedPayload {
+  readonly shipmentId: string;
+  readonly orderId: string;
+  readonly shipmentNumber: string;
+  readonly previousStatus: ShipmentStatus;
+  readonly status: "shipped";
+  readonly shippedAt?: string;
+  readonly shipment: Shipment;
+}
+
+export interface ShipmentDeliveredPayload {
+  readonly shipmentId: string;
+  readonly orderId: string;
+  readonly shipmentNumber: string;
+  readonly previousStatus: ShipmentStatus;
+  readonly status: "delivered";
+  readonly deliveredAt?: string;
+  readonly shipment: Shipment;
+}
+
+export interface ShipmentCancelledPayload {
+  readonly shipmentId: string;
+  readonly orderId: string;
+  readonly shipmentNumber: string;
+  readonly previousStatus: ShipmentStatus;
+  readonly status: "cancelled";
+  readonly shipment: Shipment;
 }
