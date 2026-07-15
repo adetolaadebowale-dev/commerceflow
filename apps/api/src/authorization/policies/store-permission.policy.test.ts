@@ -37,6 +37,18 @@ describe("StorePermissionPolicy", () => {
       true,
     );
     expect(
+      StorePermissionPolicy.hasPermission("staff", "warehouse-transfers:read"),
+    ).toBe(true);
+    expect(
+      StorePermissionPolicy.hasPermission("staff", "warehouse-transfers:write"),
+    ).toBe(false);
+    expect(
+      StorePermissionPolicy.hasPermission(
+        "staff",
+        "warehouse-transfers:lifecycle",
+      ),
+    ).toBe(false);
+    expect(
       StorePermissionPolicy.hasPermission("staff", "catalogue:write"),
     ).toBe(false);
     expect(

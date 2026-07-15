@@ -139,6 +139,14 @@ export {
   type WarehouseStatus,
 } from "./warehouses";
 export {
+  WAREHOUSE_TRANSFER_STATUSES,
+  type WarehouseTransfer,
+  type WarehouseTransferItem,
+  type WarehouseTransferReceiveResult,
+  type WarehouseTransferShipResult,
+  type WarehouseTransferStatus,
+} from "./warehouse-transfers";
+export {
   type AppliedCartPromotion,
   type OrderPromotionSnapshot,
 } from "./promotion-redemption";
@@ -249,4 +257,9 @@ export {
   type WarehouseActivatedPayload,
   type WarehouseDeactivatedPayload,
   type WarehouseDeletedPayload,
+  type WarehouseTransferApprovedPayload,
+  type WarehouseTransferCancelledPayload,
+  type WarehouseTransferCreatedPayload,
+  type WarehouseTransferReceivedPayload,
+  type WarehouseTransferShippedPayload,
 } from "./domain-events";

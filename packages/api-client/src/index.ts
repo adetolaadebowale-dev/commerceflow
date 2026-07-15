@@ -224,6 +224,26 @@ export {
   type WarehouseClient,
 } from "./warehouses/warehouse-client";
 export type {
+  ApproveWarehouseTransferRequest,
+  ApproveWarehouseTransferResponse,
+  CancelWarehouseTransferRequest,
+  CancelWarehouseTransferResponse,
+  CreateWarehouseTransferRequest,
+  CreateWarehouseTransferResponse,
+  GetWarehouseTransferResponse,
+  ListWarehouseTransfersParams,
+  ListWarehouseTransfersResponse,
+  ReceiveWarehouseTransferRequest,
+  ReceiveWarehouseTransferResponse,
+  ShipWarehouseTransferRequest,
+  ShipWarehouseTransferResponse,
+  WarehouseTransferStoreScopedParams,
+} from "./warehouse-transfers/contracts";
+export {
+  createWarehouseTransferClient,
+  type WarehouseTransferClient,
+} from "./warehouse-transfers/warehouse-transfer-client";
+export type {
   CreateShipmentRequest,
   CreateShipmentResponse,
   GetShipmentResponse,

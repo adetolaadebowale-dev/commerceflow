@@ -35,6 +35,12 @@ import type { CycleCountApprovalResult } from "../cycle-counts/cycle-count";
 import type { CycleCountStatus } from "../cycle-counts/cycle-count-status";
 import type { Warehouse } from "../warehouses/warehouse";
 import type { WarehouseStatus } from "../warehouses/warehouse-status";
+import type {
+  WarehouseTransfer,
+  WarehouseTransferReceiveResult,
+  WarehouseTransferShipResult,
+} from "../warehouse-transfers/warehouse-transfer";
+import type { WarehouseTransferStatus } from "../warehouse-transfers/warehouse-transfer-status";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -683,6 +689,50 @@ export interface WarehouseDeletedPayload {
   readonly status: WarehouseStatus;
   readonly isDefault: boolean;
   readonly warehouse: Warehouse;
+}
+
+export interface WarehouseTransferCreatedPayload {
+  readonly warehouseTransferId: string;
+  readonly transferNumber: string;
+  readonly status: WarehouseTransferStatus;
+  readonly sourceWarehouseId: string;
+  readonly destinationWarehouseId: string;
+  readonly itemCount: number;
+  readonly warehouseTransfer: WarehouseTransfer;
+}
+
+export interface WarehouseTransferApprovedPayload {
+  readonly warehouseTransferId: string;
+  readonly transferNumber: string;
+  readonly previousStatus: "draft";
+  readonly status: "approved";
+  readonly warehouseTransfer: WarehouseTransfer;
+}
+
+export interface WarehouseTransferShippedPayload {
+  readonly warehouseTransferId: string;
+  readonly transferNumber: string;
+  readonly previousStatus: "approved";
+  readonly status: "in_transit";
+  readonly stockMovementCount: number;
+  readonly result: WarehouseTransferShipResult;
+}
+
+export interface WarehouseTransferReceivedPayload {
+  readonly warehouseTransferId: string;
+  readonly transferNumber: string;
+  readonly previousStatus: "in_transit";
+  readonly status: "received";
+  readonly stockMovementCount: number;
+  readonly result: WarehouseTransferReceiveResult;
+}
+
+export interface WarehouseTransferCancelledPayload {
+  readonly warehouseTransferId: string;
+  readonly transferNumber: string;
+  readonly previousStatus: WarehouseTransferStatus;
+  readonly status: "cancelled";
+  readonly warehouseTransfer: WarehouseTransfer;
 }
 
 export interface ShippingZoneCreatedPayload {

@@ -35,6 +35,9 @@ const ALL_STORE_PERMISSIONS: readonly StorePermissionCode[] = [
   "shipping-config:write",
   "warehouses:read",
   "warehouses:write",
+  "warehouse-transfers:read",
+  "warehouse-transfers:write",
+  "warehouse-transfers:lifecycle",
 ];
 
 const PERMISSIONS_BY_STORE_ROLE: Readonly<
@@ -77,6 +80,9 @@ const PERMISSIONS_BY_STORE_ROLE: Readonly<
     "shipping-config:write",
     "warehouses:read",
     "warehouses:write",
+    "warehouse-transfers:read",
+    "warehouse-transfers:write",
+    "warehouse-transfers:lifecycle",
   ],
   staff: [
     "catalogue:read",
@@ -94,6 +100,7 @@ const PERMISSIONS_BY_STORE_ROLE: Readonly<
     "shipments:read",
     "shipping-config:read",
     "warehouses:read",
+    "warehouse-transfers:read",
   ],
 };
 

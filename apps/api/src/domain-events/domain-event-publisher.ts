@@ -43,6 +43,11 @@ import {
   buildWarehouseActivatedEvent,
   buildWarehouseDeactivatedEvent,
   buildWarehouseDeletedEvent,
+  buildWarehouseTransferApprovedEvent,
+  buildWarehouseTransferCancelledEvent,
+  buildWarehouseTransferCreatedEvent,
+  buildWarehouseTransferReceivedEvent,
+  buildWarehouseTransferShippedEvent,
   buildShipmentCreatedEvent,
   buildShipmentShippedEvent,
   buildShipmentDeliveredEvent,
@@ -114,6 +119,9 @@ import type {
   InventoryAdjustmentResult,
   CycleCount,
   CycleCountApprovalResult,
+  WarehouseTransfer,
+  WarehouseTransferReceiveResult,
+  WarehouseTransferShipResult,
   ShippingZone,
   ShippingMethod,
 } from "@commerceflow/types";
@@ -515,6 +523,39 @@ export class DomainEventPublisher {
 
   publishCycleCountApproved(result: CycleCountApprovalResult): void {
     this.dispatch(buildCycleCountApprovedEvent(result));
+  }
+
+  publishWarehouseTransferCreated(warehouseTransfer: WarehouseTransfer): void {
+    this.dispatch(buildWarehouseTransferCreatedEvent(warehouseTransfer));
+  }
+
+  publishWarehouseTransferApproved(warehouseTransfer: WarehouseTransfer): void {
+    this.dispatch(buildWarehouseTransferApprovedEvent(warehouseTransfer));
+  }
+
+  publishWarehouseTransferShipped(result: WarehouseTransferShipResult): void {
+    this.dispatch(buildWarehouseTransferShippedEvent(result));
+    for (const stockMovement of result.stockMovements) {
+      this.publishStockMovementCreated(stockMovement);
+    }
+  }
+
+  publishWarehouseTransferReceived(
+    result: WarehouseTransferReceiveResult,
+  ): void {
+    this.dispatch(buildWarehouseTransferReceivedEvent(result));
+    for (const stockMovement of result.stockMovements) {
+      this.publishStockMovementCreated(stockMovement);
+    }
+  }
+
+  publishWarehouseTransferCancelled(
+    warehouseTransfer: WarehouseTransfer,
+    previousStatus: WarehouseTransfer["status"],
+  ): void {
+    this.dispatch(
+      buildWarehouseTransferCancelledEvent(warehouseTransfer, previousStatus),
+    );
   }
 
   publishShippingZoneCreated(shippingZone: ShippingZone): void {

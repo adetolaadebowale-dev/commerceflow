@@ -65,6 +65,14 @@ import type {
   WarehouseActivatedPayload,
   WarehouseDeactivatedPayload,
   WarehouseDeletedPayload,
+  WarehouseTransfer,
+  WarehouseTransferApprovedPayload,
+  WarehouseTransferCancelledPayload,
+  WarehouseTransferCreatedPayload,
+  WarehouseTransferReceiveResult,
+  WarehouseTransferReceivedPayload,
+  WarehouseTransferShipResult,
+  WarehouseTransferShippedPayload,
   Shipment,
   ShipmentStatus,
   ShipmentCreatedPayload,
@@ -966,6 +974,101 @@ export function buildWarehouseDeletedEvent(
       status: warehouse.status,
       isDefault: warehouse.isDefault,
       warehouse,
+    },
+  });
+}
+
+export function buildWarehouseTransferCreatedEvent(
+  warehouseTransfer: WarehouseTransfer,
+): DomainEvent<WarehouseTransferCreatedPayload> {
+  return createDomainEvent({
+    eventType: "warehouse-transfer.created",
+    aggregateType: "warehouse_transfer",
+    aggregateId: warehouseTransfer.id,
+    storeId: warehouseTransfer.storeId,
+    payload: {
+      warehouseTransferId: warehouseTransfer.id,
+      transferNumber: warehouseTransfer.transferNumber,
+      status: warehouseTransfer.status,
+      sourceWarehouseId: warehouseTransfer.sourceWarehouseId,
+      destinationWarehouseId: warehouseTransfer.destinationWarehouseId,
+      itemCount: warehouseTransfer.items.length,
+      warehouseTransfer,
+    },
+  });
+}
+
+export function buildWarehouseTransferApprovedEvent(
+  warehouseTransfer: WarehouseTransfer,
+): DomainEvent<WarehouseTransferApprovedPayload> {
+  return createDomainEvent({
+    eventType: "warehouse-transfer.approved",
+    aggregateType: "warehouse_transfer",
+    aggregateId: warehouseTransfer.id,
+    storeId: warehouseTransfer.storeId,
+    payload: {
+      warehouseTransferId: warehouseTransfer.id,
+      transferNumber: warehouseTransfer.transferNumber,
+      previousStatus: "draft",
+      status: "approved",
+      warehouseTransfer,
+    },
+  });
+}
+
+export function buildWarehouseTransferShippedEvent(
+  result: WarehouseTransferShipResult,
+): DomainEvent<WarehouseTransferShippedPayload> {
+  return createDomainEvent({
+    eventType: "warehouse-transfer.shipped",
+    aggregateType: "warehouse_transfer",
+    aggregateId: result.warehouseTransfer.id,
+    storeId: result.warehouseTransfer.storeId,
+    payload: {
+      warehouseTransferId: result.warehouseTransfer.id,
+      transferNumber: result.warehouseTransfer.transferNumber,
+      previousStatus: "approved",
+      status: "in_transit",
+      stockMovementCount: result.stockMovements.length,
+      result,
+    },
+  });
+}
+
+export function buildWarehouseTransferReceivedEvent(
+  result: WarehouseTransferReceiveResult,
+): DomainEvent<WarehouseTransferReceivedPayload> {
+  return createDomainEvent({
+    eventType: "warehouse-transfer.received",
+    aggregateType: "warehouse_transfer",
+    aggregateId: result.warehouseTransfer.id,
+    storeId: result.warehouseTransfer.storeId,
+    payload: {
+      warehouseTransferId: result.warehouseTransfer.id,
+      transferNumber: result.warehouseTransfer.transferNumber,
+      previousStatus: "in_transit",
+      status: "received",
+      stockMovementCount: result.stockMovements.length,
+      result,
+    },
+  });
+}
+
+export function buildWarehouseTransferCancelledEvent(
+  warehouseTransfer: WarehouseTransfer,
+  previousStatus: WarehouseTransfer["status"],
+): DomainEvent<WarehouseTransferCancelledPayload> {
+  return createDomainEvent({
+    eventType: "warehouse-transfer.cancelled",
+    aggregateType: "warehouse_transfer",
+    aggregateId: warehouseTransfer.id,
+    storeId: warehouseTransfer.storeId,
+    payload: {
+      warehouseTransferId: warehouseTransfer.id,
+      transferNumber: warehouseTransfer.transferNumber,
+      previousStatus,
+      status: "cancelled",
+      warehouseTransfer,
     },
   });
 }

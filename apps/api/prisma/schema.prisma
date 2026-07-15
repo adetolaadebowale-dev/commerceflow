@@ -213,6 +213,15 @@ enum WarehouseStatus {
   inactive
 }
 
+/// Mirrors WarehouseTransferStatus from @commerceflow/types.
+enum WarehouseTransferStatus {
+  draft
+  approved
+  in_transit
+  received
+  cancelled
+}
+
 /// Mirrors ShippingZoneStatus from @commerceflow/types.
 enum ShippingZoneStatus {
   active
@@ -321,6 +330,7 @@ model Store {
   returns                Return[]
   inventoryAdjustments   InventoryAdjustment[]
   cycleCounts            CycleCount[]
+  warehouseTransfers     WarehouseTransfer[]
   warehouses             Warehouse[]
   shippingZones          ShippingZone[]
   shippingMethods        ShippingMethod[]
@@ -471,8 +481,10 @@ model Warehouse {
   stockMovements  StockMovement[]
   inventoryAllocations InventoryAllocation[]
   inventoryAdjustments InventoryAdjustment[]
-  cycleCounts     CycleCount[]
-  shipments       Shipment[]
+  cycleCounts              CycleCount[]
+  shipments                Shipment[]
+  sourceWarehouseTransfers WarehouseTransfer[] @relation("SourceWarehouse")
+  destinationWarehouseTransfers WarehouseTransfer[] @relation("DestinationWarehouse")
 
   @@unique([storeId, code])
   @@index([storeId])
@@ -503,6 +515,7 @@ model InventoryItem {
   returnItems             ReturnItem[]
   inventoryAdjustments    InventoryAdjustment[]
   cycleCountItems         CycleCountItem[]
+  warehouseTransferItems  WarehouseTransferItem[]
 
   @@unique([storeId, warehouseId, productVariantId])
   @@index([storeId])
@@ -1265,6 +1278,52 @@ model CycleCountItem {
   @@index([inventoryItemId])
   @@index([adjustmentId])
   @@map("cycle_count_items")
+}
+
+/// Internal logistics transfer of inventory between store warehouses.
+model WarehouseTransfer {
+  id                     String                  @id @default(uuid()) @db.Uuid
+  storeId                String                  @map("store_id") @db.Uuid
+  store                  Store                   @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  transferNumber         String                  @map("transfer_number")
+  sourceWarehouseId      String                  @map("source_warehouse_id") @db.Uuid
+  sourceWarehouse        Warehouse               @relation("SourceWarehouse", fields: [sourceWarehouseId], references: [id], onDelete: Restrict)
+  destinationWarehouseId String                  @map("destination_warehouse_id") @db.Uuid
+  destinationWarehouse   Warehouse               @relation("DestinationWarehouse", fields: [destinationWarehouseId], references: [id], onDelete: Restrict)
+  status                 WarehouseTransferStatus @default(draft)
+  notes                  String?
+  approvedAt             DateTime?               @map("approved_at")
+  shippedAt              DateTime?               @map("shipped_at")
+  receivedAt             DateTime?               @map("received_at")
+  createdAt              DateTime                @default(now()) @map("created_at")
+  updatedAt              DateTime                @updatedAt @map("updated_at")
+  items                  WarehouseTransferItem[]
+
+  @@unique([storeId, transferNumber])
+  @@index([storeId])
+  @@index([sourceWarehouseId])
+  @@index([destinationWarehouseId])
+  @@index([status])
+  @@index([storeId, status])
+  @@index([storeId, sourceWarehouseId])
+  @@index([storeId, destinationWarehouseId])
+  @@map("warehouse_transfers")
+}
+
+/// Line item on a warehouse transfer referencing source inventory.
+model WarehouseTransferItem {
+  id                  String            @id @default(uuid()) @db.Uuid
+  warehouseTransferId String            @map("warehouse_transfer_id") @db.Uuid
+  warehouseTransfer   WarehouseTransfer @relation(fields: [warehouseTransferId], references: [id], onDelete: Cascade)
+  inventoryItemId     String            @map("inventory_item_id") @db.Uuid
+  inventoryItem       InventoryItem     @relation(fields: [inventoryItemId], references: [id], onDelete: Restrict)
+  quantity            Int
+  createdAt           DateTime          @default(now()) @map("created_at")
+  updatedAt           DateTime          @updatedAt @map("updated_at")
+
+  @@index([warehouseTransferId])
+  @@index([inventoryItemId])
+  @@map("warehouse_transfer_items")
 }
 
 /// Append-only shipment tracking timeline entry.

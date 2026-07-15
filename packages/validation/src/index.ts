@@ -258,6 +258,16 @@ export {
   type WarehouseIdQuery,
 } from "./warehouses";
 export {
+  createWarehouseTransferSchema,
+  listWarehouseTransfersQuerySchema,
+  warehouseTransferIdQuerySchema,
+  warehouseTransferLifecycleSchema,
+  type CreateWarehouseTransferInput,
+  type ListWarehouseTransfersQuery,
+  type WarehouseTransferIdQuery,
+  type WarehouseTransferLifecycleInput,
+} from "./warehouse-transfers";
+export {
   createShippingMethodSchema,
   createShippingZoneSchema,
   listShippingMethodsQuerySchema,
