@@ -75,6 +75,16 @@ export class MemoryPickListRepository implements PickListRepository {
       );
   }
 
+  async listByStoreId(storeId: string): Promise<readonly PickList[]> {
+    return [...this.pickListsById.values()]
+      .filter((pickList) => pickList.storeId === storeId)
+      .sort(
+        (left, right) =>
+          left.createdAt.localeCompare(right.createdAt) ||
+          left.id.localeCompare(right.id),
+      );
+  }
+
   async create(record: CreatePickListRecord): Promise<PickList> {
     if (this.transactionFailure) {
       throw this.transactionFailure;

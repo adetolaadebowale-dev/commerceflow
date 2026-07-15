@@ -169,6 +169,15 @@ export {
   type ReplenishmentRule,
 } from "./replenishment";
 export {
+  type FulfillmentDashboard,
+  type IntegrityCheckResult,
+  type IntegrityIssue,
+  type InventoryHealthSummary,
+  type ProcurementDashboard,
+  type StatusCountSummary,
+  type WarehouseOperationalSummary,
+} from "./operations";
+export {
   type AppliedCartPromotion,
   type OrderPromotionSnapshot,
 } from "./promotion-redemption";
@@ -301,4 +310,7 @@ export {
   type ReplenishmentRecommendationGeneratedPayload,
   type ReplenishmentRecommendationAcceptedPayload,
   type ReplenishmentRecommendationDismissedPayload,
+  type OperationsIntegrityCheckedPayload,
+  type WarehouseIntegrityCheckedPayload,
+  type InventoryIntegrityCheckedPayload,
 } from "./domain-events";

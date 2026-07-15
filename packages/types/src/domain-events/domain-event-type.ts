@@ -96,6 +96,9 @@ export const DOMAIN_EVENT_TYPES = [
   "replenishment.recommendation.generated",
   "replenishment.recommendation.accepted",
   "replenishment.recommendation.dismissed",
+  "operations.integrity.checked",
+  "warehouse.integrity.checked",
+  "inventory.integrity.checked",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

@@ -41,6 +41,12 @@ export class MemoryShipmentRepository implements ShipmentRepository {
     );
   }
 
+  async listByStoreId(storeId: string): Promise<readonly Shipment[]> {
+    return [...this.shipmentsById.values()]
+      .filter((shipment) => shipment.storeId === storeId)
+      .sort((left, right) => left.createdAt.localeCompare(right.createdAt));
+  }
+
   async create(record: CreateShipmentRecord): Promise<Shipment> {
     for (let attempt = 0; attempt < 5; attempt += 1) {
       const existing = await this.findByOrderId(record.storeId, record.orderId);

@@ -7,6 +7,7 @@ export interface ShipmentRepository {
   findById(storeId: string, id: string): Promise<Shipment | null>;
   findByOrderId(storeId: string, orderId: string): Promise<Shipment | null>;
   listByOrderId(storeId: string, orderId: string): Promise<readonly Shipment[]>;
+  listByStoreId(storeId: string): Promise<readonly Shipment[]>;
   create(record: CreateShipmentRecord): Promise<Shipment>;
   transitionStatus(
     storeId: string,

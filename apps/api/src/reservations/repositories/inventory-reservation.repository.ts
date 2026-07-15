@@ -13,6 +13,7 @@ export interface InventoryReservationRepository {
     storeId: string,
     orderId: string,
   ): Promise<readonly InventoryReservation[]>;
+  listByStoreId(storeId: string): Promise<readonly InventoryReservation[]>;
   hasActiveReservationsForOrder(
     storeId: string,
     orderId: string,

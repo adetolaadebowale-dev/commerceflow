@@ -25,6 +25,7 @@ export interface PickListRepository {
     storeId: string,
     shipmentId: string,
   ): Promise<readonly PickList[]>;
+  listByStoreId(storeId: string): Promise<readonly PickList[]>;
   create(record: CreatePickListRecord): Promise<PickList>;
   updateItems(
     storeId: string,

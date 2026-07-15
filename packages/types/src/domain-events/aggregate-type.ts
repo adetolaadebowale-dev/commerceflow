@@ -29,6 +29,7 @@ export const DOMAIN_AGGREGATE_TYPES = [
   "supplier_contact",
   "replenishment_rule",
   "replenishment_recommendation",
+  "operations",
 ] as const;
 
 export type DomainAggregateType = (typeof DOMAIN_AGGREGATE_TYPES)[number];

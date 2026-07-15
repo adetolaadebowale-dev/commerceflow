@@ -101,6 +101,16 @@ export class PrismaReturnRepository implements ReturnRepository {
     return records.map(toReturn);
   }
 
+  async listByStoreId(storeId: string): Promise<readonly Return[]> {
+    const records = await this.db.return.findMany({
+      where: { storeId },
+      include: { items: itemsInclude },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+    });
+
+    return records.map(toReturn);
+  }
+
   async sumRequestedQuantityByOrderItemId(
     storeId: string,
     orderItemId: string,

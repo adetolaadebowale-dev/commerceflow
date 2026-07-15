@@ -316,6 +316,10 @@ export {
   type UpdateReplenishmentRuleInput,
 } from "./replenishment";
 export {
+  operationsStoreQuerySchema,
+  type OperationsStoreQuery,
+} from "./operations";
+export {
   createShippingMethodSchema,
   createShippingZoneSchema,
   listShippingMethodsQuerySchema,

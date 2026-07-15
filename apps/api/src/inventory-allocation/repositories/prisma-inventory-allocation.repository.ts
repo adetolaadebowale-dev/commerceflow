@@ -65,6 +65,15 @@ export class PrismaInventoryAllocationRepository
     return records.map(toInventoryAllocation);
   }
 
+  async listByStoreId(storeId: string): Promise<readonly InventoryAllocation[]> {
+    const records = await this.db.inventoryAllocation.findMany({
+      where: { storeId },
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+    });
+
+    return records.map(toInventoryAllocation);
+  }
+
   async create(record: CreateInventoryAllocationRecord): Promise<InventoryAllocation> {
     const created = await this.db.inventoryAllocation.create({
       data: {

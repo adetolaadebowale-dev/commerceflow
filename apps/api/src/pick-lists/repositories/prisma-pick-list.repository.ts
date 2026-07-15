@@ -115,6 +115,18 @@ export class PrismaPickListRepository implements PickListRepository {
     return records.map(toPickList);
   }
 
+  async listByStoreId(storeId: string): Promise<readonly PickList[]> {
+    const records = await this.db.pickList.findMany({
+      where: { storeId },
+      include: {
+        items: { orderBy: [{ createdAt: "asc" }, { id: "asc" }] },
+      },
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+    });
+
+    return records.map(toPickList);
+  }
+
   async create(record: CreatePickListRecord): Promise<PickList> {
     const created = await this.db.pickList.create({
       data: {

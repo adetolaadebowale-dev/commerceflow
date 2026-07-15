@@ -50,6 +50,15 @@ export class PrismaInventoryReservationRepository
     return records.map(toInventoryReservation);
   }
 
+  async listByStoreId(storeId: string) {
+    const records = await this.db.inventoryReservation.findMany({
+      where: { storeId },
+      orderBy: { createdAt: "asc" },
+    });
+
+    return records.map(toInventoryReservation);
+  }
+
   async hasActiveReservationsForOrder(storeId: string, orderId: string) {
     const count = await this.db.inventoryReservation.count({
       where: { storeId, orderId, status: "active" },

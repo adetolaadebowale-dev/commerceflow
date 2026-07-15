@@ -403,4 +403,9 @@ export class MemoryReplenishmentRepository implements ReplenishmentRepository {
       }
     }
   }
+
+  /** Exposed for tests to seed recommendation state. */
+  seedRecommendation(recommendation: ReplenishmentRecommendation): void {
+    this.recommendationsById.set(recommendation.id, recommendation);
+  }
 }

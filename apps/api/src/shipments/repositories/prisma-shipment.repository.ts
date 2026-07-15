@@ -73,6 +73,15 @@ export class PrismaShipmentRepository implements ShipmentRepository {
     return records.map(toShipment);
   }
 
+  async listByStoreId(storeId: string): Promise<readonly Shipment[]> {
+    const records = await this.db.shipment.findMany({
+      where: { storeId },
+      orderBy: { createdAt: "asc" },
+    });
+
+    return records.map(toShipment);
+  }
+
   async create(record: CreateShipmentRecord): Promise<Shipment> {
     for (let attempt = 0; attempt < MAX_SHIPMENT_NUMBER_ATTEMPTS; attempt += 1) {
       const shipmentNumber = record.shipmentNumber ?? generateShipmentNumber();

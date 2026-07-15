@@ -27,6 +27,7 @@ export interface CreateReturnRecord {
 export interface ReturnRepository {
   findById(storeId: string, id: string): Promise<Return | null>;
   listByOrderId(storeId: string, orderId: string): Promise<readonly Return[]>;
+  listByStoreId(storeId: string): Promise<readonly Return[]>;
   sumRequestedQuantityByOrderItemId(
     storeId: string,
     orderItemId: string,

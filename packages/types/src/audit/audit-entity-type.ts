@@ -35,6 +35,7 @@ export const AUDIT_ENTITY_TYPES = [
   "supplier_contact",
   "replenishment_rule",
   "replenishment_recommendation",
+  "operations",
 ] as const;
 
 export type AuditEntityType = (typeof AUDIT_ENTITY_TYPES)[number];

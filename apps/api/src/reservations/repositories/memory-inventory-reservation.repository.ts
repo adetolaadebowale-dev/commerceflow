@@ -40,6 +40,12 @@ export class MemoryInventoryReservationRepository
       .sort((left, right) => left.createdAt.localeCompare(right.createdAt));
   }
 
+  async listByStoreId(storeId: string) {
+    return [...this.reservationsById.values()]
+      .filter((reservation) => reservation.storeId === storeId)
+      .sort((left, right) => left.createdAt.localeCompare(right.createdAt));
+  }
+
   async hasActiveReservationsForOrder(storeId: string, orderId: string) {
     return [...this.reservationsById.values()].some(
       (reservation) =>

@@ -55,6 +55,13 @@ export class MemoryReturnRepository implements ReturnRepository {
       .map(toReturn);
   }
 
+  async listByStoreId(storeId: string): Promise<readonly Return[]> {
+    return [...this.returnsById.values()]
+      .filter((record) => record.storeId === storeId)
+      .sort((left, right) => right.createdAt.localeCompare(left.createdAt))
+      .map(toReturn);
+  }
+
   async sumRequestedQuantityByOrderItemId(
     storeId: string,
     orderItemId: string,

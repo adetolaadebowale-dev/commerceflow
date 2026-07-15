@@ -53,6 +53,7 @@ import type {
 } from "../replenishment/replenishment";
 import type { ReplenishmentRecommendationStatus } from "../replenishment/replenishment-recommendation-status";
 import type { AcceptReplenishmentRecommendationResult } from "../replenishment/accept-replenishment-result";
+import type { IntegrityCheckResult } from "../operations/integrity";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -899,6 +900,27 @@ export interface ReplenishmentRecommendationDismissedPayload {
   readonly supplierId: string;
   readonly status: "dismissed";
   readonly recommendation: ReplenishmentRecommendation;
+}
+
+export interface OperationsIntegrityCheckedPayload {
+  readonly storeId: string;
+  readonly valid: boolean;
+  readonly issueCount: number;
+  readonly result: IntegrityCheckResult;
+}
+
+export interface WarehouseIntegrityCheckedPayload {
+  readonly storeId: string;
+  readonly valid: boolean;
+  readonly issueCount: number;
+  readonly result: IntegrityCheckResult;
+}
+
+export interface InventoryIntegrityCheckedPayload {
+  readonly storeId: string;
+  readonly valid: boolean;
+  readonly issueCount: number;
+  readonly result: IntegrityCheckResult;
 }
 
 export interface ShippingZoneCreatedPayload {

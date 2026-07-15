@@ -16,6 +16,7 @@ export interface InventoryAllocationRepository {
     storeId: string,
     inventoryItemId: string,
   ): Promise<readonly InventoryAllocation[]>;
+  listByStoreId(storeId: string): Promise<readonly InventoryAllocation[]>;
   create(record: CreateInventoryAllocationRecord): Promise<InventoryAllocation>;
   updatePickedQuantity(
     storeId: string,

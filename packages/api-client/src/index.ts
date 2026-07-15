@@ -310,6 +310,20 @@ export {
   type ReplenishmentClient,
 } from "./replenishment/replenishment-client";
 export type {
+  GetFulfillmentDashboardResponse,
+  GetInventoryHealthSummaryResponse,
+  GetProcurementDashboardResponse,
+  GetWarehouseOperationalSummaryResponse,
+  OperationsStoreScopedParams,
+  RunIntegrityCheckResponse,
+  RunInventoryValidationResponse,
+  RunWarehouseValidationResponse,
+} from "./operations/contracts";
+export {
+  createOperationsClient,
+  type OperationsClient,
+} from "./operations/operations-client";
+export type {
   CreateShipmentRequest,
   CreateShipmentResponse,
   GetShipmentResponse,

@@ -56,6 +56,12 @@ export class MemoryInventoryAllocationRepository
     );
   }
 
+  async listByStoreId(storeId: string): Promise<readonly InventoryAllocation[]> {
+    return [...this.allocationsById.values()].filter(
+      (allocation) => allocation.storeId === storeId,
+    );
+  }
+
   async create(record: CreateInventoryAllocationRecord): Promise<InventoryAllocation> {
     if (this.transactionFailure) {
       throw this.transactionFailure;
@@ -161,5 +167,10 @@ export class MemoryInventoryAllocationRepository
       quantityAllocated,
       quantityPicked,
     );
+  }
+
+  /** Exposed for tests to seed or corrupt allocation state. */
+  seedAllocation(allocation: InventoryAllocation): void {
+    this.allocationsById.set(allocation.id, allocation);
   }
 }

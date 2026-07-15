@@ -97,6 +97,10 @@ import type {
   ReplenishmentRecommendationAcceptedPayload,
   ReplenishmentRecommendationDismissedPayload,
   AcceptReplenishmentRecommendationResult,
+  IntegrityCheckResult,
+  OperationsIntegrityCheckedPayload,
+  WarehouseIntegrityCheckedPayload,
+  InventoryIntegrityCheckedPayload,
   Shipment,
   ShipmentStatus,
   ShipmentCreatedPayload,
@@ -1422,6 +1426,60 @@ export function buildReplenishmentRecommendationDismissedEvent(
       supplierId: recommendation.supplierId,
       status: "dismissed",
       recommendation,
+    },
+  });
+}
+
+export function buildOperationsIntegrityCheckedEvent(
+  storeId: string,
+  result: IntegrityCheckResult,
+): DomainEvent<OperationsIntegrityCheckedPayload> {
+  return createDomainEvent({
+    eventType: "operations.integrity.checked",
+    aggregateType: "operations",
+    aggregateId: storeId,
+    storeId,
+    payload: {
+      storeId,
+      valid: result.valid,
+      issueCount: result.issues.length,
+      result,
+    },
+  });
+}
+
+export function buildWarehouseIntegrityCheckedEvent(
+  storeId: string,
+  result: IntegrityCheckResult,
+): DomainEvent<WarehouseIntegrityCheckedPayload> {
+  return createDomainEvent({
+    eventType: "warehouse.integrity.checked",
+    aggregateType: "operations",
+    aggregateId: storeId,
+    storeId,
+    payload: {
+      storeId,
+      valid: result.valid,
+      issueCount: result.issues.length,
+      result,
+    },
+  });
+}
+
+export function buildInventoryIntegrityCheckedEvent(
+  storeId: string,
+  result: IntegrityCheckResult,
+): DomainEvent<InventoryIntegrityCheckedPayload> {
+  return createDomainEvent({
+    eventType: "inventory.integrity.checked",
+    aggregateType: "operations",
+    aggregateId: storeId,
+    storeId,
+    payload: {
+      storeId,
+      valid: result.valid,
+      issueCount: result.issues.length,
+      result,
     },
   });
 }
