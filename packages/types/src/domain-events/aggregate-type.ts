@@ -13,6 +13,8 @@ export const DOMAIN_AGGREGATE_TYPES = [
   "promotion",
   "tax_rate",
   "shipment",
+  "shipping_zone",
+  "shipping_method",
 ] as const;
 
 export type DomainAggregateType = (typeof DOMAIN_AGGREGATE_TYPES)[number];

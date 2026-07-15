@@ -82,6 +82,14 @@ export {
   type ShipmentTrackingStatusSnapshot,
 } from "./shipments";
 export {
+  SHIPPING_METHOD_STATUSES,
+  SHIPPING_ZONE_STATUSES,
+  type ShippingMethod,
+  type ShippingMethodStatus,
+  type ShippingZone,
+  type ShippingZoneStatus,
+} from "./shipping-configuration";
+export {
   type AppliedCartPromotion,
   type OrderPromotionSnapshot,
 } from "./promotion-redemption";
@@ -158,4 +166,10 @@ export {
   type ShipmentDeliveredPayload,
   type ShipmentCancelledPayload,
   type ShipmentTrackingUpdatedPayload,
+  type ShippingZoneCreatedPayload,
+  type ShippingZoneUpdatedPayload,
+  type ShippingZoneDeletedPayload,
+  type ShippingMethodCreatedPayload,
+  type ShippingMethodUpdatedPayload,
+  type ShippingMethodDeletedPayload,
 } from "./domain-events";

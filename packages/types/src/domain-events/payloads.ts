@@ -17,6 +17,8 @@ import type { TaxRate } from "../tax-rates/tax-rate";
 import type { Shipment } from "../shipments/shipment";
 import type { ShipmentStatus } from "../shipments/shipment-status";
 import type { ShipmentTrackingEvent } from "../shipments/shipment-tracking-event";
+import type { ShippingZone } from "../shipping-configuration/shipping-zone";
+import type { ShippingMethod } from "../shipping-configuration/shipping-method";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -411,4 +413,57 @@ export interface ShipmentTrackingUpdatedPayload {
   readonly statusSnapshot: ShipmentStatus;
   readonly trackingEvent: ShipmentTrackingEvent;
   readonly shipment: Shipment;
+}
+
+export interface ShippingZoneCreatedPayload {
+  readonly shippingZoneId: string;
+  readonly name: string;
+  readonly countries: readonly string[];
+  readonly status: ShippingZone["status"];
+  readonly shippingZone: ShippingZone;
+}
+
+export interface ShippingZoneUpdatedPayload {
+  readonly shippingZoneId: string;
+  readonly name: string;
+  readonly countries: readonly string[];
+  readonly status: ShippingZone["status"];
+  readonly shippingZone: ShippingZone;
+}
+
+export interface ShippingZoneDeletedPayload {
+  readonly shippingZoneId: string;
+  readonly name: string;
+  readonly status: ShippingZone["status"];
+  readonly shippingZone: ShippingZone;
+}
+
+export interface ShippingMethodCreatedPayload {
+  readonly shippingMethodId: string;
+  readonly shippingZoneId: string;
+  readonly name: string;
+  readonly carrier: ShippingMethod["carrier"];
+  readonly flatRate: string;
+  readonly currency: string;
+  readonly status: ShippingMethod["status"];
+  readonly shippingMethod: ShippingMethod;
+}
+
+export interface ShippingMethodUpdatedPayload {
+  readonly shippingMethodId: string;
+  readonly shippingZoneId: string;
+  readonly name: string;
+  readonly carrier: ShippingMethod["carrier"];
+  readonly flatRate: string;
+  readonly currency: string;
+  readonly status: ShippingMethod["status"];
+  readonly shippingMethod: ShippingMethod;
+}
+
+export interface ShippingMethodDeletedPayload {
+  readonly shippingMethodId: string;
+  readonly shippingZoneId: string;
+  readonly name: string;
+  readonly status: ShippingMethod["status"];
+  readonly shippingMethod: ShippingMethod;
 }

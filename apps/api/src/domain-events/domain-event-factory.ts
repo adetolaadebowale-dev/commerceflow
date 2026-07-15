@@ -64,6 +64,14 @@ import type {
   ShipmentCancelledPayload,
   ShipmentTrackingEvent,
   ShipmentTrackingUpdatedPayload,
+  ShippingZone,
+  ShippingMethod,
+  ShippingZoneCreatedPayload,
+  ShippingZoneUpdatedPayload,
+  ShippingZoneDeletedPayload,
+  ShippingMethodCreatedPayload,
+  ShippingMethodUpdatedPayload,
+  ShippingMethodDeletedPayload,
 } from "@commerceflow/types";
 
 export function createDomainEvent<TPayload>(input: {
@@ -899,6 +907,119 @@ export function buildShipmentTrackingUpdatedEvent(
       statusSnapshot: trackingEvent.statusSnapshot,
       trackingEvent,
       shipment,
+    },
+  });
+}
+
+export function buildShippingZoneCreatedEvent(
+  shippingZone: ShippingZone,
+): DomainEvent<ShippingZoneCreatedPayload> {
+  return createDomainEvent({
+    eventType: "shipping-zone.created",
+    aggregateType: "shipping_zone",
+    aggregateId: shippingZone.id,
+    storeId: shippingZone.storeId,
+    payload: {
+      shippingZoneId: shippingZone.id,
+      name: shippingZone.name,
+      countries: shippingZone.countries,
+      status: shippingZone.status,
+      shippingZone,
+    },
+  });
+}
+
+export function buildShippingZoneUpdatedEvent(
+  shippingZone: ShippingZone,
+): DomainEvent<ShippingZoneUpdatedPayload> {
+  return createDomainEvent({
+    eventType: "shipping-zone.updated",
+    aggregateType: "shipping_zone",
+    aggregateId: shippingZone.id,
+    storeId: shippingZone.storeId,
+    payload: {
+      shippingZoneId: shippingZone.id,
+      name: shippingZone.name,
+      countries: shippingZone.countries,
+      status: shippingZone.status,
+      shippingZone,
+    },
+  });
+}
+
+export function buildShippingZoneDeletedEvent(
+  shippingZone: ShippingZone,
+): DomainEvent<ShippingZoneDeletedPayload> {
+  return createDomainEvent({
+    eventType: "shipping-zone.deleted",
+    aggregateType: "shipping_zone",
+    aggregateId: shippingZone.id,
+    storeId: shippingZone.storeId,
+    payload: {
+      shippingZoneId: shippingZone.id,
+      name: shippingZone.name,
+      status: shippingZone.status,
+      shippingZone,
+    },
+  });
+}
+
+export function buildShippingMethodCreatedEvent(
+  shippingMethod: ShippingMethod,
+): DomainEvent<ShippingMethodCreatedPayload> {
+  return createDomainEvent({
+    eventType: "shipping-method.created",
+    aggregateType: "shipping_method",
+    aggregateId: shippingMethod.id,
+    storeId: shippingMethod.storeId,
+    payload: {
+      shippingMethodId: shippingMethod.id,
+      shippingZoneId: shippingMethod.shippingZoneId,
+      name: shippingMethod.name,
+      carrier: shippingMethod.carrier,
+      flatRate: shippingMethod.flatRate,
+      currency: shippingMethod.currency,
+      status: shippingMethod.status,
+      shippingMethod,
+    },
+  });
+}
+
+export function buildShippingMethodUpdatedEvent(
+  shippingMethod: ShippingMethod,
+): DomainEvent<ShippingMethodUpdatedPayload> {
+  return createDomainEvent({
+    eventType: "shipping-method.updated",
+    aggregateType: "shipping_method",
+    aggregateId: shippingMethod.id,
+    storeId: shippingMethod.storeId,
+    payload: {
+      shippingMethodId: shippingMethod.id,
+      shippingZoneId: shippingMethod.shippingZoneId,
+      name: shippingMethod.name,
+      carrier: shippingMethod.carrier,
+      flatRate: shippingMethod.flatRate,
+      currency: shippingMethod.currency,
+      status: shippingMethod.status,
+      shippingMethod,
+    },
+  });
+}
+
+export function buildShippingMethodDeletedEvent(
+  shippingMethod: ShippingMethod,
+): DomainEvent<ShippingMethodDeletedPayload> {
+  return createDomainEvent({
+    eventType: "shipping-method.deleted",
+    aggregateType: "shipping_method",
+    aggregateId: shippingMethod.id,
+    storeId: shippingMethod.storeId,
+    payload: {
+      shippingMethodId: shippingMethod.id,
+      shippingZoneId: shippingMethod.shippingZoneId,
+      name: shippingMethod.name,
+      status: shippingMethod.status,
+      shippingMethod,
     },
   });
 }

@@ -45,4 +45,10 @@ export type {
   ShipmentDeliveredPayload,
   ShipmentCancelledPayload,
   ShipmentTrackingUpdatedPayload,
+  ShippingZoneCreatedPayload,
+  ShippingZoneUpdatedPayload,
+  ShippingZoneDeletedPayload,
+  ShippingMethodCreatedPayload,
+  ShippingMethodUpdatedPayload,
+  ShippingMethodDeletedPayload,
 } from "./payloads";

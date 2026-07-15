@@ -150,6 +150,18 @@ enum ShipmentTrackingEventType {
   exception
 }
 
+/// Mirrors ShippingZoneStatus from @commerceflow/types.
+enum ShippingZoneStatus {
+  active
+  inactive
+}
+
+/// Mirrors ShippingMethodStatus from @commerceflow/types.
+enum ShippingMethodStatus {
+  active
+  inactive
+}
+
 /// Persists User contract fields plus passwordHash (API-internal).
 model User {
   id              String        @id @default(uuid()) @db.Uuid
@@ -238,6 +250,8 @@ model Store {
   orderAppliedTaxRates  OrderAppliedTaxRate[]
   shipments             Shipment[]
   shipmentTrackingEvents ShipmentTrackingEvent[]
+  shippingZones          ShippingZone[]
+  shippingMethods        ShippingMethod[]
 
   @@unique([organizationId, slug])
   @@index([organizationId])
@@ -875,4 +889,52 @@ model ShipmentTrackingEvent {
   @@index([storeId, shipmentId])
   @@index([createdAt])
   @@map("shipment_tracking_events")
+}
+
+/// Store-scoped shipping zone grouping countries for rate configuration.
+model ShippingZone {
+  id              String             @id @default(uuid()) @db.Uuid
+  storeId         String             @map("store_id") @db.Uuid
+  store           Store              @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  name            String
+  countries       String[]
+  status          ShippingZoneStatus @default(inactive)
+  createdAt       DateTime           @default(now()) @map("created_at")
+  updatedAt       DateTime           @updatedAt @map("updated_at")
+  deletedAt       DateTime?          @map("deleted_at")
+  shippingMethods ShippingMethod[]
+
+  @@index([storeId])
+  @@index([status])
+  @@index([storeId, status])
+  @@index([deletedAt])
+  @@index([storeId, deletedAt])
+  @@map("shipping_zones")
+}
+
+/// Store-scoped flat-rate shipping method linked to a shipping zone.
+model ShippingMethod {
+  id             String               @id @default(uuid()) @db.Uuid
+  storeId        String               @map("store_id") @db.Uuid
+  store          Store                @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  shippingZoneId String               @map("shipping_zone_id") @db.Uuid
+  shippingZone   ShippingZone         @relation(fields: [shippingZoneId], references: [id], onDelete: Restrict)
+  name           String
+  description    String?
+  carrier        ShipmentCarrier
+  flatRate       Decimal              @map("flat_rate") @db.Decimal(12, 2)
+  currency       String               @db.Char(3)
+  status         ShippingMethodStatus @default(inactive)
+  createdAt      DateTime             @default(now()) @map("created_at")
+  updatedAt      DateTime             @updatedAt @map("updated_at")
+  deletedAt      DateTime?            @map("deleted_at")
+
+  @@index([storeId])
+  @@index([shippingZoneId])
+  @@index([storeId, shippingZoneId])
+  @@index([status])
+  @@index([storeId, status])
+  @@index([deletedAt])
+  @@index([storeId, deletedAt])
+  @@map("shipping_methods")
 }

@@ -31,6 +31,8 @@ const ALL_STORE_PERMISSIONS: readonly StorePermissionCode[] = [
   "shipments:read",
   "shipments:write",
   "shipments:lifecycle",
+  "shipping-config:read",
+  "shipping-config:write",
 ];
 
 const PERMISSIONS_BY_STORE_ROLE: Readonly<
@@ -69,6 +71,8 @@ const PERMISSIONS_BY_STORE_ROLE: Readonly<
     "shipments:read",
     "shipments:write",
     "shipments:lifecycle",
+    "shipping-config:read",
+    "shipping-config:write",
   ],
   staff: [
     "catalogue:read",
@@ -84,6 +88,7 @@ const PERMISSIONS_BY_STORE_ROLE: Readonly<
     "promotions:read",
     "tax-rates:read",
     "shipments:read",
+    "shipping-config:read",
   ],
 };
 

@@ -177,3 +177,19 @@ export {
   type CreateShipmentTrackingEventInput,
   type ShipmentTrackingQuery,
 } from "./shipment-tracking";
+export {
+  createShippingMethodSchema,
+  createShippingZoneSchema,
+  listShippingMethodsQuerySchema,
+  listShippingZonesQuerySchema,
+  shippingMethodIdQuerySchema,
+  shippingZoneIdQuerySchema,
+  updateShippingMethodSchema,
+  updateShippingZoneSchema,
+  type CreateShippingMethodInput,
+  type CreateShippingZoneInput,
+  type ListShippingMethodsQuery,
+  type ListShippingZonesQuery,
+  type UpdateShippingMethodInput,
+  type UpdateShippingZoneInput,
+} from "./shipping-configuration";

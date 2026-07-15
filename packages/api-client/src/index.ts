@@ -217,5 +217,29 @@ export {
   createShipmentClient,
   type ShipmentClient,
 } from "./shipments/shipment-client";
+export type {
+  CreateShippingMethodRequest,
+  CreateShippingMethodResponse,
+  CreateShippingZoneRequest,
+  CreateShippingZoneResponse,
+  DeleteShippingMethodResponse,
+  DeleteShippingZoneResponse,
+  GetShippingMethodResponse,
+  GetShippingZoneResponse,
+  ListShippingMethodsParams,
+  ListShippingMethodsResponse,
+  ListShippingZonesParams,
+  ListShippingZonesResponse,
+  ShippingMethodStoreScopedParams,
+  ShippingZoneStoreScopedParams,
+  UpdateShippingMethodRequest,
+  UpdateShippingMethodResponse,
+  UpdateShippingZoneRequest,
+  UpdateShippingZoneResponse,
+} from "./shipping-configuration/contracts";
+export {
+  createShippingConfigurationClient,
+  type ShippingConfigurationClient,
+} from "./shipping-configuration/shipping-configuration-client";
 export { ApiClientError } from "./http/api-error";
 export { apiRequest, type ApiClientConfig } from "./http/request";
