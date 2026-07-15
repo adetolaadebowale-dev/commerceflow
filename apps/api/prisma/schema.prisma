@@ -199,6 +199,14 @@ enum ReturnCondition {
   defective
 }
 
+/// Mirrors CycleCountStatus from @commerceflow/types.
+enum CycleCountStatus {
+  draft
+  counting
+  completed
+  approved
+}
+
 /// Mirrors ShippingZoneStatus from @commerceflow/types.
 enum ShippingZoneStatus {
   active
@@ -227,6 +235,7 @@ model User {
   storeMemberships StoreMember[]
   orders          Order[]
   auditLogs       AuditLog[]
+  inventoryAdjustments InventoryAdjustment[]
 
   @@index([deletedAt])
   @@map("users")
@@ -304,6 +313,8 @@ model Store {
   pickLists              PickList[]
   inventoryAllocations   InventoryAllocation[]
   returns                Return[]
+  inventoryAdjustments   InventoryAdjustment[]
+  cycleCounts            CycleCount[]
   shippingZones          ShippingZone[]
   shippingMethods        ShippingMethod[]
 
@@ -447,6 +458,8 @@ model InventoryItem {
   inventoryReservations InventoryReservation[]
   inventoryAllocations    InventoryAllocation[]
   returnItems             ReturnItem[]
+  inventoryAdjustments    InventoryAdjustment[]
+  cycleCountItems         CycleCountItem[]
 
   @@unique([storeId, productVariantId])
   @@index([storeId])
@@ -1121,6 +1134,73 @@ model ReturnItem {
   @@index([orderItemId])
   @@index([inventoryItemId])
   @@map("return_items")
+}
+
+/// Immutable manual inventory adjustment record with ledger linkage.
+model InventoryAdjustment {
+  id                    String        @id @default(uuid()) @db.Uuid
+  storeId               String        @map("store_id") @db.Uuid
+  store                 Store         @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  inventoryItemId       String        @map("inventory_item_id") @db.Uuid
+  inventoryItem         InventoryItem @relation(fields: [inventoryItemId], references: [id], onDelete: Restrict)
+  adjustmentNumber      String        @map("adjustment_number")
+  movementQuantity      Int           @map("movement_quantity")
+  reason                String
+  notes                 String?
+  previousQuantityOnHand Int          @map("previous_quantity_on_hand")
+  newQuantityOnHand     Int           @map("new_quantity_on_hand")
+  createdByUserId       String        @map("created_by_user_id") @db.Uuid
+  createdByUser         User          @relation(fields: [createdByUserId], references: [id], onDelete: Restrict)
+  createdAt             DateTime      @default(now()) @map("created_at")
+  cycleCountItems       CycleCountItem[]
+
+  @@unique([storeId, adjustmentNumber])
+  @@index([storeId])
+  @@index([inventoryItemId])
+  @@index([storeId, inventoryItemId])
+  @@index([createdAt])
+  @@map("inventory_adjustments")
+}
+
+/// Store-scoped physical inventory cycle count session.
+model CycleCount {
+  id              String           @id @default(uuid()) @db.Uuid
+  storeId         String           @map("store_id") @db.Uuid
+  store           Store            @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  cycleCountNumber String          @map("cycle_count_number")
+  status          CycleCountStatus @default(draft)
+  startedAt       DateTime?        @map("started_at")
+  completedAt     DateTime?        @map("completed_at")
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+  items           CycleCountItem[]
+
+  @@unique([storeId, cycleCountNumber])
+  @@index([storeId])
+  @@index([status])
+  @@index([storeId, status])
+  @@map("cycle_counts")
+}
+
+/// Line item belonging to a cycle count with expected and counted quantities.
+model CycleCountItem {
+  id               String               @id @default(uuid()) @db.Uuid
+  cycleCountId     String               @map("cycle_count_id") @db.Uuid
+  cycleCount       CycleCount           @relation(fields: [cycleCountId], references: [id], onDelete: Cascade)
+  inventoryItemId  String               @map("inventory_item_id") @db.Uuid
+  inventoryItem    InventoryItem        @relation(fields: [inventoryItemId], references: [id], onDelete: Restrict)
+  expectedQuantity Int                  @map("expected_quantity")
+  countedQuantity  Int                  @default(0) @map("counted_quantity")
+  variance         Int                  @default(0)
+  adjustmentId     String?              @map("adjustment_id") @db.Uuid
+  adjustment       InventoryAdjustment? @relation(fields: [adjustmentId], references: [id], onDelete: SetNull)
+  createdAt        DateTime             @default(now()) @map("created_at")
+  updatedAt        DateTime             @updatedAt @map("updated_at")
+
+  @@index([cycleCountId])
+  @@index([inventoryItemId])
+  @@index([adjustmentId])
+  @@map("cycle_count_items")
 }
 
 /// Append-only shipment tracking timeline entry.

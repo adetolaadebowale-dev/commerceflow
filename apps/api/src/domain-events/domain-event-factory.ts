@@ -91,6 +91,14 @@ import type {
   ReturnReceivedPayload,
   ReturnInspectedPayload,
   ReturnCompletedPayload,
+  InventoryAdjustmentResult,
+  InventoryAdjustedPayload,
+  CycleCount,
+  CycleCountApprovalResult,
+  CycleCountCreatedPayload,
+  CycleCountStartedPayload,
+  CycleCountCompletedPayload,
+  CycleCountApprovedPayload,
   ShippingZone,
   ShippingMethod,
   ShippingZoneCreatedPayload,
@@ -1285,6 +1293,101 @@ export function buildReturnCompletedEvent(
       shipmentId: result.return.shipmentId,
       returnNumber: result.return.returnNumber,
       status: result.return.status,
+      stockMovementCount: result.stockMovements.length,
+      result,
+    },
+  });
+}
+
+export function buildInventoryAdjustedEvent(
+  result: InventoryAdjustmentResult,
+): DomainEvent<InventoryAdjustedPayload> {
+  return createDomainEvent({
+    eventType: "inventory.adjusted",
+    aggregateType: "inventory_adjustment",
+    aggregateId: result.adjustment.id,
+    storeId: result.adjustment.storeId,
+    payload: {
+      inventoryAdjustmentId: result.adjustment.id,
+      inventoryItemId: result.adjustment.inventoryItemId,
+      adjustmentNumber: result.adjustment.adjustmentNumber,
+      movementQuantity: result.adjustment.movementQuantity,
+      previousQuantityOnHand: result.adjustment.previousQuantityOnHand,
+      newQuantityOnHand: result.adjustment.newQuantityOnHand,
+      reason: result.adjustment.reason,
+      result,
+    },
+  });
+}
+
+export function buildCycleCountCreatedEvent(
+  cycleCount: CycleCount,
+): DomainEvent<CycleCountCreatedPayload> {
+  return createDomainEvent({
+    eventType: "cycle-count.created",
+    aggregateType: "cycle_count",
+    aggregateId: cycleCount.id,
+    storeId: cycleCount.storeId,
+    payload: {
+      cycleCountId: cycleCount.id,
+      cycleCountNumber: cycleCount.cycleCountNumber,
+      status: cycleCount.status,
+      itemCount: cycleCount.items.length,
+      cycleCount,
+    },
+  });
+}
+
+export function buildCycleCountStartedEvent(
+  cycleCount: CycleCount,
+): DomainEvent<CycleCountStartedPayload> {
+  return createDomainEvent({
+    eventType: "cycle-count.started",
+    aggregateType: "cycle_count",
+    aggregateId: cycleCount.id,
+    storeId: cycleCount.storeId,
+    payload: {
+      cycleCountId: cycleCount.id,
+      cycleCountNumber: cycleCount.cycleCountNumber,
+      previousStatus: "draft",
+      status: "counting",
+      cycleCount,
+    },
+  });
+}
+
+export function buildCycleCountCompletedEvent(
+  cycleCount: CycleCount,
+): DomainEvent<CycleCountCompletedPayload> {
+  return createDomainEvent({
+    eventType: "cycle-count.completed",
+    aggregateType: "cycle_count",
+    aggregateId: cycleCount.id,
+    storeId: cycleCount.storeId,
+    payload: {
+      cycleCountId: cycleCount.id,
+      cycleCountNumber: cycleCount.cycleCountNumber,
+      previousStatus: "counting",
+      status: "completed",
+      cycleCount,
+    },
+  });
+}
+
+export function buildCycleCountApprovedEvent(
+  result: CycleCountApprovalResult,
+): DomainEvent<CycleCountApprovedPayload> {
+  return createDomainEvent({
+    eventType: "cycle-count.approved",
+    aggregateType: "cycle_count",
+    aggregateId: result.cycleCount.id,
+    storeId: result.cycleCount.storeId,
+    payload: {
+      cycleCountId: result.cycleCount.id,
+      cycleCountNumber: result.cycleCount.cycleCountNumber,
+      previousStatus: "completed",
+      status: "approved",
+      adjustmentCount: result.adjustments.length,
       stockMovementCount: result.stockMovements.length,
       result,
     },

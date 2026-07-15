@@ -60,6 +60,11 @@ import {
   buildReturnReceivedEvent,
   buildReturnInspectedEvent,
   buildReturnCompletedEvent,
+  buildInventoryAdjustedEvent,
+  buildCycleCountCreatedEvent,
+  buildCycleCountStartedEvent,
+  buildCycleCountCompletedEvent,
+  buildCycleCountApprovedEvent,
   buildShippingZoneCreatedEvent,
   buildShippingZoneUpdatedEvent,
   buildShippingZoneDeletedEvent,
@@ -99,6 +104,9 @@ import type {
   StockMovement,
   Return,
   ReturnCompletionResult,
+  InventoryAdjustmentResult,
+  CycleCount,
+  CycleCountApprovalResult,
   ShippingZone,
   ShippingMethod,
 } from "@commerceflow/types";
@@ -454,6 +462,26 @@ export class DomainEventPublisher {
 
   publishReturnCompleted(result: ReturnCompletionResult): void {
     this.dispatch(buildReturnCompletedEvent(result));
+  }
+
+  publishInventoryAdjusted(result: InventoryAdjustmentResult): void {
+    this.dispatch(buildInventoryAdjustedEvent(result));
+  }
+
+  publishCycleCountCreated(cycleCount: CycleCount): void {
+    this.dispatch(buildCycleCountCreatedEvent(cycleCount));
+  }
+
+  publishCycleCountStarted(cycleCount: CycleCount): void {
+    this.dispatch(buildCycleCountStartedEvent(cycleCount));
+  }
+
+  publishCycleCountCompleted(cycleCount: CycleCount): void {
+    this.dispatch(buildCycleCountCompletedEvent(cycleCount));
+  }
+
+  publishCycleCountApproved(result: CycleCountApprovalResult): void {
+    this.dispatch(buildCycleCountApprovedEvent(result));
   }
 
   publishShippingZoneCreated(shippingZone: ShippingZone): void {

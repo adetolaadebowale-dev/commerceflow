@@ -27,6 +27,7 @@ export const AUDIT_ACTIONS = [
   "report_shortage",
   "receive",
   "inspect",
+  "approve",
   "fulfill",
 ] as const;
 

@@ -29,6 +29,10 @@ import type { ShipmentFulfillmentResult } from "../fulfillment/shipment-fulfillm
 import type { StockMovement } from "../stock-movement/stock-movement";
 import type { Return } from "../returns/return";
 import type { ReturnCompletionResult } from "../returns/return-completion-result";
+import type { InventoryAdjustmentResult } from "../inventory-adjustments/inventory-adjustment";
+import type { CycleCount } from "../cycle-counts/cycle-count";
+import type { CycleCountApprovalResult } from "../cycle-counts/cycle-count";
+import type { CycleCountStatus } from "../cycle-counts/cycle-count-status";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -585,6 +589,51 @@ export interface ReturnCompletedPayload {
   readonly status: Return["status"];
   readonly stockMovementCount: number;
   readonly result: ReturnCompletionResult;
+}
+
+export interface InventoryAdjustedPayload {
+  readonly inventoryAdjustmentId: string;
+  readonly inventoryItemId: string;
+  readonly adjustmentNumber: string;
+  readonly movementQuantity: number;
+  readonly previousQuantityOnHand: number;
+  readonly newQuantityOnHand: number;
+  readonly reason: string;
+  readonly result: InventoryAdjustmentResult;
+}
+
+export interface CycleCountCreatedPayload {
+  readonly cycleCountId: string;
+  readonly cycleCountNumber: string;
+  readonly status: CycleCountStatus;
+  readonly itemCount: number;
+  readonly cycleCount: CycleCount;
+}
+
+export interface CycleCountStartedPayload {
+  readonly cycleCountId: string;
+  readonly cycleCountNumber: string;
+  readonly previousStatus: "draft";
+  readonly status: "counting";
+  readonly cycleCount: CycleCount;
+}
+
+export interface CycleCountCompletedPayload {
+  readonly cycleCountId: string;
+  readonly cycleCountNumber: string;
+  readonly previousStatus: "counting";
+  readonly status: "completed";
+  readonly cycleCount: CycleCount;
+}
+
+export interface CycleCountApprovedPayload {
+  readonly cycleCountId: string;
+  readonly cycleCountNumber: string;
+  readonly previousStatus: "completed";
+  readonly status: "approved";
+  readonly adjustmentCount: number;
+  readonly stockMovementCount: number;
+  readonly result: CycleCountApprovalResult;
 }
 
 export interface ShippingZoneCreatedPayload {

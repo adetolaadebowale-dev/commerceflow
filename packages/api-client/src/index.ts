@@ -293,5 +293,35 @@ export {
   createReturnClient,
   type ReturnClient,
 } from "./returns/return-client";
+export type {
+  CreateAdjustmentRequest,
+  CreateAdjustmentResponse,
+  GetAdjustmentParams,
+  GetAdjustmentResponse,
+  ListAdjustmentsParams,
+  ListAdjustmentsResponse,
+} from "./inventory-adjustments/inventory-adjustment-client";
+export {
+  createInventoryAdjustmentClient,
+  type InventoryAdjustmentClient,
+} from "./inventory-adjustments/inventory-adjustment-client";
+export type {
+  ApproveCycleCountRequest,
+  ApproveCycleCountResponse,
+  CompleteCycleCountRequest,
+  CompleteCycleCountResponse,
+  CreateCycleCountRequest,
+  CreateCycleCountResponse,
+  GetCycleCountParams,
+  GetCycleCountResponse,
+  ListCycleCountsParams,
+  ListCycleCountsResponse,
+  StartCycleCountRequest,
+  StartCycleCountResponse,
+} from "./cycle-counts/cycle-count-client";
+export {
+  createCycleCountClient,
+  type CycleCountClient,
+} from "./cycle-counts/cycle-count-client";
 export { ApiClientError } from "./http/api-error";
 export { apiRequest, type ApiClientConfig } from "./http/request";

@@ -123,6 +123,17 @@ export {
   type RestockableReturnCondition,
 } from "./returns";
 export {
+  type InventoryAdjustment,
+  type InventoryAdjustmentResult,
+} from "./inventory-adjustments";
+export {
+  CYCLE_COUNT_STATUSES,
+  type CycleCount,
+  type CycleCountApprovalResult,
+  type CycleCountItem,
+  type CycleCountStatus,
+} from "./cycle-counts";
+export {
   type AppliedCartPromotion,
   type OrderPromotionSnapshot,
 } from "./promotion-redemption";
@@ -217,6 +228,11 @@ export {
   type ReturnReceivedPayload,
   type ReturnInspectedPayload,
   type ReturnCompletedPayload,
+  type InventoryAdjustedPayload,
+  type CycleCountCreatedPayload,
+  type CycleCountStartedPayload,
+  type CycleCountCompletedPayload,
+  type CycleCountApprovedPayload,
   type ShippingZoneCreatedPayload,
   type ShippingZoneUpdatedPayload,
   type ShippingZoneDeletedPayload,

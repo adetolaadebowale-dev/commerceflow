@@ -228,6 +228,26 @@ export {
   type ReturnIdQuery,
 } from "./returns";
 export {
+  createInventoryAdjustmentSchema,
+  inventoryAdjustmentIdQuerySchema,
+  listInventoryAdjustmentsQuerySchema,
+  type CreateInventoryAdjustmentInput,
+  type InventoryAdjustmentIdQuery,
+  type ListInventoryAdjustmentsQuery,
+} from "./inventory-adjustments";
+export {
+  approveCycleCountSchema,
+  createCycleCountSchema,
+  cycleCountIdQuerySchema,
+  listCycleCountsQuerySchema,
+  updateCycleCountSchema,
+  type ApproveCycleCountInput,
+  type CreateCycleCountInput,
+  type CycleCountIdQuery,
+  type ListCycleCountsQuery,
+  type UpdateCycleCountInput,
+} from "./cycle-counts";
+export {
   createShippingMethodSchema,
   createShippingZoneSchema,
   listShippingMethodsQuerySchema,

@@ -24,6 +24,8 @@ export const AUDIT_ENTITY_TYPES = [
   "pick_list",
   "inventory_allocation",
   "return",
+  "inventory_adjustment",
+  "cycle_count",
   "shipping_zone",
   "shipping_method",
 ] as const;
