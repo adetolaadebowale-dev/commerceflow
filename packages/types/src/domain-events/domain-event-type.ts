@@ -39,6 +39,7 @@ export const DOMAIN_EVENT_TYPES = [
   "shipment.shipped",
   "shipment.delivered",
   "shipment.cancelled",
+  "shipment.tracking.updated",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

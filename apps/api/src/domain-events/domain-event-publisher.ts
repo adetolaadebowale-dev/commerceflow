@@ -41,6 +41,7 @@ import {
   buildShipmentShippedEvent,
   buildShipmentDeliveredEvent,
   buildShipmentCancelledEvent,
+  buildShipmentTrackingUpdatedEvent,
 } from "./domain-event-factory";
 import type {
   Cart,
@@ -64,6 +65,7 @@ import type {
   TaxRateStatus,
   Shipment,
   ShipmentStatus,
+  ShipmentTrackingEvent,
 } from "@commerceflow/types";
 
 export interface DomainEventPublisherDependencies {
@@ -295,6 +297,13 @@ export class DomainEventPublisher {
     previousStatus: ShipmentStatus,
   ): void {
     this.dispatch(buildShipmentCancelledEvent(shipment, previousStatus));
+  }
+
+  publishShipmentTrackingUpdated(
+    shipment: Shipment,
+    trackingEvent: ShipmentTrackingEvent,
+  ): void {
+    this.dispatch(buildShipmentTrackingUpdatedEvent(shipment, trackingEvent));
   }
 
   private dispatch(event: DomainEvent): void {

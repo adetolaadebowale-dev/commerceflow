@@ -16,6 +16,7 @@ import type { Promotion } from "../promotions/promotion";
 import type { TaxRate } from "../tax-rates/tax-rate";
 import type { Shipment } from "../shipments/shipment";
 import type { ShipmentStatus } from "../shipments/shipment-status";
+import type { ShipmentTrackingEvent } from "../shipments/shipment-tracking-event";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -400,5 +401,14 @@ export interface ShipmentCancelledPayload {
   readonly shipmentNumber: string;
   readonly previousStatus: ShipmentStatus;
   readonly status: "cancelled";
+  readonly shipment: Shipment;
+}
+
+export interface ShipmentTrackingUpdatedPayload {
+  readonly shipmentId: string;
+  readonly orderId: string;
+  readonly shipmentNumber: string;
+  readonly statusSnapshot: ShipmentStatus;
+  readonly trackingEvent: ShipmentTrackingEvent;
   readonly shipment: Shipment;
 }

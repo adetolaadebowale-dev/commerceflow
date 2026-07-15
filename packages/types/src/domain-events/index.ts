@@ -44,4 +44,5 @@ export type {
   ShipmentShippedPayload,
   ShipmentDeliveredPayload,
   ShipmentCancelledPayload,
+  ShipmentTrackingUpdatedPayload,
 } from "./payloads";

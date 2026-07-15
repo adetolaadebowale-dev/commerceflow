@@ -1,16 +1,27 @@
 import type {
   CreateShipmentRequest,
   CreateShipmentResponse,
+  CreateShipmentTrackingEventRequest,
+  CreateShipmentTrackingEventResponse,
   GetShipmentResponse,
   ListOrderShipmentsParams,
   ListOrderShipmentsResponse,
+  ListShipmentTrackingEventsResponse,
   ShipmentActionResponse,
   ShipmentStoreScopedParams,
+  ShipmentTrackingParams,
 } from "./contracts";
 import type { ApiClientConfig } from "../http/request";
 import { apiRequest } from "../http/request";
 
 function toQueryString(params: ShipmentStoreScopedParams): string {
+  const searchParams = new URLSearchParams();
+  searchParams.set("storeId", params.storeId);
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
+}
+
+function toTrackingQueryString(params: ShipmentTrackingParams): string {
   const searchParams = new URLSearchParams();
   searchParams.set("storeId", params.storeId);
   const query = searchParams.toString();
@@ -43,6 +54,15 @@ export interface ShipmentClient {
     id: string,
     params: ShipmentStoreScopedParams,
   ): Promise<ShipmentActionResponse["data"]>;
+  listTrackingEvents(
+    id: string,
+    params: ShipmentTrackingParams,
+  ): Promise<ListShipmentTrackingEventsResponse["data"]>;
+  createTrackingEvent(
+    id: string,
+    input: CreateShipmentTrackingEventRequest,
+    params: ShipmentTrackingParams,
+  ): Promise<CreateShipmentTrackingEventResponse["data"]>;
 }
 
 export function createShipmentClient(config: ApiClientConfig): ShipmentClient {
@@ -87,6 +107,21 @@ export function createShipmentClient(config: ApiClientConfig): ShipmentClient {
       apiRequest<ShipmentActionResponse["data"]>(config, {
         method: "POST",
         path: `/api/shipments/${id}/cancel${toQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    listTrackingEvents: (id, params) =>
+      apiRequest<ListShipmentTrackingEventsResponse["data"]>(config, {
+        method: "GET",
+        path: `/api/shipments/${id}/tracking-events${toTrackingQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    createTrackingEvent: (id, input, params) =>
+      apiRequest<CreateShipmentTrackingEventResponse["data"]>(config, {
+        method: "POST",
+        path: `/api/shipments/${id}/tracking-events${toTrackingQueryString(params)}`,
+        body: input,
         accessToken: config.getAccessToken?.(),
       }),
   };

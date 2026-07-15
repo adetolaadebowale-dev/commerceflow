@@ -62,6 +62,8 @@ import type {
   ShipmentShippedPayload,
   ShipmentDeliveredPayload,
   ShipmentCancelledPayload,
+  ShipmentTrackingEvent,
+  ShipmentTrackingUpdatedPayload,
 } from "@commerceflow/types";
 
 export function createDomainEvent<TPayload>(input: {
@@ -876,6 +878,26 @@ export function buildShipmentCancelledEvent(
       shipmentNumber: shipment.shipmentNumber,
       previousStatus,
       status: "cancelled",
+      shipment,
+    },
+  });
+}
+
+export function buildShipmentTrackingUpdatedEvent(
+  shipment: Shipment,
+  trackingEvent: ShipmentTrackingEvent,
+): DomainEvent<ShipmentTrackingUpdatedPayload> {
+  return createDomainEvent({
+    eventType: "shipment.tracking.updated",
+    aggregateType: "shipment",
+    aggregateId: shipment.id,
+    storeId: shipment.storeId,
+    payload: {
+      shipmentId: shipment.id,
+      orderId: shipment.orderId,
+      shipmentNumber: shipment.shipmentNumber,
+      statusSnapshot: trackingEvent.statusSnapshot,
+      trackingEvent,
       shipment,
     },
   });

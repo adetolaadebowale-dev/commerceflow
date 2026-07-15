@@ -69,6 +69,7 @@ export {
 export {
   SHIPMENT_CARRIERS,
   SHIPMENT_STATUSES,
+  SHIPMENT_TRACKING_EVENT_TYPES,
   type Shipment,
   type ShipmentCarrier,
   type ShipmentCarrierGateway,
@@ -76,6 +77,9 @@ export {
   type ShipmentGatewayResult,
   type ShipmentInitializeRequest,
   type ShipmentStatus,
+  type ShipmentTrackingEvent,
+  type ShipmentTrackingEventType,
+  type ShipmentTrackingStatusSnapshot,
 } from "./shipments";
 export {
   type AppliedCartPromotion,
@@ -153,4 +157,5 @@ export {
   type ShipmentShippedPayload,
   type ShipmentDeliveredPayload,
   type ShipmentCancelledPayload,
+  type ShipmentTrackingUpdatedPayload,
 } from "./domain-events";

@@ -208,6 +208,10 @@ export type {
   ListOrderShipmentsResponse,
   ShipmentActionResponse,
   ShipmentStoreScopedParams,
+  CreateShipmentTrackingEventRequest,
+  CreateShipmentTrackingEventResponse,
+  ListShipmentTrackingEventsResponse,
+  ShipmentTrackingParams,
 } from "./shipments/contracts";
 export {
   createShipmentClient,

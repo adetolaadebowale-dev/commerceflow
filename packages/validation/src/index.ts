@@ -171,3 +171,9 @@ export {
   type OrderShipmentActionQuery,
   type ShipmentIdQuery,
 } from "./shipments";
+export {
+  createShipmentTrackingEventSchema,
+  shipmentTrackingQuerySchema,
+  type CreateShipmentTrackingEventInput,
+  type ShipmentTrackingQuery,
+} from "./shipment-tracking";
