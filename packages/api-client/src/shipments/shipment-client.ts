@@ -3,13 +3,21 @@ import type {
   CreateShipmentResponse,
   CreateShipmentTrackingEventRequest,
   CreateShipmentTrackingEventResponse,
+  CreateShipmentPackageRequest,
+  CreateShipmentPackageResponse,
   GetShipmentResponse,
+  GetShipmentPackageResponse,
   ListOrderShipmentsParams,
   ListOrderShipmentsResponse,
   ListShipmentTrackingEventsResponse,
+  ListShipmentPackagesResponse,
   ShipmentActionResponse,
+  ShipmentPackageActionResponse,
+  ShipmentPackageIdParams,
+  ShipmentPackageParams,
   ShipmentStoreScopedParams,
   ShipmentTrackingParams,
+  UpdateShipmentPackageRequest,
 } from "./contracts";
 import type { ApiClientConfig } from "../http/request";
 import { apiRequest } from "../http/request";
@@ -22,6 +30,20 @@ function toQueryString(params: ShipmentStoreScopedParams): string {
 }
 
 function toTrackingQueryString(params: ShipmentTrackingParams): string {
+  const searchParams = new URLSearchParams();
+  searchParams.set("storeId", params.storeId);
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
+}
+
+function toPackageQueryString(params: ShipmentPackageParams): string {
+  const searchParams = new URLSearchParams();
+  searchParams.set("storeId", params.storeId);
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
+}
+
+function toPackageIdQueryString(params: ShipmentPackageIdParams): string {
   const searchParams = new URLSearchParams();
   searchParams.set("storeId", params.storeId);
   const query = searchParams.toString();
@@ -63,6 +85,28 @@ export interface ShipmentClient {
     input: CreateShipmentTrackingEventRequest,
     params: ShipmentTrackingParams,
   ): Promise<CreateShipmentTrackingEventResponse["data"]>;
+  createPackage(
+    shipmentId: string,
+    input: CreateShipmentPackageRequest,
+    params: ShipmentPackageParams,
+  ): Promise<CreateShipmentPackageResponse["data"]>;
+  listPackages(
+    shipmentId: string,
+    params: ShipmentPackageParams,
+  ): Promise<ListShipmentPackagesResponse["data"]>;
+  getPackage(
+    id: string,
+    params: ShipmentPackageIdParams,
+  ): Promise<GetShipmentPackageResponse["data"]>;
+  updatePackage(
+    id: string,
+    input: UpdateShipmentPackageRequest,
+    params: ShipmentPackageIdParams,
+  ): Promise<ShipmentPackageActionResponse["data"]>;
+  deletePackage(
+    id: string,
+    params: ShipmentPackageIdParams,
+  ): Promise<ShipmentPackageActionResponse["data"]>;
 }
 
 export function createShipmentClient(config: ApiClientConfig): ShipmentClient {
@@ -122,6 +166,43 @@ export function createShipmentClient(config: ApiClientConfig): ShipmentClient {
         method: "POST",
         path: `/api/shipments/${id}/tracking-events${toTrackingQueryString(params)}`,
         body: input,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    createPackage: (shipmentId, input, params) =>
+      apiRequest<CreateShipmentPackageResponse["data"]>(config, {
+        method: "POST",
+        path: `/api/shipments/${shipmentId}/packages${toPackageQueryString(params)}`,
+        body: input,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    listPackages: (shipmentId, params) =>
+      apiRequest<ListShipmentPackagesResponse["data"]>(config, {
+        method: "GET",
+        path: `/api/shipments/${shipmentId}/packages${toPackageQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    getPackage: (id, params) =>
+      apiRequest<GetShipmentPackageResponse["data"]>(config, {
+        method: "GET",
+        path: `/api/shipment-packages/${id}${toPackageIdQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    updatePackage: (id, input, params) =>
+      apiRequest<ShipmentPackageActionResponse["data"]>(config, {
+        method: "PATCH",
+        path: `/api/shipment-packages/${id}${toPackageIdQueryString(params)}`,
+        body: input,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    deletePackage: (id, params) =>
+      apiRequest<ShipmentPackageActionResponse["data"]>(config, {
+        method: "DELETE",
+        path: `/api/shipment-packages/${id}${toPackageIdQueryString(params)}`,
         accessToken: config.getAccessToken?.(),
       }),
   };

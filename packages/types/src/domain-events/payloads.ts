@@ -17,6 +17,7 @@ import type { TaxRate } from "../tax-rates/tax-rate";
 import type { Shipment } from "../shipments/shipment";
 import type { ShipmentStatus } from "../shipments/shipment-status";
 import type { ShipmentTrackingEvent } from "../shipments/shipment-tracking-event";
+import type { ShipmentPackage } from "../shipments/shipment-package";
 import type { OrderShippingMethodSnapshot } from "../shipping-configuration/order-shipping-method-snapshot";
 import type { ShippingZone } from "../shipping-configuration/shipping-zone";
 import type { ShippingMethod } from "../shipping-configuration/shipping-method";
@@ -420,6 +421,30 @@ export interface ShipmentTrackingUpdatedPayload {
   readonly shipmentNumber: string;
   readonly statusSnapshot: ShipmentStatus;
   readonly trackingEvent: ShipmentTrackingEvent;
+  readonly shipment: Shipment;
+}
+
+export interface ShipmentPackageCreatedPayload {
+  readonly shipmentPackageId: string;
+  readonly shipmentId: string;
+  readonly packageNumber: string;
+  readonly shipmentPackage: ShipmentPackage;
+  readonly shipment: Shipment;
+}
+
+export interface ShipmentPackageUpdatedPayload {
+  readonly shipmentPackageId: string;
+  readonly shipmentId: string;
+  readonly packageNumber: string;
+  readonly shipmentPackage: ShipmentPackage;
+  readonly shipment: Shipment;
+}
+
+export interface ShipmentPackageDeletedPayload {
+  readonly shipmentPackageId: string;
+  readonly shipmentId: string;
+  readonly packageNumber: string;
+  readonly shipmentPackage: ShipmentPackage;
   readonly shipment: Shipment;
 }
 

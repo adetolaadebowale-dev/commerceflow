@@ -7,6 +7,15 @@ export {
   type ShipmentStatus,
 } from "./shipment-status";
 export type { Shipment } from "./shipment";
+export type { ShipmentPackage } from "./shipment-package";
+export {
+  WEIGHT_UNITS,
+  type WeightUnit,
+} from "./weight-unit";
+export {
+  DIMENSION_UNITS,
+  type DimensionUnit,
+} from "./dimension-unit";
 export type {
   ShipmentCarrierGateway,
   ShipmentDispatchContext,

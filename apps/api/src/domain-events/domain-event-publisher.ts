@@ -43,6 +43,9 @@ import {
   buildShipmentDeliveredEvent,
   buildShipmentCancelledEvent,
   buildShipmentTrackingUpdatedEvent,
+  buildShipmentPackageCreatedEvent,
+  buildShipmentPackageUpdatedEvent,
+  buildShipmentPackageDeletedEvent,
   buildShippingZoneCreatedEvent,
   buildShippingZoneUpdatedEvent,
   buildShippingZoneDeletedEvent,
@@ -74,6 +77,7 @@ import type {
   Shipment,
   ShipmentStatus,
   ShipmentTrackingEvent,
+  ShipmentPackage,
   ShippingZone,
   ShippingMethod,
 } from "@commerceflow/types";
@@ -324,6 +328,33 @@ export class DomainEventPublisher {
     trackingEvent: ShipmentTrackingEvent,
   ): void {
     this.dispatch(buildShipmentTrackingUpdatedEvent(shipment, trackingEvent));
+  }
+
+  publishShipmentPackageCreated(
+    shipment: Shipment,
+    shipmentPackage: ShipmentPackage,
+  ): void {
+    this.dispatch(
+      buildShipmentPackageCreatedEvent(shipment, shipmentPackage),
+    );
+  }
+
+  publishShipmentPackageUpdated(
+    shipment: Shipment,
+    shipmentPackage: ShipmentPackage,
+  ): void {
+    this.dispatch(
+      buildShipmentPackageUpdatedEvent(shipment, shipmentPackage),
+    );
+  }
+
+  publishShipmentPackageDeleted(
+    shipment: Shipment,
+    shipmentPackage: ShipmentPackage,
+  ): void {
+    this.dispatch(
+      buildShipmentPackageDeletedEvent(shipment, shipmentPackage),
+    );
   }
 
   publishShippingZoneCreated(shippingZone: ShippingZone): void {

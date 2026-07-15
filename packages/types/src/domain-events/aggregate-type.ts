@@ -13,6 +13,7 @@ export const DOMAIN_AGGREGATE_TYPES = [
   "promotion",
   "tax_rate",
   "shipment",
+  "shipment_package",
   "shipping_zone",
   "shipping_method",
 ] as const;

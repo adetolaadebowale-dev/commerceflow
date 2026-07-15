@@ -150,6 +150,21 @@ enum ShipmentTrackingEventType {
   exception
 }
 
+/// Mirrors WeightUnit from @commerceflow/types.
+enum WeightUnit {
+  kg
+  lb
+  g
+  oz
+}
+
+/// Mirrors DimensionUnit from @commerceflow/types.
+enum DimensionUnit {
+  cm
+  in
+  m
+}
+
 /// Mirrors ShippingZoneStatus from @commerceflow/types.
 enum ShippingZoneStatus {
   active
@@ -251,6 +266,7 @@ model Store {
   orderAppliedShippingMethods OrderAppliedShippingMethod[]
   shipments             Shipment[]
   shipmentTrackingEvents ShipmentTrackingEvent[]
+  shipmentPackages       ShipmentPackage[]
   shippingZones          ShippingZone[]
   shippingMethods        ShippingMethod[]
 
@@ -896,6 +912,7 @@ model Shipment {
   createdAt              DateTime        @default(now()) @map("created_at")
   updatedAt              DateTime        @updatedAt @map("updated_at")
   trackingEvents         ShipmentTrackingEvent[]
+  packages               ShipmentPackage[]
 
   @@unique([storeId, shipmentNumber])
   @@unique([storeId, orderId])
@@ -905,6 +922,32 @@ model Shipment {
   @@index([status])
   @@index([storeId, status])
   @@map("shipments")
+}
+
+/// Physical package belonging to a shipment with warehouse dimensions and optional tracking.
+model ShipmentPackage {
+  id             String         @id @default(uuid()) @db.Uuid
+  shipmentId     String         @map("shipment_id") @db.Uuid
+  shipment       Shipment       @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  storeId        String         @map("store_id") @db.Uuid
+  store          Store          @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  packageNumber  String         @map("package_number")
+  weight         Decimal        @db.Decimal(12, 3)
+  weightUnit     WeightUnit     @map("weight_unit")
+  length         Decimal        @db.Decimal(12, 3)
+  width          Decimal        @db.Decimal(12, 3)
+  height         Decimal        @db.Decimal(12, 3)
+  dimensionUnit  DimensionUnit  @map("dimension_unit")
+  trackingNumber String?        @map("tracking_number")
+  metadata       Json?
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+
+  @@unique([storeId, packageNumber])
+  @@index([storeId])
+  @@index([shipmentId])
+  @@index([storeId, shipmentId])
+  @@map("shipment_packages")
 }
 
 /// Append-only shipment tracking timeline entry.

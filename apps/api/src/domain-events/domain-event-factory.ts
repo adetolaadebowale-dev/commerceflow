@@ -66,6 +66,10 @@ import type {
   ShipmentCancelledPayload,
   ShipmentTrackingEvent,
   ShipmentTrackingUpdatedPayload,
+  ShipmentPackage,
+  ShipmentPackageCreatedPayload,
+  ShipmentPackageUpdatedPayload,
+  ShipmentPackageDeletedPayload,
   ShippingZone,
   ShippingMethod,
   ShippingZoneCreatedPayload,
@@ -927,6 +931,63 @@ export function buildShipmentTrackingUpdatedEvent(
       shipmentNumber: shipment.shipmentNumber,
       statusSnapshot: trackingEvent.statusSnapshot,
       trackingEvent,
+      shipment,
+    },
+  });
+}
+
+export function buildShipmentPackageCreatedEvent(
+  shipment: Shipment,
+  shipmentPackage: ShipmentPackage,
+): DomainEvent<ShipmentPackageCreatedPayload> {
+  return createDomainEvent({
+    eventType: "shipment.package.created",
+    aggregateType: "shipment_package",
+    aggregateId: shipmentPackage.id,
+    storeId: shipmentPackage.storeId,
+    payload: {
+      shipmentPackageId: shipmentPackage.id,
+      shipmentId: shipment.id,
+      packageNumber: shipmentPackage.packageNumber,
+      shipmentPackage,
+      shipment,
+    },
+  });
+}
+
+export function buildShipmentPackageUpdatedEvent(
+  shipment: Shipment,
+  shipmentPackage: ShipmentPackage,
+): DomainEvent<ShipmentPackageUpdatedPayload> {
+  return createDomainEvent({
+    eventType: "shipment.package.updated",
+    aggregateType: "shipment_package",
+    aggregateId: shipmentPackage.id,
+    storeId: shipmentPackage.storeId,
+    payload: {
+      shipmentPackageId: shipmentPackage.id,
+      shipmentId: shipment.id,
+      packageNumber: shipmentPackage.packageNumber,
+      shipmentPackage,
+      shipment,
+    },
+  });
+}
+
+export function buildShipmentPackageDeletedEvent(
+  shipment: Shipment,
+  shipmentPackage: ShipmentPackage,
+): DomainEvent<ShipmentPackageDeletedPayload> {
+  return createDomainEvent({
+    eventType: "shipment.package.deleted",
+    aggregateType: "shipment_package",
+    aggregateId: shipmentPackage.id,
+    storeId: shipmentPackage.storeId,
+    payload: {
+      shipmentPackageId: shipmentPackage.id,
+      shipmentId: shipment.id,
+      packageNumber: shipmentPackage.packageNumber,
+      shipmentPackage,
       shipment,
     },
   });

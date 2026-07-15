@@ -20,6 +20,7 @@ export const AUDIT_ENTITY_TYPES = [
   "tax_rate",
   "shipment",
   "shipment_tracking_event",
+  "shipment_package",
   "shipping_zone",
   "shipping_method",
 ] as const;

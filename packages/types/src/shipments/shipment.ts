@@ -1,4 +1,5 @@
 import type { ShipmentCarrier } from "./shipment-carrier";
+import type { ShipmentPackage } from "./shipment-package";
 import type { ShipmentStatus } from "./shipment-status";
 
 /** Store-scoped shipment linked to a fulfilled order with snapshotted shipping address. */
@@ -18,6 +19,7 @@ export interface Shipment {
   readonly shippingPostalCode: string;
   readonly shippingCountryCode: string;
   readonly status: ShipmentStatus;
+  readonly packages?: readonly ShipmentPackage[];
   readonly shippedAt?: string;
   readonly deliveredAt?: string;
   readonly createdAt: string;

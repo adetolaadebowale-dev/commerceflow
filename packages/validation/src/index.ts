@@ -178,6 +178,16 @@ export {
   type ShipmentTrackingQuery,
 } from "./shipment-tracking";
 export {
+  createShipmentPackageSchema,
+  updateShipmentPackageSchema,
+  shipmentPackageIdQuerySchema,
+  shipmentPackageQuerySchema,
+  type CreateShipmentPackageInput,
+  type UpdateShipmentPackageInput,
+  type ShipmentPackageIdQuery,
+  type ShipmentPackageQuery,
+} from "./shipment-packages";
+export {
   createShippingMethodSchema,
   createShippingZoneSchema,
   listShippingMethodsQuerySchema,
