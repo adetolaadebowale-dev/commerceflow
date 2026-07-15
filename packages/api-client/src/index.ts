@@ -135,5 +135,15 @@ export type {
   CheckoutCartResponse,
 } from "./checkout/contracts";
 export { createCheckoutClient, type CheckoutClient } from "./checkout/checkout-client";
+export type {
+  CreatePaymentRequest,
+  CreatePaymentResponse,
+  GetPaymentResponse,
+  ListOrderPaymentsParams,
+  ListOrderPaymentsResponse,
+  PaymentActionResponse,
+  PaymentStoreScopedParams,
+} from "./payments/contracts";
+export { createPaymentClient, type PaymentClient } from "./payments/payment-client";
 export { ApiClientError } from "./http/api-error";
 export { apiRequest, type ApiClientConfig } from "./http/request";

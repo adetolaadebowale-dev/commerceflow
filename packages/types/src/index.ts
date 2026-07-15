@@ -33,6 +33,13 @@ export { RESERVATION_STATUSES } from "./reservations";
 export type { OrderFulfillmentResult } from "./fulfillment";
 export type { CheckoutResult } from "./checkout";
 export {
+  PAYMENT_PROVIDERS,
+  PAYMENT_STATUSES,
+  type Payment,
+  type PaymentProvider,
+  type PaymentStatus,
+} from "./payments";
+export {
   CUSTOMER_STATUSES,
   type Customer,
   type CustomerAddress,
@@ -79,4 +86,9 @@ export {
   type OrderCancelledPayload,
   type OrderConfirmedPayload,
   type OrderFulfilledPayload,
+  type PaymentAuthorizedPayload,
+  type PaymentCancelledPayload,
+  type PaymentCreatedPayload,
+  type PaymentFailedPayload,
+  type PaymentPaidPayload,
 } from "./domain-events";

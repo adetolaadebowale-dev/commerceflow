@@ -9,6 +9,9 @@ export const AUDIT_ACTIONS = [
   "fulfill",
   "release",
   "checkout",
+  "authorize",
+  "mark_paid",
+  "fail",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];

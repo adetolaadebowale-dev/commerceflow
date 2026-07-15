@@ -75,6 +75,21 @@ enum CartStatus {
   abandoned
 }
 
+/// Mirrors PaymentStatus from @commerceflow/types.
+enum PaymentStatus {
+  pending
+  authorized
+  paid
+  failed
+  cancelled
+}
+
+/// Mirrors PaymentProvider from @commerceflow/types.
+enum PaymentProvider {
+  internal
+  manual
+}
+
 /// Persists User contract fields plus passwordHash (API-internal).
 model User {
   id              String        @id @default(uuid()) @db.Uuid
@@ -153,6 +168,7 @@ model Store {
   customers             Customer[]
   customerAddresses     CustomerAddress[]
   carts                 Cart[]
+  payments              Payment[]
 
   @@unique([organizationId, slug])
   @@index([organizationId])
@@ -352,6 +368,7 @@ model Order {
   updatedAt   DateTime    @updatedAt @map("updated_at")
   items       OrderItem[]
   inventoryReservations InventoryReservation[]
+  payments    Payment[]
 
   @@unique([storeId, orderNumber])
   @@index([storeId])
@@ -410,6 +427,31 @@ model InventoryReservation {
   @@index([storeId, inventoryItemId, status])
   @@index([status])
   @@map("inventory_reservations")
+}
+
+/// Internal payment record linked to an order.
+model Payment {
+  id        String          @id @default(uuid()) @db.Uuid
+  storeId   String          @map("store_id") @db.Uuid
+  store     Store           @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  orderId   String          @map("order_id") @db.Uuid
+  order     Order           @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  amount    Decimal         @db.Decimal(12, 2)
+  currency  String          @db.Char(3)
+  status    PaymentStatus   @default(pending)
+  provider  PaymentProvider @default(internal)
+  reference String
+  metadata  Json?
+  createdAt DateTime        @default(now()) @map("created_at")
+  updatedAt DateTime        @updatedAt @map("updated_at")
+
+  @@unique([storeId, reference])
+  @@index([storeId])
+  @@index([orderId])
+  @@index([storeId, orderId])
+  @@index([status])
+  @@index([storeId, status])
+  @@map("payments")
 }
 
 /// Immutable append-only record of authenticated administrative actions.

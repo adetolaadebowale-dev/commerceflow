@@ -14,6 +14,11 @@ export const DOMAIN_EVENT_TYPES = [
   "cart.item.updated",
   "cart.item.removed",
   "checkout.completed",
+  "payment.created",
+  "payment.authorized",
+  "payment.paid",
+  "payment.failed",
+  "payment.cancelled",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

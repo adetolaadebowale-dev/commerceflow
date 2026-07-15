@@ -25,6 +25,13 @@ import type {
   OrderFulfilledPayload,
   OrderFulfillmentResult,
   OrderStatus,
+  Payment,
+  PaymentAuthorizedPayload,
+  PaymentCancelledPayload,
+  PaymentCreatedPayload,
+  PaymentFailedPayload,
+  PaymentPaidPayload,
+  PaymentStatus,
 } from "@commerceflow/types";
 
 export function createDomainEvent<TPayload>(input: {
@@ -315,6 +322,111 @@ export function buildCheckoutCompletedEvent(
       order: result.order,
       cart: result.cart,
       result,
+    },
+  });
+}
+
+export function buildPaymentCreatedEvent(
+  payment: Payment,
+): DomainEvent<PaymentCreatedPayload> {
+  return createDomainEvent({
+    eventType: "payment.created",
+    aggregateType: "payment",
+    aggregateId: payment.id,
+    storeId: payment.storeId,
+    payload: {
+      paymentId: payment.id,
+      orderId: payment.orderId,
+      amount: payment.amount,
+      currency: payment.currency,
+      status: payment.status,
+      provider: payment.provider,
+      reference: payment.reference,
+      payment,
+    },
+  });
+}
+
+export function buildPaymentAuthorizedEvent(
+  payment: Payment,
+  previousStatus: PaymentStatus,
+): DomainEvent<PaymentAuthorizedPayload> {
+  return createDomainEvent({
+    eventType: "payment.authorized",
+    aggregateType: "payment",
+    aggregateId: payment.id,
+    storeId: payment.storeId,
+    payload: {
+      paymentId: payment.id,
+      orderId: payment.orderId,
+      previousStatus,
+      status: "authorized",
+      amount: payment.amount,
+      currency: payment.currency,
+      payment,
+    },
+  });
+}
+
+export function buildPaymentPaidEvent(
+  payment: Payment,
+  previousStatus: PaymentStatus,
+): DomainEvent<PaymentPaidPayload> {
+  return createDomainEvent({
+    eventType: "payment.paid",
+    aggregateType: "payment",
+    aggregateId: payment.id,
+    storeId: payment.storeId,
+    payload: {
+      paymentId: payment.id,
+      orderId: payment.orderId,
+      previousStatus,
+      status: "paid",
+      amount: payment.amount,
+      currency: payment.currency,
+      payment,
+    },
+  });
+}
+
+export function buildPaymentFailedEvent(
+  payment: Payment,
+  previousStatus: PaymentStatus,
+): DomainEvent<PaymentFailedPayload> {
+  return createDomainEvent({
+    eventType: "payment.failed",
+    aggregateType: "payment",
+    aggregateId: payment.id,
+    storeId: payment.storeId,
+    payload: {
+      paymentId: payment.id,
+      orderId: payment.orderId,
+      previousStatus,
+      status: "failed",
+      amount: payment.amount,
+      currency: payment.currency,
+      payment,
+    },
+  });
+}
+
+export function buildPaymentCancelledEvent(
+  payment: Payment,
+  previousStatus: PaymentStatus,
+): DomainEvent<PaymentCancelledPayload> {
+  return createDomainEvent({
+    eventType: "payment.cancelled",
+    aggregateType: "payment",
+    aggregateId: payment.id,
+    storeId: payment.storeId,
+    payload: {
+      paymentId: payment.id,
+      orderId: payment.orderId,
+      previousStatus,
+      status: "cancelled",
+      amount: payment.amount,
+      currency: payment.currency,
+      payment,
     },
   });
 }

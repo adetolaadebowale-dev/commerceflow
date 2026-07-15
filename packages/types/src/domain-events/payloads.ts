@@ -8,6 +8,8 @@ import type { CustomerAddress } from "../customers/customer-address";
 import type { Cart } from "../shopping-cart/cart";
 import type { CartItem } from "../shopping-cart/cart-item";
 import type { CheckoutResult } from "../checkout/checkout-result";
+import type { Payment } from "../payments/payment";
+import type { PaymentStatus } from "../payments/payment-status";
 
 export interface OrderConfirmedPayload {
   readonly orderId: string;
@@ -132,4 +134,55 @@ export interface CheckoutCompletedPayload {
   readonly order: Order;
   readonly cart: Cart;
   readonly result: CheckoutResult;
+}
+
+export interface PaymentCreatedPayload {
+  readonly paymentId: string;
+  readonly orderId: string;
+  readonly amount: string;
+  readonly currency: string;
+  readonly status: PaymentStatus;
+  readonly provider: Payment["provider"];
+  readonly reference: string;
+  readonly payment: Payment;
+}
+
+export interface PaymentAuthorizedPayload {
+  readonly paymentId: string;
+  readonly orderId: string;
+  readonly previousStatus: PaymentStatus;
+  readonly status: "authorized";
+  readonly amount: string;
+  readonly currency: string;
+  readonly payment: Payment;
+}
+
+export interface PaymentPaidPayload {
+  readonly paymentId: string;
+  readonly orderId: string;
+  readonly previousStatus: PaymentStatus;
+  readonly status: "paid";
+  readonly amount: string;
+  readonly currency: string;
+  readonly payment: Payment;
+}
+
+export interface PaymentFailedPayload {
+  readonly paymentId: string;
+  readonly orderId: string;
+  readonly previousStatus: PaymentStatus;
+  readonly status: "failed";
+  readonly amount: string;
+  readonly currency: string;
+  readonly payment: Payment;
+}
+
+export interface PaymentCancelledPayload {
+  readonly paymentId: string;
+  readonly orderId: string;
+  readonly previousStatus: PaymentStatus;
+  readonly status: "cancelled";
+  readonly amount: string;
+  readonly currency: string;
+  readonly payment: Payment;
 }
