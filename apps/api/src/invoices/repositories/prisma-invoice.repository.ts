@@ -24,6 +24,7 @@ function toInvoice(record: PrismaInvoice): Invoice {
     subtotal: record.subtotal.toString(),
     discountAmount: record.discountAmount?.toString(),
     taxAmount: record.taxAmount?.toString(),
+    shippingAmount: record.shippingAmount?.toString(),
     appliedTaxRate:
       record.taxRateId &&
       record.taxRateNameSnapshot &&
@@ -32,6 +33,26 @@ function toInvoice(record: PrismaInvoice): Invoice {
             taxRateId: record.taxRateId,
             nameSnapshot: record.taxRateNameSnapshot,
             percentageSnapshot: record.taxRatePercentageSnapshot.toString(),
+          }
+        : undefined,
+    appliedShippingMethod:
+      record.shippingMethodId &&
+      record.shippingZoneId &&
+      record.shippingMethodNameSnapshot &&
+      record.shippingZoneNameSnapshot &&
+      record.shippingCarrierSnapshot &&
+      record.shippingFlatRateSnapshot &&
+      record.shippingCurrencySnapshot &&
+      record.shippingAmount
+        ? {
+            shippingMethodId: record.shippingMethodId,
+            shippingZoneId: record.shippingZoneId,
+            methodNameSnapshot: record.shippingMethodNameSnapshot,
+            zoneNameSnapshot: record.shippingZoneNameSnapshot,
+            carrierSnapshot: record.shippingCarrierSnapshot,
+            flatRateSnapshot: record.shippingFlatRateSnapshot.toString(),
+            currencySnapshot: record.shippingCurrencySnapshot,
+            shippingAmount: record.shippingAmount.toString(),
           }
         : undefined,
     total: record.total.toString(),
@@ -94,6 +115,19 @@ export class PrismaInvoiceRepository implements InvoiceRepository {
             taxRateId: record.appliedTaxRate?.taxRateId,
             taxRateNameSnapshot: record.appliedTaxRate?.nameSnapshot,
             taxRatePercentageSnapshot: record.appliedTaxRate?.percentageSnapshot,
+            shippingAmount: record.shippingAmount,
+            shippingMethodId: record.appliedShippingMethod?.shippingMethodId,
+            shippingZoneId: record.appliedShippingMethod?.shippingZoneId,
+            shippingMethodNameSnapshot:
+              record.appliedShippingMethod?.methodNameSnapshot,
+            shippingZoneNameSnapshot:
+              record.appliedShippingMethod?.zoneNameSnapshot,
+            shippingCarrierSnapshot:
+              record.appliedShippingMethod?.carrierSnapshot,
+            shippingFlatRateSnapshot:
+              record.appliedShippingMethod?.flatRateSnapshot,
+            shippingCurrencySnapshot:
+              record.appliedShippingMethod?.currencySnapshot,
             total: record.total,
             currency: record.currency,
             dueAt: record.dueAt ? new Date(record.dueAt) : undefined,

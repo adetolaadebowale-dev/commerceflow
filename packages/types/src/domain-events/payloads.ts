@@ -17,6 +17,7 @@ import type { TaxRate } from "../tax-rates/tax-rate";
 import type { Shipment } from "../shipments/shipment";
 import type { ShipmentStatus } from "../shipments/shipment-status";
 import type { ShipmentTrackingEvent } from "../shipments/shipment-tracking-event";
+import type { OrderShippingMethodSnapshot } from "../shipping-configuration/order-shipping-method-snapshot";
 import type { ShippingZone } from "../shipping-configuration/shipping-zone";
 import type { ShippingMethod } from "../shipping-configuration/shipping-method";
 import type { Payment } from "../payments/payment";
@@ -149,6 +150,13 @@ export interface CheckoutCompletedPayload {
   readonly order: Order;
   readonly cart: Cart;
   readonly result: CheckoutResult;
+}
+
+export interface CheckoutShippingSelectedPayload {
+  readonly orderId: string;
+  readonly shippingAmount: string;
+  readonly appliedShippingMethod: OrderShippingMethodSnapshot;
+  readonly order: Order;
 }
 
 export interface PaymentCreatedPayload {

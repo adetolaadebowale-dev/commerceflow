@@ -42,6 +42,10 @@ import {
 } from "@/shopping-cart/repositories";
 import { CHECKOUT_ERROR_CODES, CheckoutError } from "../errors";
 import { getCheckoutRepository, type CheckoutRepository } from "../repositories";
+import {
+  CheckoutShippingResolver,
+  checkoutShippingResolver,
+} from "./checkout-shipping.resolver";
 
 export interface CheckoutServiceDependencies {
   readonly checkoutRepository?: CheckoutRepository;
@@ -52,6 +56,7 @@ export interface CheckoutServiceDependencies {
   readonly domainEventPublisher?: DomainEventPublisher;
   readonly promotionRedemptionService?: PromotionRedemptionService;
   readonly taxRateService?: TaxRateService;
+  readonly checkoutShippingResolver?: CheckoutShippingResolver;
 }
 
 export class CheckoutService {
@@ -63,6 +68,7 @@ export class CheckoutService {
   private readonly domainEventPublisher: DomainEventPublisher;
   private readonly promotionRedemptionService: PromotionRedemptionService;
   private readonly taxRateService: TaxRateService;
+  private readonly checkoutShippingResolver: CheckoutShippingResolver;
 
   constructor(dependencies: CheckoutServiceDependencies = {}) {
     this.checkoutRepository =
@@ -81,6 +87,8 @@ export class CheckoutService {
       dependencies.promotionRedemptionService ?? getPromotionRedemptionService();
     this.taxRateService =
       dependencies.taxRateService ?? getTaxRateService();
+    this.checkoutShippingResolver =
+      dependencies.checkoutShippingResolver ?? checkoutShippingResolver;
   }
 
   async checkoutCart(
@@ -191,9 +199,18 @@ export class CheckoutService {
       };
     }
 
-    const total = taxAmount
+    const { shippingAmount, appliedShippingMethod } =
+      await this.checkoutShippingResolver.resolveShipping(
+        storeId,
+        input.shippingMethodId,
+        address.countryCode,
+        currency,
+      );
+
+    const afterTax = taxAmount
       ? addPrice(taxableAmount, taxAmount)
       : taxableAmount;
+    const total = addPrice(afterTax, shippingAmount);
 
     try {
       const result = await this.checkoutRepository.completeCheckout({
@@ -205,13 +222,20 @@ export class CheckoutService {
         subtotal,
         discountAmount,
         taxAmount,
+        shippingAmount,
         total,
         currency,
         items: preparedItems,
         appliedPromotion: appliedPromotionSnapshot,
         appliedTaxRate: appliedTaxRateSnapshot,
+        appliedShippingMethod,
       });
 
+      this.domainEventPublisher.publishCheckoutShippingSelected(
+        result.order,
+        appliedShippingMethod,
+        shippingAmount,
+      );
       this.domainEventPublisher.publishCheckoutCompleted(
         result,
         input.customerAddressId,

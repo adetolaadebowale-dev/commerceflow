@@ -78,6 +78,7 @@ export class PrismaCheckoutRepository implements CheckoutRepository {
               subtotal: record.subtotal,
               discountAmount: record.discountAmount ?? null,
               taxAmount: record.taxAmount ?? null,
+              shippingAmount: record.shippingAmount,
               total: record.total,
               currency: record.currency,
               ...buildShippingAddressCreateData(record.shippingAddress),
@@ -123,11 +124,31 @@ export class PrismaCheckoutRepository implements CheckoutRepository {
                     },
                   }
                 : {}),
+              appliedShippingMethod: {
+                create: {
+                  storeId: record.storeId,
+                  shippingMethodId:
+                    record.appliedShippingMethod.shippingMethodId,
+                  shippingZoneId: record.appliedShippingMethod.shippingZoneId,
+                  methodNameSnapshot:
+                    record.appliedShippingMethod.methodNameSnapshot,
+                  zoneNameSnapshot:
+                    record.appliedShippingMethod.zoneNameSnapshot,
+                  carrierSnapshot:
+                    record.appliedShippingMethod.carrierSnapshot,
+                  flatRateSnapshot:
+                    record.appliedShippingMethod.flatRateSnapshot,
+                  currencySnapshot:
+                    record.appliedShippingMethod.currencySnapshot,
+                  shippingAmount: record.shippingAmount,
+                },
+              },
             },
             include: {
               items: orderItemsInclude,
               appliedPromotion: true,
               appliedTaxRate: true,
+              appliedShippingMethod: true,
             },
           });
 

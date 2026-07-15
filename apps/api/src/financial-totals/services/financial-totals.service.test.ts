@@ -17,6 +17,7 @@ import {
 } from "../testing/financial-totals-test-utils";
 import {
   seedCartWithItem,
+  seedEligibleShipping,
   validActivePromotionInput,
 } from "@/promotion-redemption/testing/promotion-redemption-test-utils";
 
@@ -66,7 +67,7 @@ describe("Financial totals alignment", () => {
 
       expect(order.subtotal).toBe("100.00");
       expect(order.discountAmount).toBe("20.00");
-      expect(order.total).toBe("80.00");
+      expect(order.total).toBe("89.99");
 
       const payment = await module.paymentService.createPayment(
         TEST_STORE_A_ID,
@@ -74,7 +75,7 @@ describe("Financial totals alignment", () => {
         validPaymentInput(),
       );
 
-      expect(payment.amount).toBe("80.00");
+      expect(payment.amount).toBe("89.99");
       expect(payment.amount).toBe(order.total);
       expect(payment.amount).not.toBe(order.subtotal);
     });
@@ -89,7 +90,7 @@ describe("Financial totals alignment", () => {
 
       expect(order.subtotal).toBe("100.00");
       expect(order.discountAmount).toBe("15");
-      expect(order.total).toBe("85.00");
+      expect(order.total).toBe("94.99");
 
       const payment = await module.paymentService.createPayment(
         TEST_STORE_A_ID,
@@ -97,7 +98,7 @@ describe("Financial totals alignment", () => {
         validPaymentInput(),
       );
 
-      expect(payment.amount).toBe("85.00");
+      expect(payment.amount).toBe("94.99");
     });
 
     it("snapshots invoice subtotal, discount, and total from discounted order", async () => {
@@ -121,6 +122,7 @@ describe("Financial totals alignment", () => {
     it("keeps invoice totals immutable after promotion definition changes", async () => {
       const module = createFinancialTotalsModule();
       const { address, cart } = await seedCartWithItem(module);
+      const { method: shippingMethod } = await seedEligibleShipping(module);
       const promotion = await module.promotionRepository.create(
         validActivePromotionInput({ code: "HISTORIC10", value: "10" }),
       );
@@ -134,7 +136,10 @@ describe("Financial totals alignment", () => {
       const checkout = await module.checkoutService.checkoutCart(
         TEST_STORE_A_ID,
         cart.id,
-        { customerAddressId: address.id },
+        {
+          customerAddressId: address.id,
+          shippingMethodId: shippingMethod.id,
+        },
       );
       module.orderRepository.seedOrder(checkout.order);
 
@@ -155,7 +160,7 @@ describe("Financial totals alignment", () => {
 
       expect(unchanged.subtotal).toBe("100.00");
       expect(unchanged.discountAmount).toBe("10.00");
-      expect(unchanged.total).toBe("90.00");
+      expect(unchanged.total).toBe("99.99");
     });
   });
 
@@ -189,7 +194,7 @@ describe("Financial totals alignment", () => {
       );
 
       expect(refund.amount).toBe(payment.amount);
-      expect(refund.amount).toBe("85.00");
+      expect(refund.amount).toBe("94.99");
     });
   });
 
@@ -197,6 +202,7 @@ describe("Financial totals alignment", () => {
     it("derives totals from line items rather than persisted cart totals", async () => {
       const module = createFinancialTotalsModule();
       const { address, cart } = await seedCartWithItem(module);
+      const { method: shippingMethod } = await seedEligibleShipping(module);
 
       await module.promotionRepository.create(
         validActivePromotionInput({ code: "NOCART", value: "10" }),
@@ -219,12 +225,16 @@ describe("Financial totals alignment", () => {
       const result = await module.checkoutService.checkoutCart(
         TEST_STORE_A_ID,
         cart.id,
-        { customerAddressId: address.id },
+        {
+          customerAddressId: address.id,
+          shippingMethodId: shippingMethod.id,
+        },
       );
 
       expect(result.order.subtotal).toBe("100.00");
       expect(result.order.discountAmount).toBe("10.00");
-      expect(result.order.total).toBe("90.00");
+      expect(result.order.shippingAmount).toBe("9.99");
+      expect(result.order.total).toBe("99.99");
     });
   });
 

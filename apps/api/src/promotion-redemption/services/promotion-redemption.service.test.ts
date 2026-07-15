@@ -4,6 +4,7 @@ import { PROMOTION_REDEMPTION_ERROR_CODES } from "../errors";
 import {
   createMemoryPromotionRedemptionModule,
   seedCartWithItem,
+  seedEligibleShipping,
   TEST_STORE_A_ID,
   TEST_STORE_B_ID,
   validActivePromotionInput,
@@ -192,6 +193,7 @@ describe("PromotionRedemption checkout integration", () => {
   it("snapshots applied promotion into the order at checkout", async () => {
     const module = createMemoryPromotionRedemptionModule();
     const { address, cart } = await seedCartWithItem(module);
+    const { method: shippingMethod } = await seedEligibleShipping(module);
     await module.promotionRepository.create(
       validActivePromotionInput({ code: "CHECKOUT20", value: "20" }),
     );
@@ -205,12 +207,16 @@ describe("PromotionRedemption checkout integration", () => {
     const result = await module.checkoutService.checkoutCart(
       TEST_STORE_A_ID,
       cart.id,
-      { customerAddressId: address.id },
+      {
+        customerAddressId: address.id,
+        shippingMethodId: shippingMethod.id,
+      },
     );
 
     expect(result.order.subtotal).toBe("100.00");
     expect(result.order.discountAmount).toBe("20.00");
-    expect(result.order.total).toBe("80.00");
+    expect(result.order.shippingAmount).toBe("9.99");
+    expect(result.order.total).toBe("89.99");
     expect(result.order.appliedPromotion).toMatchObject({
       promotionCodeSnapshot: "CHECKOUT20",
       promotionTypeSnapshot: "percentage",
@@ -222,6 +228,7 @@ describe("PromotionRedemption checkout integration", () => {
   it("keeps historical order totals when the live promotion changes", async () => {
     const module = createMemoryPromotionRedemptionModule();
     const { address, cart } = await seedCartWithItem(module);
+    const { method: shippingMethod } = await seedEligibleShipping(module);
     const promotion = await module.promotionRepository.create(
       validActivePromotionInput({ code: "HISTORIC", value: "10" }),
     );
@@ -235,7 +242,10 @@ describe("PromotionRedemption checkout integration", () => {
     const checkout = await module.checkoutService.checkoutCart(
       TEST_STORE_A_ID,
       cart.id,
-      { customerAddressId: address.id },
+      {
+        customerAddressId: address.id,
+        shippingMethodId: shippingMethod.id,
+      },
     );
 
     await module.promotionRepository.update(TEST_STORE_A_ID, promotion.id, {
@@ -244,6 +254,7 @@ describe("PromotionRedemption checkout integration", () => {
 
     expect(checkout.order.appliedPromotion?.promotionValueSnapshot).toBe("10");
     expect(checkout.order.discountAmount).toBe("10.00");
-    expect(checkout.order.total).toBe("90.00");
+    expect(checkout.order.shippingAmount).toBe("9.99");
+    expect(checkout.order.total).toBe("99.99");
   });
 });

@@ -7,6 +7,7 @@ import {
   buildCartItemRemovedEvent,
   buildCartItemUpdatedEvent,
   buildCheckoutCompletedEvent,
+  buildCheckoutShippingSelectedEvent,
   buildCustomerAddressCreatedEvent,
   buildCustomerAddressUpdatedEvent,
   buildCustomerCreatedEvent,
@@ -57,6 +58,7 @@ import type {
   CustomerAddress,
   InventoryReservation,
   Order,
+  OrderShippingMethodSnapshot,
   OrderFulfillmentResult,
   OrderStatus,
   Payment,
@@ -172,6 +174,16 @@ export class DomainEventPublisher {
     customerAddressId: string,
   ): void {
     this.dispatch(buildCheckoutCompletedEvent(result, customerAddressId));
+  }
+
+  publishCheckoutShippingSelected(
+    order: Order,
+    appliedShippingMethod: OrderShippingMethodSnapshot,
+    shippingAmount: string,
+  ): void {
+    this.dispatch(
+      buildCheckoutShippingSelectedEvent(order, appliedShippingMethod, shippingAmount),
+    );
   }
 
   publishPaymentCreated(payment: Payment): void {

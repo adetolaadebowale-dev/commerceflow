@@ -88,6 +88,7 @@ export {
   type ShippingMethodStatus,
   type ShippingZone,
   type ShippingZoneStatus,
+  type OrderShippingMethodSnapshot,
 } from "./shipping-configuration";
 export {
   type AppliedCartPromotion,
@@ -131,6 +132,7 @@ export {
   type CartItemRemovedPayload,
   type CartItemUpdatedPayload,
   type CheckoutCompletedPayload,
+  type CheckoutShippingSelectedPayload,
   type CustomerAddressCreatedPayload,
   type CustomerAddressUpdatedPayload,
   type CustomerCreatedPayload,

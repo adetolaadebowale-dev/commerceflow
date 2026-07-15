@@ -7,6 +7,7 @@ const customerAddressIdSchema = z
 
 export const checkoutCartSchema = z.object({
   customerAddressId: customerAddressIdSchema,
+  shippingMethodId: z.string().uuid("Shipping method id must be a valid UUID"),
 });
 
 export const checkoutCartQuerySchema = z.object({

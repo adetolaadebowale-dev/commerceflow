@@ -36,11 +36,14 @@ describe("Checkout audit integration", () => {
       permission: "carts:write" as const,
     };
 
-    const { address, cart } = await seedCheckoutScenario(module);
+    const { address, shippingMethod, cart } = await seedCheckoutScenario(module);
     const result = await module.checkoutService.checkoutCart(
       TEST_STORE_A_ID,
       cart.id,
-      validCheckoutInput({ customerAddressId: address.id }),
+      validCheckoutInput({
+        customerAddressId: address.id,
+        shippingMethodId: shippingMethod.id,
+      }),
     );
 
     auditService.recordFromAuthContext(authContext, {
@@ -56,6 +59,8 @@ describe("Checkout audit integration", () => {
         subtotal: result.order.subtotal,
         discountAmount: result.order.discountAmount,
         taxAmount: result.order.taxAmount,
+        shippingMethod: result.order.appliedShippingMethod?.methodNameSnapshot,
+        shippingAmount: result.order.shippingAmount,
         total: result.order.total,
         currency: result.order.currency,
       },

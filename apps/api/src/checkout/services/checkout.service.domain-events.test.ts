@@ -17,12 +17,15 @@ describe("CheckoutService domain events", () => {
     const module = createMemoryCheckoutModule({
       domainEventPublisher: publisher,
     });
-    const { address, cart } = await seedCheckoutScenario(module);
+    const { address, shippingMethod, cart } = await seedCheckoutScenario(module);
 
     const result = await module.checkoutService.checkoutCart(
       TEST_STORE_A_ID,
       cart.id,
-      validCheckoutInput({ customerAddressId: address.id }),
+      validCheckoutInput({
+        customerAddressId: address.id,
+        shippingMethodId: shippingMethod.id,
+      }),
     );
 
     await vi.waitFor(() => {
@@ -48,14 +51,17 @@ describe("CheckoutService domain events", () => {
     const module = createMemoryCheckoutModule({
       domainEventPublisher: publisher,
     });
-    const { address, cart } = await seedCheckoutScenario(module);
+    const { address, shippingMethod, cart } = await seedCheckoutScenario(module);
     module.checkoutRepository.setTransactionFailure(new Error("fail"));
 
     await expect(
       module.checkoutService.checkoutCart(
         TEST_STORE_A_ID,
         cart.id,
-        validCheckoutInput({ customerAddressId: address.id }),
+        validCheckoutInput({
+          customerAddressId: address.id,
+          shippingMethodId: shippingMethod.id,
+        }),
       ),
     ).rejects.toMatchObject({
       status: 500,

@@ -2,6 +2,7 @@ import type {
   CheckoutResult,
   OrderAddressSnapshot,
   OrderPromotionSnapshot,
+  OrderShippingMethodSnapshot,
   OrderTaxRateSnapshot,
 } from "@commerceflow/types";
 
@@ -16,11 +17,13 @@ export interface CheckoutRecord {
   readonly subtotal: string;
   readonly discountAmount?: string;
   readonly taxAmount?: string;
+  readonly shippingAmount: string;
   readonly total: string;
   readonly currency: string;
   readonly items: readonly PreparedOrderItem[];
   readonly appliedPromotion?: OrderPromotionSnapshot;
   readonly appliedTaxRate?: OrderTaxRateSnapshot;
+  readonly appliedShippingMethod: OrderShippingMethodSnapshot;
 }
 
 export interface CheckoutRepository {

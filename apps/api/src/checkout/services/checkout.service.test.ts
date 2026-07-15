@@ -13,12 +13,15 @@ import {
 describe("CheckoutService", () => {
   it("converts an active cart into a draft order with address snapshot", async () => {
     const module = createMemoryCheckoutModule();
-    const { address, cart } = await seedCheckoutScenario(module);
+    const { address, shippingMethod, cart } = await seedCheckoutScenario(module);
 
     const result = await module.checkoutService.checkoutCart(
       TEST_STORE_A_ID,
       cart.id,
-      validCheckoutInput({ customerAddressId: address.id }),
+      validCheckoutInput({
+        customerAddressId: address.id,
+        shippingMethodId: shippingMethod.id,
+      }),
     );
 
     expect(result.cart.status).toBe("converted");
@@ -29,7 +32,8 @@ describe("CheckoutService", () => {
     expect(result.order.items[0]?.unitPrice).toBe("19.99");
     expect(result.order.items[0]?.lineSubtotal).toBe("39.98");
     expect(result.order.subtotal).toBe("39.98");
-    expect(result.order.total).toBe("39.98");
+    expect(result.order.shippingAmount).toBe("5.00");
+    expect(result.order.total).toBe("44.98");
     expect(result.order.shippingAddress).toMatchObject({
       recipientName: address.recipientName,
       addressLine1: address.addressLine1,
@@ -77,7 +81,7 @@ describe("CheckoutService", () => {
 
   it("recalculates order totals instead of trusting cart subtotal", async () => {
     const module = createMemoryCheckoutModule();
-    const { address, cart } = await seedCheckoutScenario(module);
+    const { address, shippingMethod, cart } = await seedCheckoutScenario(module);
 
     const tamperedCart = {
       ...cart,
@@ -88,11 +92,15 @@ describe("CheckoutService", () => {
     const result = await module.checkoutService.checkoutCart(
       TEST_STORE_A_ID,
       cart.id,
-      validCheckoutInput({ customerAddressId: address.id }),
+      validCheckoutInput({
+        customerAddressId: address.id,
+        shippingMethodId: shippingMethod.id,
+      }),
     );
 
     expect(result.order.subtotal).toBe("39.98");
-    expect(result.order.total).toBe("39.98");
+    expect(result.order.shippingAmount).toBe("5.00");
+    expect(result.order.total).toBe("44.98");
     expect(result.order.subtotal).not.toBe("1.00");
   });
 
@@ -114,7 +122,7 @@ describe("CheckoutService", () => {
 
   it("rejects checkout when address does not belong to customer", async () => {
     const module = createMemoryCheckoutModule();
-    const { cart } = await seedCheckoutScenario(module);
+    const { cart, shippingMethod } = await seedCheckoutScenario(module);
     const otherCustomer = await module.customerRepository.create(
       validCustomerInput({
         email: `other-${crypto.randomUUID().slice(0, 8)}@example.com`,
@@ -137,7 +145,10 @@ describe("CheckoutService", () => {
       module.checkoutService.checkoutCart(
         TEST_STORE_A_ID,
         cart.id,
-        validCheckoutInput({ customerAddressId: otherAddress.id }),
+        validCheckoutInput({
+          customerAddressId: otherAddress.id,
+          shippingMethodId: shippingMethod.id,
+        }),
       ),
     ).rejects.toMatchObject({
       code: CHECKOUT_ERROR_CODES.ADDRESS_NOT_OWNED,
@@ -147,19 +158,25 @@ describe("CheckoutService", () => {
 
   it("rejects checkout for a converted cart", async () => {
     const module = createMemoryCheckoutModule();
-    const { address, cart } = await seedCheckoutScenario(module);
+    const { address, shippingMethod, cart } = await seedCheckoutScenario(module);
 
     await module.checkoutService.checkoutCart(
       TEST_STORE_A_ID,
       cart.id,
-      validCheckoutInput({ customerAddressId: address.id }),
+      validCheckoutInput({
+        customerAddressId: address.id,
+        shippingMethodId: shippingMethod.id,
+      }),
     );
 
     await expect(
       module.checkoutService.checkoutCart(
         TEST_STORE_A_ID,
         cart.id,
-        validCheckoutInput({ customerAddressId: address.id }),
+        validCheckoutInput({
+          customerAddressId: address.id,
+          shippingMethodId: shippingMethod.id,
+        }),
       ),
     ).rejects.toMatchObject({
       code: CHECKOUT_ERROR_CODES.CART_NOT_ACTIVE,
@@ -169,7 +186,7 @@ describe("CheckoutService", () => {
 
   it("rolls back checkout when the transaction fails", async () => {
     const module = createMemoryCheckoutModule();
-    const { address, cart } = await seedCheckoutScenario(module);
+    const { address, shippingMethod, cart } = await seedCheckoutScenario(module);
     module.checkoutRepository.setTransactionFailure(
       new Error("Checkout transaction failed"),
     );
@@ -178,7 +195,10 @@ describe("CheckoutService", () => {
       module.checkoutService.checkoutCart(
         TEST_STORE_A_ID,
         cart.id,
-        validCheckoutInput({ customerAddressId: address.id }),
+        validCheckoutInput({
+          customerAddressId: address.id,
+          shippingMethodId: shippingMethod.id,
+        }),
       ),
     ).rejects.toMatchObject({
       code: CHECKOUT_ERROR_CODES.TRANSACTION_FAILED,

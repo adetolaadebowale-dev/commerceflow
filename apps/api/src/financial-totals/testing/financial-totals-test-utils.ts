@@ -18,6 +18,7 @@ import { validPaymentInput } from "@/payments/testing/payment-test-utils";
 import {
   createMemoryPromotionRedemptionModule,
   seedCartWithItem,
+  seedEligibleShipping,
   validActivePromotionInput,
 } from "@/promotion-redemption/testing/promotion-redemption-test-utils";
 import { MemoryRefundRepository } from "@/refunds/repositories/memory-refund.repository";
@@ -116,6 +117,7 @@ export async function checkoutWithPercentagePromotion(
   value: string,
 ) {
   const { address, cart } = await seedCartWithItem(module);
+  const { method: shippingMethod } = await seedEligibleShipping(module);
 
   await module.promotionRepository.create(
     validActivePromotionInput({ code, value, type: "percentage" }),
@@ -130,7 +132,10 @@ export async function checkoutWithPercentagePromotion(
   const result = await module.checkoutService.checkoutCart(
     TEST_STORE_A_ID,
     cart.id,
-    { customerAddressId: address.id },
+    {
+      customerAddressId: address.id,
+      shippingMethodId: shippingMethod.id,
+    },
   );
 
   module.orderRepository.seedOrder(result.order);
@@ -143,6 +148,7 @@ export async function checkoutWithFixedPromotion(
   value: string,
 ) {
   const { address, cart } = await seedCartWithItem(module);
+  const { method: shippingMethod } = await seedEligibleShipping(module);
 
   await module.promotionRepository.create(
     validActivePromotionInput({ code, value, type: "fixed_amount" }),
@@ -157,7 +163,10 @@ export async function checkoutWithFixedPromotion(
   const result = await module.checkoutService.checkoutCart(
     TEST_STORE_A_ID,
     cart.id,
-    { customerAddressId: address.id },
+    {
+      customerAddressId: address.id,
+      shippingMethodId: shippingMethod.id,
+    },
   );
 
   module.orderRepository.seedOrder(result.order);

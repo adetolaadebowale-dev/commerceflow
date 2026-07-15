@@ -13,6 +13,11 @@ import { MemoryCartPromotionRepository } from "../repositories/memory-cart-promo
 import { PromotionRedemptionService } from "../services/promotion-redemption.service";
 import { MemoryTaxRateRepository } from "@/tax-rates/repositories/memory-tax-rate.repository";
 import { TaxRateService } from "@/tax-rates/services/tax-rate.service";
+import { MemoryShippingZoneRepository } from "@/shipping-configuration/repositories/memory-shipping-zone.repository";
+import { MemoryShippingMethodRepository } from "@/shipping-configuration/repositories/memory-shipping-method.repository";
+import { ShippingZoneService } from "@/shipping-configuration/services/shipping-zone.service";
+import { ShippingMethodService } from "@/shipping-configuration/services/shipping-method.service";
+import { CheckoutShippingResolver } from "@/checkout/services/checkout-shipping.resolver";
 import { MemoryCartRepository } from "@/shopping-cart/repositories/memory-cart.repository";
 import { CartService } from "@/shopping-cart/services/cart.service";
 
@@ -27,6 +32,8 @@ export function createMemoryPromotionRedemptionModule(options: {
   const cartPromotionRepository = new MemoryCartPromotionRepository();
   const promotionRepository = new MemoryPromotionRepository();
   const taxRateRepository = new MemoryTaxRateRepository();
+  const shippingZoneRepository = new MemoryShippingZoneRepository();
+  const shippingMethodRepository = new MemoryShippingMethodRepository();
   const customerRepository = new MemoryCustomerRepository();
   const customerAddressRepository = new MemoryCustomerAddressRepository();
   const variantSnapshotReader = new MemoryOrderVariantSnapshotReader();
@@ -42,6 +49,23 @@ export function createMemoryPromotionRedemptionModule(options: {
   const taxRateService = new TaxRateService({
     taxRateRepository,
     domainEventPublisher: options.domainEventPublisher,
+  });
+
+  const shippingZoneService = new ShippingZoneService({
+    shippingZoneRepository,
+    shippingMethodRepository,
+    domainEventPublisher: options.domainEventPublisher,
+  });
+
+  const shippingMethodService = new ShippingMethodService({
+    shippingMethodRepository,
+    shippingZoneRepository,
+    domainEventPublisher: options.domainEventPublisher,
+  });
+
+  const checkoutShippingResolver = new CheckoutShippingResolver({
+    shippingMethodRepository,
+    shippingZoneRepository,
   });
 
   const cartService = new CartService({
@@ -60,6 +84,7 @@ export function createMemoryPromotionRedemptionModule(options: {
     variantSnapshotReader,
     promotionRedemptionService,
     taxRateService,
+    checkoutShippingResolver,
     domainEventPublisher: options.domainEventPublisher,
   });
 
@@ -68,6 +93,11 @@ export function createMemoryPromotionRedemptionModule(options: {
     cartPromotionRepository,
     promotionRepository,
     taxRateRepository,
+    shippingZoneRepository,
+    shippingMethodRepository,
+    shippingZoneService,
+    shippingMethodService,
+    checkoutShippingResolver,
     customerRepository,
     customerAddressRepository,
     variantSnapshotReader,
@@ -147,4 +177,39 @@ export async function seedCartWithItem(
   module.checkoutRepository.seedCart(withItem.cart);
 
   return { customer, address, cart: withItem.cart };
+}
+
+export async function seedEligibleShipping(
+  module: ReturnType<typeof createMemoryPromotionRedemptionModule>,
+  overrides: {
+    countries?: readonly string[];
+    flatRate?: string;
+    currency?: string;
+  } = {},
+) {
+  const zone = await module.shippingZoneService.createShippingZone({
+    storeId: TEST_STORE_A_ID,
+    name: "Domestic",
+    countries: [...(overrides.countries ?? ["US"])],
+    status: "active",
+  });
+
+  const method = await module.shippingMethodService.createShippingMethod({
+    storeId: TEST_STORE_A_ID,
+    shippingZoneId: zone.id,
+    name: "Standard Shipping",
+    carrier: "internal",
+    flatRate: overrides.flatRate ?? "9.99",
+    currency: overrides.currency ?? "USD",
+    status: "active",
+  });
+
+  return { zone, method };
+}
+
+export function toCheckoutInput(input: {
+  customerAddressId: string;
+  shippingMethodId: string;
+}) {
+  return input;
 }

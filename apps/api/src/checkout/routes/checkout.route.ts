@@ -63,6 +63,8 @@ export async function handleCheckoutCart(
         subtotal: result.order.subtotal,
         discountAmount: result.order.discountAmount,
         taxAmount: result.order.taxAmount,
+        shippingMethod: result.order.appliedShippingMethod?.methodNameSnapshot,
+        shippingAmount: result.order.shippingAmount,
         total: result.order.total,
         currency: result.order.currency,
       },

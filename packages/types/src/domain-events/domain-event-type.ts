@@ -14,6 +14,7 @@ export const DOMAIN_EVENT_TYPES = [
   "cart.item.updated",
   "cart.item.removed",
   "checkout.completed",
+  "checkout.shipping.selected",
   "payment.created",
   "payment.authorized",
   "payment.paid",

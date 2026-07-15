@@ -1,6 +1,9 @@
 import type { InvoiceStatus } from "@commerceflow/types";
 
-import type { OrderTaxRateSnapshot } from "@commerceflow/types";
+import type {
+  OrderShippingMethodSnapshot,
+  OrderTaxRateSnapshot,
+} from "@commerceflow/types";
 
 export interface CreateInvoiceRecord {
   readonly storeId: string;
@@ -8,7 +11,9 @@ export interface CreateInvoiceRecord {
   readonly subtotal: string;
   readonly discountAmount?: string;
   readonly taxAmount?: string;
+  readonly shippingAmount?: string;
   readonly appliedTaxRate?: OrderTaxRateSnapshot;
+  readonly appliedShippingMethod?: OrderShippingMethodSnapshot;
   readonly total: string;
   readonly currency: string;
   readonly dueAt?: string;

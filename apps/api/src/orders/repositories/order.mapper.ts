@@ -1,10 +1,16 @@
 import type {
   OrderAppliedPromotion as PrismaOrderAppliedPromotion,
   OrderAppliedTaxRate as PrismaOrderAppliedTaxRate,
+  OrderAppliedShippingMethod as PrismaOrderAppliedShippingMethod,
   Order as PrismaOrder,
   OrderItem as PrismaOrderItem,
 } from "@prisma/client";
-import type { Order, OrderPromotionSnapshot, OrderTaxRateSnapshot } from "@commerceflow/types";
+import type {
+  Order,
+  OrderPromotionSnapshot,
+  OrderShippingMethodSnapshot,
+  OrderTaxRateSnapshot,
+} from "@commerceflow/types";
 
 import { toOrderAddressSnapshot } from "./order-address.mapper";
 
@@ -12,7 +18,23 @@ type OrderWithItems = PrismaOrder & {
   items: PrismaOrderItem[];
   appliedPromotion?: PrismaOrderAppliedPromotion | null;
   appliedTaxRate?: PrismaOrderAppliedTaxRate | null;
+  appliedShippingMethod?: PrismaOrderAppliedShippingMethod | null;
 };
+
+function toOrderShippingMethodSnapshot(
+  record: PrismaOrderAppliedShippingMethod,
+): OrderShippingMethodSnapshot {
+  return {
+    shippingMethodId: record.shippingMethodId,
+    shippingZoneId: record.shippingZoneId,
+    methodNameSnapshot: record.methodNameSnapshot,
+    zoneNameSnapshot: record.zoneNameSnapshot,
+    carrierSnapshot: record.carrierSnapshot,
+    flatRateSnapshot: record.flatRateSnapshot.toString(),
+    currencySnapshot: record.currencySnapshot,
+    shippingAmount: record.shippingAmount.toString(),
+  };
+}
 
 function toOrderTaxRateSnapshot(
   record: PrismaOrderAppliedTaxRate,
@@ -63,6 +85,7 @@ export function mapPrismaOrder(record: OrderWithItems): Order {
     subtotal: record.subtotal.toString(),
     discountAmount: record.discountAmount?.toString(),
     taxAmount: record.taxAmount?.toString(),
+    shippingAmount: record.shippingAmount?.toString(),
     total: record.total.toString(),
     currency: record.currency,
     appliedPromotion: record.appliedPromotion
@@ -70,6 +93,9 @@ export function mapPrismaOrder(record: OrderWithItems): Order {
       : undefined,
     appliedTaxRate: record.appliedTaxRate
       ? toOrderTaxRateSnapshot(record.appliedTaxRate)
+      : undefined,
+    appliedShippingMethod: record.appliedShippingMethod
+      ? toOrderShippingMethodSnapshot(record.appliedShippingMethod)
       : undefined,
     shippingAddress: toOrderAddressSnapshot(record),
     items: record.items.map(toOrderItem),
@@ -89,4 +115,5 @@ export const orderWithPromotionInclude = {
   items: orderItemsInclude,
   appliedPromotion: true,
   appliedTaxRate: true,
+  appliedShippingMethod: true,
 };

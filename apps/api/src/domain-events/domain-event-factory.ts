@@ -18,8 +18,10 @@ import type {
   CartItemRemovedPayload,
   CartItemUpdatedPayload,
   CheckoutCompletedPayload,
+  CheckoutShippingSelectedPayload,
   CheckoutResult,
   Order,
+  OrderShippingMethodSnapshot,
   OrderCancelledPayload,
   OrderConfirmedPayload,
   OrderFulfilledPayload,
@@ -366,6 +368,25 @@ export function buildCheckoutCompletedEvent(
       order: result.order,
       cart: result.cart,
       result,
+    },
+  });
+}
+
+export function buildCheckoutShippingSelectedEvent(
+  order: Order,
+  appliedShippingMethod: OrderShippingMethodSnapshot,
+  shippingAmount: string,
+): DomainEvent<CheckoutShippingSelectedPayload> {
+  return createDomainEvent({
+    eventType: "checkout.shipping.selected",
+    aggregateType: "checkout",
+    aggregateId: order.id,
+    storeId: order.storeId,
+    payload: {
+      orderId: order.id,
+      shippingAmount,
+      appliedShippingMethod,
+      order,
     },
   });
 }

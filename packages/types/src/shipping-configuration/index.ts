@@ -8,3 +8,4 @@ export {
 } from "./shipping-method-status";
 export type { ShippingZone } from "./shipping-zone";
 export type { ShippingMethod } from "./shipping-method";
+export type { OrderShippingMethodSnapshot } from "./order-shipping-method-snapshot";
