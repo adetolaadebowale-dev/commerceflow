@@ -51,7 +51,7 @@ export class MemoryShipmentRepository implements ShipmentRepository {
         });
       }
 
-      const shipmentNumber = generateShipmentNumber();
+      const shipmentNumber = record.shipmentNumber ?? generateShipmentNumber();
       const numbers =
         this.shipmentNumbersByStore.get(record.storeId) ?? new Set<string>();
 
@@ -110,6 +110,7 @@ export class MemoryShipmentRepository implements ShipmentRepository {
     const updated: Shipment = {
       ...shipment,
       status: transition.toStatus,
+      trackingNumber: transition.trackingNumber ?? shipment.trackingNumber,
       shippedAt:
         transition.toStatus === "shipped"
           ? transition.shippedAt ?? now

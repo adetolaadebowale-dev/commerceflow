@@ -7,3 +7,9 @@ export {
   type ShipmentStatus,
 } from "./shipment-status";
 export type { Shipment } from "./shipment";
+export type {
+  ShipmentCarrierGateway,
+  ShipmentDispatchContext,
+  ShipmentGatewayResult,
+  ShipmentInitializeRequest,
+} from "./gateway";

@@ -7,6 +7,7 @@ import {
   TEST_STORE_A_ID,
 } from "@/fulfillment/testing/fulfillment-test-utils";
 import { MemoryOrderRepository } from "@/orders/repositories/memory-order.repository";
+import type { ShipmentCarrierGatewayFactory } from "../gateways";
 import { MemoryShipmentRepository } from "../repositories/memory-shipment.repository";
 import { ShipmentService } from "../services/shipment.service";
 
@@ -25,6 +26,7 @@ export const TEST_SHIPPING_ADDRESS = {
 
 export function createMemoryShipmentModule(dependencies: {
   domainEventPublisher?: DomainEventPublisher;
+  shipmentCarrierGatewayFactory?: ShipmentCarrierGatewayFactory;
 } = {}) {
   const fulfillmentServices = createMemoryFulfillmentService();
   const shipmentRepository = new MemoryShipmentRepository();

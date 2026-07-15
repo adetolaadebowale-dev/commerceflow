@@ -74,7 +74,7 @@ export class PrismaShipmentRepository implements ShipmentRepository {
 
   async create(record: CreateShipmentRecord): Promise<Shipment> {
     for (let attempt = 0; attempt < MAX_SHIPMENT_NUMBER_ATTEMPTS; attempt += 1) {
-      const shipmentNumber = generateShipmentNumber();
+      const shipmentNumber = record.shipmentNumber ?? generateShipmentNumber();
 
       try {
         const created = await this.db.shipment.create({
@@ -120,6 +120,9 @@ export class PrismaShipmentRepository implements ShipmentRepository {
     return this.db.$transaction(async (tx) => {
       const updateData = {
         status: transition.toStatus,
+        ...(transition.trackingNumber
+          ? { trackingNumber: transition.trackingNumber }
+          : {}),
         ...(transition.shippedAt
           ? { shippedAt: new Date(transition.shippedAt) }
           : transition.toStatus === "shipped"

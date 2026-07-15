@@ -2,12 +2,14 @@ import { SHIPMENT_CARRIERS } from "@commerceflow/types";
 import { z } from "zod";
 
 const storeIdSchema = z.string().uuid("Store id must be a valid UUID");
+const metadataSchema = z.record(z.string(), z.unknown()).optional();
 
 export const createShipmentSchema = z.object({
   carrier: z.enum(SHIPMENT_CARRIERS, {
     message: "Carrier must be internal or manual",
   }),
   trackingNumber: z.string().trim().min(1).optional(),
+  metadata: metadataSchema,
 });
 
 export const shipmentIdQuerySchema = z.object({

@@ -71,6 +71,10 @@ export {
   SHIPMENT_STATUSES,
   type Shipment,
   type ShipmentCarrier,
+  type ShipmentCarrierGateway,
+  type ShipmentDispatchContext,
+  type ShipmentGatewayResult,
+  type ShipmentInitializeRequest,
   type ShipmentStatus,
 } from "./shipments";
 export {

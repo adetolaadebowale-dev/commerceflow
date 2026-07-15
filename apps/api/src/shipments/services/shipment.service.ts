@@ -11,6 +11,10 @@ import {
 } from "@/domain-events";
 import { getOrderRepository, type OrderRepository } from "@/orders/repositories";
 import { SHIPMENT_ERROR_CODES, ShipmentError } from "../errors";
+import {
+  getShipmentCarrierGatewayFactory,
+  type ShipmentCarrierGatewayFactory,
+} from "../gateways";
 import { ShipmentStatusTransitionPolicy } from "../policies/shipment-status-transition.policy";
 import {
   getShipmentRepository,
@@ -20,16 +24,20 @@ import {
   requireOrderShippingAddress,
   toShipmentAddressFields,
 } from "./shipment-address";
+import { toShipmentDispatchContext } from "./shipment-gateway-context";
+import { generateShipmentNumber } from "./shipment-number";
 
 export interface ShipmentServiceDependencies {
   readonly shipmentRepository?: ShipmentRepository;
   readonly orderRepository?: OrderRepository;
+  readonly shipmentCarrierGatewayFactory?: ShipmentCarrierGatewayFactory;
   readonly domainEventPublisher?: DomainEventPublisher;
 }
 
 export class ShipmentService {
   private readonly shipmentRepository: ShipmentRepository;
   private readonly orderRepository: OrderRepository;
+  private readonly shipmentCarrierGatewayFactory: ShipmentCarrierGatewayFactory;
   private readonly domainEventPublisher: DomainEventPublisher;
 
   constructor(dependencies: ShipmentServiceDependencies = {}) {
@@ -37,6 +45,9 @@ export class ShipmentService {
       dependencies.shipmentRepository ?? getShipmentRepository();
     this.orderRepository =
       dependencies.orderRepository ?? getOrderRepository();
+    this.shipmentCarrierGatewayFactory =
+      dependencies.shipmentCarrierGatewayFactory ??
+      getShipmentCarrierGatewayFactory();
     this.domainEventPublisher =
       dependencies.domainEventPublisher ?? getDomainEventPublisher();
   }
@@ -78,14 +89,31 @@ export class ShipmentService {
     }
 
     const shippingAddress = requireOrderShippingAddress(order);
+    const addressFields = toShipmentAddressFields(shippingAddress);
+    const gateway = this.shipmentCarrierGatewayFactory.resolve(input.carrier);
+    const shipmentNumber = generateShipmentNumber();
+
+    const initializeResult = await gateway.initializeShipment({
+      storeId,
+      orderId,
+      shipmentNumber,
+      carrier: input.carrier,
+      trackingNumber: input.trackingNumber,
+      ...addressFields,
+      metadata: input.metadata,
+    });
+
+    this.assertGatewaySuccess(initializeResult, "initialize");
 
     try {
       const shipment = await this.shipmentRepository.create({
         storeId,
         orderId,
+        shipmentNumber,
         carrier: input.carrier,
-        trackingNumber: input.trackingNumber,
-        ...toShipmentAddressFields(shippingAddress),
+        trackingNumber:
+          input.trackingNumber ?? initializeResult.trackingNumber,
+        ...addressFields,
       });
 
       this.domainEventPublisher.publishShipmentCreated(shipment);
@@ -131,8 +159,28 @@ export class ShipmentService {
   }
 
   async shipShipment(query: ShipmentIdQuery, shipmentId: string): Promise<Shipment> {
+    const existing = await this.requireShipment(query.storeId, shipmentId);
+
+    if (
+      !ShipmentStatusTransitionPolicy.canTransition(existing.status, "shipped")
+    ) {
+      throw new ShipmentError(
+        SHIPMENT_ERROR_CODES.INVALID_TRANSITION,
+        `Cannot transition shipment from ${existing.status} to shipped`,
+        409,
+      );
+    }
+
+    const gateway = this.shipmentCarrierGatewayFactory.resolve(existing.carrier);
+    const dispatchResult = await gateway.dispatchShipment(
+      toShipmentDispatchContext(existing),
+    );
+
+    this.assertGatewaySuccess(dispatchResult, "dispatch");
+
     return this.transitionShipment(query.storeId, shipmentId, "shipped", {
       shippedAt: new Date().toISOString(),
+      trackingNumber: dispatchResult.trackingNumber ?? existing.trackingNumber,
     });
   }
 
@@ -149,6 +197,25 @@ export class ShipmentService {
     query: ShipmentIdQuery,
     shipmentId: string,
   ): Promise<Shipment> {
+    const existing = await this.requireShipment(query.storeId, shipmentId);
+
+    if (
+      !ShipmentStatusTransitionPolicy.canTransition(existing.status, "cancelled")
+    ) {
+      throw new ShipmentError(
+        SHIPMENT_ERROR_CODES.INVALID_TRANSITION,
+        `Cannot transition shipment from ${existing.status} to cancelled`,
+        409,
+      );
+    }
+
+    const gateway = this.shipmentCarrierGatewayFactory.resolve(existing.carrier);
+    const cancelResult = await gateway.cancelShipment(
+      toShipmentDispatchContext(existing),
+    );
+
+    this.assertGatewaySuccess(cancelResult, "cancel");
+
     return this.transitionShipment(query.storeId, shipmentId, "cancelled");
   }
 
@@ -156,7 +223,11 @@ export class ShipmentService {
     storeId: string,
     shipmentId: string,
     toStatus: ShipmentStatus,
-    timestamps: { shippedAt?: string; deliveredAt?: string } = {},
+    timestamps: {
+      shippedAt?: string;
+      deliveredAt?: string;
+      trackingNumber?: string;
+    } = {},
   ): Promise<Shipment> {
     const existing = await this.requireShipment(storeId, shipmentId);
 
@@ -185,6 +256,19 @@ export class ShipmentService {
       return shipment;
     } catch (error) {
       throw this.mapRepositoryError(error, existing.status, toStatus);
+    }
+  }
+
+  private assertGatewaySuccess(
+    result: { success: boolean; message?: string },
+    operation: string,
+  ): void {
+    if (!result.success) {
+      throw new ShipmentError(
+        SHIPMENT_ERROR_CODES.CARRIER_ERROR,
+        result.message ?? `Shipment carrier ${operation} failed`,
+        502,
+      );
     }
   }
 
