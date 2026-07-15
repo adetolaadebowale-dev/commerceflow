@@ -65,6 +65,7 @@ export class MemoryInventoryAllocationRepository
     const allocation: InventoryAllocation = {
       id: crypto.randomUUID(),
       storeId: record.storeId,
+      warehouseId: record.warehouseId,
       pickListItemId: record.pickListItemId,
       inventoryItemId: record.inventoryItemId,
       quantityAllocated: record.quantityAllocated,

@@ -134,6 +134,11 @@ export {
   type CycleCountStatus,
 } from "./cycle-counts";
 export {
+  WAREHOUSE_STATUSES,
+  type Warehouse,
+  type WarehouseStatus,
+} from "./warehouses";
+export {
   type AppliedCartPromotion,
   type OrderPromotionSnapshot,
 } from "./promotion-redemption";
@@ -239,4 +244,9 @@ export {
   type ShippingMethodCreatedPayload,
   type ShippingMethodUpdatedPayload,
   type ShippingMethodDeletedPayload,
+  type WarehouseCreatedPayload,
+  type WarehouseUpdatedPayload,
+  type WarehouseActivatedPayload,
+  type WarehouseDeactivatedPayload,
+  type WarehouseDeletedPayload,
 } from "./domain-events";

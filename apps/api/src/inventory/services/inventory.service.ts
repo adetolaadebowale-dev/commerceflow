@@ -11,6 +11,10 @@ import type {
   ListStockMovementsQuery,
 } from "@commerceflow/validation";
 
+import {
+  getWarehouseRepository,
+  type WarehouseRepository,
+} from "@/warehouses/repositories";
 import { INVENTORY_ERROR_CODES, InventoryError } from "../errors";
 import {
   getInventoryItemRepository,
@@ -23,22 +27,28 @@ import {
 export interface InventoryServiceDependencies {
   readonly inventoryItemRepository?: InventoryItemRepository;
   readonly stockMovementRepository?: StockMovementRepository;
+  readonly warehouseRepository?: WarehouseRepository;
 }
 
 export class InventoryService {
   private readonly inventoryItemRepository: InventoryItemRepository;
   private readonly stockMovementRepository: StockMovementRepository;
+  private readonly warehouseRepository: WarehouseRepository;
 
   constructor(dependencies: InventoryServiceDependencies = {}) {
     this.inventoryItemRepository =
       dependencies.inventoryItemRepository ?? getInventoryItemRepository();
     this.stockMovementRepository =
       dependencies.stockMovementRepository ?? getStockMovementRepository();
+    this.warehouseRepository =
+      dependencies.warehouseRepository ?? getWarehouseRepository();
   }
 
   async createInventoryItem(
     input: CreateInventoryItemInput,
   ): Promise<InventoryAdjustmentResult> {
+    await this.requireActiveWarehouse(input.storeId, input.warehouseId);
+
     const variantExists = await this.inventoryItemRepository.productVariantExists(
       input.storeId,
       input.productVariantId,
@@ -54,6 +64,7 @@ export class InventoryService {
 
     const existing = await this.inventoryItemRepository.findByProductVariantId(
       input.storeId,
+      input.warehouseId,
       input.productVariantId,
     );
 
@@ -149,6 +160,32 @@ export class InventoryService {
     query: ListStockMovementsQuery,
   ): Promise<CatalogueListResult<StockMovement>> {
     return this.stockMovementRepository.list(query);
+  }
+
+  private async requireActiveWarehouse(
+    storeId: string,
+    warehouseId: string,
+  ): Promise<void> {
+    const warehouse = await this.warehouseRepository.findById(
+      storeId,
+      warehouseId,
+    );
+
+    if (!warehouse) {
+      throw new InventoryError(
+        INVENTORY_ERROR_CODES.WAREHOUSE_NOT_FOUND,
+        "Warehouse not found",
+        404,
+      );
+    }
+
+    if (warehouse.status !== "active") {
+      throw new InventoryError(
+        INVENTORY_ERROR_CODES.VALIDATION_ERROR,
+        "Warehouse must be active",
+        400,
+      );
+    }
   }
 }
 

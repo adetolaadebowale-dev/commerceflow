@@ -38,6 +38,11 @@ import {
   buildTaxUpdatedEvent,
   buildTaxActivatedEvent,
   buildTaxDeactivatedEvent,
+  buildWarehouseCreatedEvent,
+  buildWarehouseUpdatedEvent,
+  buildWarehouseActivatedEvent,
+  buildWarehouseDeactivatedEvent,
+  buildWarehouseDeletedEvent,
   buildShipmentCreatedEvent,
   buildShipmentShippedEvent,
   buildShipmentDeliveredEvent,
@@ -93,6 +98,8 @@ import type {
   AppliedCartPromotion,
   TaxRate,
   TaxRateStatus,
+  Warehouse,
+  WarehouseStatus,
   Shipment,
   ShipmentStatus,
   ShipmentTrackingEvent,
@@ -325,6 +332,32 @@ export class DomainEventPublisher {
     previousStatus: TaxRateStatus,
   ): void {
     this.dispatch(buildTaxDeactivatedEvent(taxRate, previousStatus));
+  }
+
+  publishWarehouseCreated(warehouse: Warehouse): void {
+    this.dispatch(buildWarehouseCreatedEvent(warehouse));
+  }
+
+  publishWarehouseUpdated(warehouse: Warehouse): void {
+    this.dispatch(buildWarehouseUpdatedEvent(warehouse));
+  }
+
+  publishWarehouseActivated(
+    warehouse: Warehouse,
+    previousStatus: WarehouseStatus,
+  ): void {
+    this.dispatch(buildWarehouseActivatedEvent(warehouse, previousStatus));
+  }
+
+  publishWarehouseDeactivated(
+    warehouse: Warehouse,
+    previousStatus: WarehouseStatus,
+  ): void {
+    this.dispatch(buildWarehouseDeactivatedEvent(warehouse, previousStatus));
+  }
+
+  publishWarehouseDeleted(warehouse: Warehouse): void {
+    this.dispatch(buildWarehouseDeletedEvent(warehouse));
   }
 
   publishShipmentCreated(shipment: Shipment): void {

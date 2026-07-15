@@ -33,6 +33,8 @@ import type { InventoryAdjustmentResult } from "../inventory-adjustments/invento
 import type { CycleCount } from "../cycle-counts/cycle-count";
 import type { CycleCountApprovalResult } from "../cycle-counts/cycle-count";
 import type { CycleCountStatus } from "../cycle-counts/cycle-count-status";
+import type { Warehouse } from "../warehouses/warehouse";
+import type { WarehouseStatus } from "../warehouses/warehouse-status";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -634,6 +636,53 @@ export interface CycleCountApprovedPayload {
   readonly adjustmentCount: number;
   readonly stockMovementCount: number;
   readonly result: CycleCountApprovalResult;
+}
+
+export interface WarehouseCreatedPayload {
+  readonly warehouseId: string;
+  readonly name: string;
+  readonly code: string;
+  readonly status: WarehouseStatus;
+  readonly isDefault: boolean;
+  readonly warehouse: Warehouse;
+}
+
+export interface WarehouseUpdatedPayload {
+  readonly warehouseId: string;
+  readonly name: string;
+  readonly code: string;
+  readonly status: WarehouseStatus;
+  readonly isDefault: boolean;
+  readonly warehouse: Warehouse;
+}
+
+export interface WarehouseActivatedPayload {
+  readonly warehouseId: string;
+  readonly name: string;
+  readonly code: string;
+  readonly previousStatus: WarehouseStatus;
+  readonly status: "active";
+  readonly isDefault: boolean;
+  readonly warehouse: Warehouse;
+}
+
+export interface WarehouseDeactivatedPayload {
+  readonly warehouseId: string;
+  readonly name: string;
+  readonly code: string;
+  readonly previousStatus: WarehouseStatus;
+  readonly status: "inactive";
+  readonly isDefault: boolean;
+  readonly warehouse: Warehouse;
+}
+
+export interface WarehouseDeletedPayload {
+  readonly warehouseId: string;
+  readonly name: string;
+  readonly code: string;
+  readonly status: WarehouseStatus;
+  readonly isDefault: boolean;
+  readonly warehouse: Warehouse;
 }
 
 export interface ShippingZoneCreatedPayload {

@@ -4,6 +4,7 @@ import type { StockMovementType } from "./stock-movement-type";
 export interface StockMovement {
   readonly id: string;
   readonly storeId: string;
+  readonly warehouseId: string;
   readonly inventoryItemId: string;
   readonly shipmentId?: string;
   readonly inventoryAllocationId?: string;

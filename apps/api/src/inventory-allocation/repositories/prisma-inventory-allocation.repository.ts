@@ -17,6 +17,7 @@ function toInventoryAllocation(
   return {
     id: record.id,
     storeId: record.storeId,
+    warehouseId: record.warehouseId,
     pickListItemId: record.pickListItemId,
     inventoryItemId: record.inventoryItemId,
     quantityAllocated: record.quantityAllocated,
@@ -68,6 +69,7 @@ export class PrismaInventoryAllocationRepository
     const created = await this.db.inventoryAllocation.create({
       data: {
         storeId: record.storeId,
+        warehouseId: record.warehouseId,
         pickListItemId: record.pickListItemId,
         inventoryItemId: record.inventoryItemId,
         quantityAllocated: record.quantityAllocated,

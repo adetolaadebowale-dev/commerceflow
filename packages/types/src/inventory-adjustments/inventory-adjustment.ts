@@ -2,6 +2,7 @@
 export interface InventoryAdjustment {
   readonly id: string;
   readonly storeId: string;
+  readonly warehouseId: string;
   readonly inventoryItemId: string;
   readonly adjustmentNumber: string;
   readonly movementQuantity: number;

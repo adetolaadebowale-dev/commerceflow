@@ -19,6 +19,7 @@ describe("ReservationService domain events", () => {
       inventoryReservationRepository: services.reservationRepository,
       orderRepository: services.orderRepository,
       inventoryItemRepository: services.inventoryItemRepository,
+      warehouseRepository: services.warehouseRepository,
       domainEventPublisher: publisher,
     });
     const { confirmed } = await seedConfirmedOrderWithInventory(services);
@@ -52,6 +53,7 @@ describe("ReservationService domain events", () => {
       inventoryReservationRepository: services.reservationRepository,
       orderRepository: services.orderRepository,
       inventoryItemRepository: services.inventoryItemRepository,
+      warehouseRepository: services.warehouseRepository,
       domainEventPublisher: publisher,
     });
     const { confirmed } = await seedConfirmedOrderWithInventory(services);

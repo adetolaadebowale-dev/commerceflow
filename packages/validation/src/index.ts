@@ -248,6 +248,16 @@ export {
   type UpdateCycleCountInput,
 } from "./cycle-counts";
 export {
+  createWarehouseSchema,
+  listWarehousesQuerySchema,
+  updateWarehouseSchema,
+  warehouseIdQuerySchema,
+  type CreateWarehouseInput,
+  type ListWarehousesQuery,
+  type UpdateWarehouseInput,
+  type WarehouseIdQuery,
+} from "./warehouses";
+export {
   createShippingMethodSchema,
   createShippingZoneSchema,
   listShippingMethodsQuerySchema,

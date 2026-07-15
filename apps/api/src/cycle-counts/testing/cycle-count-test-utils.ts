@@ -28,6 +28,7 @@ export function createMemoryCycleCountModule(
     cycleCountService: new CycleCountService({
       cycleCountRepository,
       inventoryItemRepository: adjustmentModule.inventoryItemRepository,
+      warehouseRepository: adjustmentModule.warehouseRepository,
       ...dependencies,
     }),
   };
@@ -41,6 +42,7 @@ export async function seedDraftCycleCount(
 
   const cycleCount = await module.cycleCountService.createCycleCount({
     storeId: TEST_STORE_A_ID,
+    warehouseId: inventoryItem.warehouseId,
     inventoryItemIds: [inventoryItem.id],
   });
 

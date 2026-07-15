@@ -19,6 +19,7 @@ export interface Shipment {
   readonly shippingPostalCode: string;
   readonly shippingCountryCode: string;
   readonly status: ShipmentStatus;
+  readonly warehouseId?: string;
   readonly packages?: readonly ShipmentPackage[];
   readonly shippedAt?: string;
   readonly deliveredAt?: string;

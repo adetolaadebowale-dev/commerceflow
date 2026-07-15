@@ -1,8 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, beforeAll } from "vitest";
 
 import { INVENTORY_ERROR_CODES } from "../errors";
 import {
   createMemoryInventoryService,
+  seedTestWarehouse,
   TEST_STORE_A_ID,
   TEST_STORE_B_ID,
   TEST_VARIANT_A_ID,
@@ -22,6 +23,11 @@ function seedVariant(
 }
 
 describe("InventoryService", () => {
+  beforeAll(async () => {
+    const services = createMemoryInventoryService();
+    await seedTestWarehouse(services);
+  });
+
   it("creates inventory with an initial stock movement", async () => {
     const { inventoryService, inventoryItemRepository } =
       createMemoryInventoryService();

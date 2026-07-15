@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { seedDefaultWarehouse } from "@/warehouses/testing/warehouse-test-utils";
 import { RESERVATION_ERROR_CODES } from "../errors";
 import {
   createMemoryReservationService,
@@ -60,6 +61,14 @@ describe("ReservationService", () => {
 
   it("handles multiple orders competing for the same inventory", async () => {
     const services = createMemoryReservationService();
+    const existingWarehouse =
+      await services.warehouseRepository.findDefaultByStoreId(TEST_STORE_A_ID);
+    const warehouse =
+      existingWarehouse ??
+      (await seedDefaultWarehouse(services.warehouseService, {
+        storeId: TEST_STORE_A_ID,
+      }));
+
     services.inventoryItemRepository.seedProductVariant(
       TEST_STORE_A_ID,
       TEST_VARIANT_A_ID,
@@ -76,6 +85,7 @@ describe("ReservationService", () => {
 
     await services.inventoryService.createInventoryItem({
       storeId: TEST_STORE_A_ID,
+      warehouseId: warehouse.id,
       productVariantId: TEST_VARIANT_A_ID,
       initialQuantity: 5,
     });
@@ -161,6 +171,14 @@ describe("ReservationService", () => {
 
   it("rejects reservation for non-confirmed orders", async () => {
     const services = createMemoryReservationService();
+    const existingWarehouse =
+      await services.warehouseRepository.findDefaultByStoreId(TEST_STORE_A_ID);
+    const warehouse =
+      existingWarehouse ??
+      (await seedDefaultWarehouse(services.warehouseService, {
+        storeId: TEST_STORE_A_ID,
+      }));
+
     services.inventoryItemRepository.seedProductVariant(
       TEST_STORE_A_ID,
       TEST_VARIANT_A_ID,
@@ -177,6 +195,7 @@ describe("ReservationService", () => {
 
     await services.inventoryService.createInventoryItem({
       storeId: TEST_STORE_A_ID,
+      warehouseId: warehouse.id,
       productVariantId: TEST_VARIANT_A_ID,
       initialQuantity: 10,
     });

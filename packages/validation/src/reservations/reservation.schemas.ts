@@ -4,6 +4,7 @@ const storeIdSchema = z.string().uuid("Store id must be a valid UUID");
 
 export const orderReservationActionSchema = z.object({
   storeId: storeIdSchema,
+  warehouseId: z.string().uuid("Warehouse id must be a valid UUID").optional(),
 });
 
 export const reservationIdActionSchema = z.object({

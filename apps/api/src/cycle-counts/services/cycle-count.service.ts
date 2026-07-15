@@ -19,6 +19,10 @@ import {
   getInventoryItemRepository,
   type InventoryItemRepository,
 } from "@/inventory/repositories";
+import {
+  getWarehouseRepository,
+  type WarehouseRepository,
+} from "@/warehouses/repositories";
 import { CYCLE_COUNT_ERROR_CODES, CycleCountError } from "../errors";
 import { CycleCountStatusTransitionPolicy } from "../policies/cycle-count-status-transition.policy";
 import {
@@ -33,12 +37,14 @@ import {
 export interface CycleCountServiceDependencies {
   readonly cycleCountRepository?: CycleCountRepository;
   readonly inventoryItemRepository?: InventoryItemRepository;
+  readonly warehouseRepository?: WarehouseRepository;
   readonly domainEventPublisher?: DomainEventPublisher;
 }
 
 export class CycleCountService {
   private readonly cycleCountRepository: CycleCountRepository;
   private readonly inventoryItemRepository: InventoryItemRepository;
+  private readonly warehouseRepository: WarehouseRepository;
   private readonly domainEventPublisher: DomainEventPublisher;
 
   constructor(dependencies: CycleCountServiceDependencies = {}) {
@@ -46,11 +52,15 @@ export class CycleCountService {
       dependencies.cycleCountRepository ?? getCycleCountRepository();
     this.inventoryItemRepository =
       dependencies.inventoryItemRepository ?? getInventoryItemRepository();
+    this.warehouseRepository =
+      dependencies.warehouseRepository ?? getWarehouseRepository();
     this.domainEventPublisher =
       dependencies.domainEventPublisher ?? getDomainEventPublisher();
   }
 
   async createCycleCount(input: CreateCycleCountInput): Promise<CycleCount> {
+    await this.requireActiveWarehouse(input.storeId, input.warehouseId);
+
     const uniqueItemIds = [...new Set(input.inventoryItemIds)];
     const items: { inventoryItemId: string; expectedQuantity: number }[] = [];
 
@@ -68,6 +78,14 @@ export class CycleCountService {
         );
       }
 
+      if (inventoryItem.warehouseId !== input.warehouseId) {
+        throw new CycleCountError(
+          CYCLE_COUNT_ERROR_CODES.VALIDATION_ERROR,
+          "Inventory item does not belong to the specified warehouse",
+          400,
+        );
+      }
+
       items.push({
         inventoryItemId,
         expectedQuantity: inventoryItem.quantityOnHand,
@@ -80,6 +98,7 @@ export class CycleCountService {
       try {
         const cycleCount = await this.cycleCountRepository.create({
           storeId: input.storeId,
+          warehouseId: input.warehouseId,
           cycleCountNumber: generateCycleCountNumber(),
           items,
         });
@@ -397,6 +416,32 @@ export class CycleCountService {
         CYCLE_COUNT_ERROR_CODES.TRANSACTION_FAILED,
         "Failed to approve cycle count",
         500,
+      );
+    }
+  }
+
+  private async requireActiveWarehouse(
+    storeId: string,
+    warehouseId: string,
+  ): Promise<void> {
+    const warehouse = await this.warehouseRepository.findById(
+      storeId,
+      warehouseId,
+    );
+
+    if (!warehouse) {
+      throw new CycleCountError(
+        CYCLE_COUNT_ERROR_CODES.WAREHOUSE_NOT_FOUND,
+        "Warehouse not found",
+        404,
+      );
+    }
+
+    if (warehouse.status !== "active") {
+      throw new CycleCountError(
+        CYCLE_COUNT_ERROR_CODES.VALIDATION_ERROR,
+        "Warehouse must be active",
+        400,
       );
     }
   }

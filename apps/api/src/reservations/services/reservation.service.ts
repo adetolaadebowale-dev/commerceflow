@@ -9,6 +9,10 @@ import { getInventoryItemRepository } from "../../inventory/repositories";
 import type { InventoryItemRepository } from "../../inventory/repositories/inventory-item.repository";
 import { getOrderRepository } from "../../orders/repositories";
 import type { OrderRepository } from "../../orders/repositories/order.repository";
+import {
+  getWarehouseRepository,
+  type WarehouseRepository,
+} from "@/warehouses/repositories";
 import { RESERVATION_ERROR_CODES, ReservationError } from "../errors";
 import {
   getInventoryReservationRepository,
@@ -24,6 +28,7 @@ export interface ReservationServiceDependencies {
   readonly inventoryReservationRepository?: InventoryReservationRepository;
   readonly orderRepository?: OrderRepository;
   readonly inventoryItemRepository?: InventoryItemRepository;
+  readonly warehouseRepository?: WarehouseRepository;
   readonly domainEventPublisher?: DomainEventPublisher;
 }
 
@@ -31,6 +36,7 @@ export class ReservationService {
   private readonly inventoryReservationRepository: InventoryReservationRepository;
   private readonly orderRepository: OrderRepository;
   private readonly inventoryItemRepository: InventoryItemRepository;
+  private readonly warehouseRepository: WarehouseRepository;
   private readonly domainEventPublisher: DomainEventPublisher;
 
   constructor(dependencies: ReservationServiceDependencies = {}) {
@@ -41,6 +47,8 @@ export class ReservationService {
       dependencies.orderRepository ?? getOrderRepository();
     this.inventoryItemRepository =
       dependencies.inventoryItemRepository ?? getInventoryItemRepository();
+    this.warehouseRepository =
+      dependencies.warehouseRepository ?? getWarehouseRepository();
     this.domainEventPublisher =
       dependencies.domainEventPublisher ?? getDomainEventPublisher();
   }
@@ -80,12 +88,14 @@ export class ReservationService {
       );
     }
 
+    const warehouseId = await this.resolveWarehouseId(input.storeId, input.warehouseId);
     const pendingItems = [];
 
     for (const item of order.items) {
       const inventoryItem =
         await this.inventoryItemRepository.findByProductVariantId(
           input.storeId,
+          warehouseId,
           item.productVariantId,
         );
 
@@ -185,6 +195,49 @@ export class ReservationService {
       inventoryItem.quantityOnHand,
       activeReserved,
     );
+  }
+
+  private async resolveWarehouseId(
+    storeId: string,
+    warehouseId?: string,
+  ): Promise<string> {
+    if (warehouseId) {
+      const warehouse = await this.warehouseRepository.findById(
+        storeId,
+        warehouseId,
+      );
+
+      if (!warehouse) {
+        throw new ReservationError(
+          RESERVATION_ERROR_CODES.INVENTORY_NOT_FOUND,
+          "Warehouse not found",
+          404,
+        );
+      }
+
+      if (warehouse.status !== "active") {
+        throw new ReservationError(
+          RESERVATION_ERROR_CODES.INVENTORY_NOT_FOUND,
+          "Warehouse must be active",
+          400,
+        );
+      }
+
+      return warehouse.id;
+    }
+
+    const defaultWarehouse =
+      await this.warehouseRepository.findDefaultByStoreId(storeId);
+
+    if (!defaultWarehouse) {
+      throw new ReservationError(
+        RESERVATION_ERROR_CODES.INVENTORY_NOT_FOUND,
+        "Default warehouse not found",
+        404,
+      );
+    }
+
+    return defaultWarehouse.id;
   }
 
   private mapRepositoryError(error: unknown): ReservationError {

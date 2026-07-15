@@ -28,6 +28,12 @@ export class MemoryStockMovementRepository implements StockMovementRepository {
       (movement) => movement.storeId === query.storeId,
     );
 
+    if (query.warehouseId) {
+      items = items.filter(
+        (movement) => movement.warehouseId === query.warehouseId,
+      );
+    }
+
     if (query.inventoryItemId) {
       items = items.filter(
         (movement) => movement.inventoryItemId === query.inventoryItemId,

@@ -32,6 +32,7 @@ describe("CycleCountService domain events", () => {
 
     const cycleCount = await module.cycleCountService.createCycleCount({
       storeId: TEST_STORE_A_ID,
+      warehouseId: inventoryItem.warehouseId,
       inventoryItemIds: [inventoryItem.id],
     });
 

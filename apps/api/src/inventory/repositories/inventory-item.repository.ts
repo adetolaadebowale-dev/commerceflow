@@ -11,6 +11,7 @@ export interface InventoryItemRepository {
   findById(storeId: string, id: string): Promise<InventoryItem | null>;
   findByProductVariantId(
     storeId: string,
+    warehouseId: string,
     productVariantId: string,
   ): Promise<InventoryItem | null>;
   list(

@@ -5,6 +5,7 @@ export function toStockMovement(record: PrismaStockMovement): StockMovement {
   return {
     id: record.id,
     storeId: record.storeId,
+    warehouseId: record.warehouseId,
     inventoryItemId: record.inventoryItemId,
     shipmentId: record.shipmentId ?? undefined,
     inventoryAllocationId: record.inventoryAllocationId ?? undefined,

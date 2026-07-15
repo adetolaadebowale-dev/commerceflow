@@ -5,6 +5,7 @@ const uuidSchema = z.string().uuid();
 
 export const createCycleCountSchema = z.object({
   storeId: storeIdSchema,
+  warehouseId: z.string().uuid("Warehouse id must be a valid UUID"),
   inventoryItemIds: z.array(uuidSchema).min(1),
 });
 

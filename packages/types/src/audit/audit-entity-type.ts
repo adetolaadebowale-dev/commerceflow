@@ -28,6 +28,7 @@ export const AUDIT_ENTITY_TYPES = [
   "cycle_count",
   "shipping_zone",
   "shipping_method",
+  "warehouse",
 ] as const;
 
 export type AuditEntityType = (typeof AUDIT_ENTITY_TYPES)[number];

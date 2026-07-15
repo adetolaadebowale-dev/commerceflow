@@ -16,6 +16,7 @@ export interface CreateCycleCountItemRecord {
 
 export interface CreateCycleCountRecord {
   readonly storeId: string;
+  readonly warehouseId: string;
   readonly cycleCountNumber: string;
   readonly items: readonly CreateCycleCountItemRecord[];
 }

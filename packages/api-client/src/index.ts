@@ -207,6 +207,23 @@ export {
   type TaxRateClient,
 } from "./tax-rates/tax-rate-client";
 export type {
+  ActivateWarehouseResponse,
+  CreateWarehouseRequest,
+  CreateWarehouseResponse,
+  DeactivateWarehouseResponse,
+  DeleteWarehouseResponse,
+  GetWarehouseResponse,
+  ListWarehousesParams,
+  ListWarehousesResponse,
+  UpdateWarehouseRequest,
+  UpdateWarehouseResponse,
+  WarehouseStoreScopedParams,
+} from "./warehouses/contracts";
+export {
+  createWarehouseClient,
+  type WarehouseClient,
+} from "./warehouses/warehouse-client";
+export type {
   CreateShipmentRequest,
   CreateShipmentResponse,
   GetShipmentResponse,

@@ -58,6 +58,13 @@ import type {
   TaxUpdatedPayload,
   TaxActivatedPayload,
   TaxDeactivatedPayload,
+  Warehouse,
+  WarehouseStatus,
+  WarehouseCreatedPayload,
+  WarehouseUpdatedPayload,
+  WarehouseActivatedPayload,
+  WarehouseDeactivatedPayload,
+  WarehouseDeletedPayload,
   Shipment,
   ShipmentStatus,
   ShipmentCreatedPayload,
@@ -860,6 +867,105 @@ export function buildTaxDeactivatedEvent(
       previousStatus,
       status: "inactive",
       taxRate,
+    },
+  });
+}
+
+export function buildWarehouseCreatedEvent(
+  warehouse: Warehouse,
+): DomainEvent<WarehouseCreatedPayload> {
+  return createDomainEvent({
+    eventType: "warehouse.created",
+    aggregateType: "warehouse",
+    aggregateId: warehouse.id,
+    storeId: warehouse.storeId,
+    payload: {
+      warehouseId: warehouse.id,
+      name: warehouse.name,
+      code: warehouse.code,
+      status: warehouse.status,
+      isDefault: warehouse.isDefault,
+      warehouse,
+    },
+  });
+}
+
+export function buildWarehouseUpdatedEvent(
+  warehouse: Warehouse,
+): DomainEvent<WarehouseUpdatedPayload> {
+  return createDomainEvent({
+    eventType: "warehouse.updated",
+    aggregateType: "warehouse",
+    aggregateId: warehouse.id,
+    storeId: warehouse.storeId,
+    payload: {
+      warehouseId: warehouse.id,
+      name: warehouse.name,
+      code: warehouse.code,
+      status: warehouse.status,
+      isDefault: warehouse.isDefault,
+      warehouse,
+    },
+  });
+}
+
+export function buildWarehouseActivatedEvent(
+  warehouse: Warehouse,
+  previousStatus: WarehouseStatus,
+): DomainEvent<WarehouseActivatedPayload> {
+  return createDomainEvent({
+    eventType: "warehouse.activated",
+    aggregateType: "warehouse",
+    aggregateId: warehouse.id,
+    storeId: warehouse.storeId,
+    payload: {
+      warehouseId: warehouse.id,
+      name: warehouse.name,
+      code: warehouse.code,
+      previousStatus,
+      status: "active",
+      isDefault: warehouse.isDefault,
+      warehouse,
+    },
+  });
+}
+
+export function buildWarehouseDeactivatedEvent(
+  warehouse: Warehouse,
+  previousStatus: WarehouseStatus,
+): DomainEvent<WarehouseDeactivatedPayload> {
+  return createDomainEvent({
+    eventType: "warehouse.deactivated",
+    aggregateType: "warehouse",
+    aggregateId: warehouse.id,
+    storeId: warehouse.storeId,
+    payload: {
+      warehouseId: warehouse.id,
+      name: warehouse.name,
+      code: warehouse.code,
+      previousStatus,
+      status: "inactive",
+      isDefault: warehouse.isDefault,
+      warehouse,
+    },
+  });
+}
+
+export function buildWarehouseDeletedEvent(
+  warehouse: Warehouse,
+): DomainEvent<WarehouseDeletedPayload> {
+  return createDomainEvent({
+    eventType: "warehouse.deleted",
+    aggregateType: "warehouse",
+    aggregateId: warehouse.id,
+    storeId: warehouse.storeId,
+    payload: {
+      warehouseId: warehouse.id,
+      name: warehouse.name,
+      code: warehouse.code,
+      status: warehouse.status,
+      isDefault: warehouse.isDefault,
+      warehouse,
     },
   });
 }

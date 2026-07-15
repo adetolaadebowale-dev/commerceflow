@@ -56,11 +56,13 @@ export class MemoryInventoryItemRepository implements InventoryItemRepository {
 
   async findByProductVariantId(
     storeId: string,
+    warehouseId: string,
     productVariantId: string,
   ): Promise<InventoryItem | null> {
     for (const item of this.itemsById.values()) {
       if (
         item.storeId === storeId &&
+        item.warehouseId === warehouseId &&
         item.productVariantId === productVariantId &&
         !this.deletedIds.has(item.id)
       ) {
@@ -78,6 +80,10 @@ export class MemoryInventoryItemRepository implements InventoryItemRepository {
       (item) =>
         item.storeId === query.storeId && !this.deletedIds.has(item.id),
     );
+
+    if (query.warehouseId) {
+      items = items.filter((item) => item.warehouseId === query.warehouseId);
+    }
 
     if (query.productVariantId) {
       items = items.filter(
@@ -108,6 +114,7 @@ export class MemoryInventoryItemRepository implements InventoryItemRepository {
   ): Promise<InventoryAdjustmentResult> {
     const existing = await this.findByProductVariantId(
       input.storeId,
+      input.warehouseId,
       input.productVariantId,
     );
 
@@ -119,6 +126,7 @@ export class MemoryInventoryItemRepository implements InventoryItemRepository {
     const inventoryItem: InventoryItem = {
       id: crypto.randomUUID(),
       storeId: input.storeId,
+      warehouseId: input.warehouseId,
       productVariantId: input.productVariantId,
       quantityOnHand: input.initialQuantity,
       createdAt: now,
@@ -135,6 +143,7 @@ export class MemoryInventoryItemRepository implements InventoryItemRepository {
     const stockMovement: StockMovement = {
       id: crypto.randomUUID(),
       storeId: input.storeId,
+      warehouseId: input.warehouseId,
       inventoryItemId: inventoryItem.id,
       movementType: "adjustment",
       quantity: input.initialQuantity,
@@ -181,6 +190,7 @@ export class MemoryInventoryItemRepository implements InventoryItemRepository {
     const stockMovement: StockMovement = {
       id: crypto.randomUUID(),
       storeId: input.storeId,
+      warehouseId: existing.warehouseId,
       inventoryItemId: inventoryItem.id,
       movementType: "adjustment",
       quantity: input.quantityChange,
@@ -228,6 +238,7 @@ export class MemoryInventoryItemRepository implements InventoryItemRepository {
     const stockMovement: StockMovement = {
       id: crypto.randomUUID(),
       storeId,
+      warehouseId: existing.warehouseId,
       inventoryItemId: inventoryItem.id,
       movementType: "fulfillment",
       quantity: -quantity,
@@ -273,6 +284,7 @@ export class MemoryInventoryItemRepository implements InventoryItemRepository {
     const stockMovement: StockMovement = {
       id: crypto.randomUUID(),
       storeId,
+      warehouseId: existing.warehouseId,
       inventoryItemId: inventoryItem.id,
       shipmentId: context.shipmentId,
       inventoryAllocationId: context.inventoryAllocationId,
@@ -321,6 +333,7 @@ export class MemoryInventoryItemRepository implements InventoryItemRepository {
     const stockMovement: StockMovement = {
       id: crypto.randomUUID(),
       storeId,
+      warehouseId: existing.warehouseId,
       inventoryItemId: inventoryItem.id,
       movementType: "return",
       quantity,

@@ -4,6 +4,7 @@ import type { InventoryAllocationStatus } from "./inventory-allocation-status";
 export interface InventoryAllocation {
   readonly id: string;
   readonly storeId: string;
+  readonly warehouseId: string;
   readonly pickListItemId: string;
   readonly inventoryItemId: string;
   readonly quantityAllocated: number;

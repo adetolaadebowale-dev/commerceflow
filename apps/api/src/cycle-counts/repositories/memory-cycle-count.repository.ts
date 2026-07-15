@@ -33,6 +33,7 @@ type MutableCycleCountItem = {
 type MutableCycleCountRecord = {
   id: string;
   storeId: string;
+  warehouseId: string;
   cycleCountNumber: string;
   status: CycleCount["status"];
   startedAt?: string;
@@ -90,6 +91,7 @@ export class MemoryCycleCountRepository implements CycleCountRepository {
     const cycleCount: MutableCycleCountRecord = {
       id: cycleCountId,
       storeId: record.storeId,
+      warehouseId: record.warehouseId,
       cycleCountNumber: record.cycleCountNumber,
       status: "draft",
       items: record.items.map((item) => ({
@@ -215,6 +217,7 @@ export class MemoryCycleCountRepository implements CycleCountRepository {
       const adjustment: InventoryAdjustment = {
         id: crypto.randomUUID(),
         storeId: record.storeId,
+        warehouseId: inventory.warehouseId,
         inventoryItemId: item.inventoryItemId,
         adjustmentNumber,
         movementQuantity: item.variance,

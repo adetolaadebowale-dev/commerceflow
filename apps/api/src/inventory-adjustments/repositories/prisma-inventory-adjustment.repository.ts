@@ -22,6 +22,7 @@ function toInventoryAdjustment(
   return {
     id: record.id,
     storeId: record.storeId,
+    warehouseId: record.warehouseId,
     inventoryItemId: record.inventoryItemId,
     adjustmentNumber: record.adjustmentNumber,
     movementQuantity: record.movementQuantity,
@@ -106,6 +107,7 @@ export class PrismaInventoryAdjustmentRepository
       const stockMovement = await tx.stockMovement.create({
         data: {
           storeId: record.storeId,
+          warehouseId: existing.warehouseId,
           inventoryItemId: existing.id,
           movementType: "adjustment",
           quantity: record.movementQuantity,
@@ -122,6 +124,7 @@ export class PrismaInventoryAdjustmentRepository
       const adjustment = await tx.inventoryAdjustment.create({
         data: {
           storeId: record.storeId,
+          warehouseId: existing.warehouseId,
           inventoryItemId: existing.id,
           adjustmentNumber: record.adjustmentNumber,
           movementQuantity: record.movementQuantity,

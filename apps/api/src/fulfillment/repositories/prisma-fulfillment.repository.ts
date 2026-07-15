@@ -87,6 +87,7 @@ function toInventoryItem(record: PrismaInventoryItem): InventoryItem {
   return {
     id: record.id,
     storeId: record.storeId,
+    warehouseId: record.warehouseId,
     productVariantId: record.productVariantId,
     quantityOnHand: record.quantityOnHand,
     createdAt: record.createdAt.toISOString(),
@@ -125,6 +126,7 @@ function toInventoryAllocation(
   return {
     id: record.id,
     storeId: record.storeId,
+    warehouseId: record.warehouseId,
     pickListItemId: record.pickListItemId,
     inventoryItemId: record.inventoryItemId,
     quantityAllocated: record.quantityAllocated,
@@ -226,6 +228,7 @@ export class PrismaFulfillmentRepository implements FulfillmentRepository {
         const stockMovement = await tx.stockMovement.create({
           data: {
             storeId,
+            warehouseId: inventoryItem.warehouseId,
             inventoryItemId: inventoryItem.id,
             movementType: "fulfillment",
             quantity: -reservation.reservedQuantity,
@@ -350,6 +353,7 @@ export class PrismaFulfillmentRepository implements FulfillmentRepository {
           const stockMovement = await tx.stockMovement.create({
             data: {
               storeId,
+              warehouseId: inventoryItem.warehouseId,
               inventoryItemId: inventoryItem.id,
               shipmentId,
               inventoryAllocationId: allocation.id,

@@ -207,6 +207,12 @@ enum CycleCountStatus {
   approved
 }
 
+/// Mirrors WarehouseStatus from @commerceflow/types.
+enum WarehouseStatus {
+  active
+  inactive
+}
+
 /// Mirrors ShippingZoneStatus from @commerceflow/types.
 enum ShippingZoneStatus {
   active
@@ -315,6 +321,7 @@ model Store {
   returns                Return[]
   inventoryAdjustments   InventoryAdjustment[]
   cycleCounts            CycleCount[]
+  warehouses             Warehouse[]
   shippingZones          ShippingZone[]
   shippingMethods        ShippingMethod[]
 
@@ -431,7 +438,7 @@ model ProductVariant {
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
   deletedAt  DateTime? @map("deleted_at")
-  inventoryItem InventoryItem?
+  inventoryItems InventoryItem[]
   orderItems OrderItem[]
   cartItems  CartItem[]
 
@@ -443,12 +450,48 @@ model ProductVariant {
   @@map("product_variants")
 }
 
-/// Current on-hand stock for a product variant within a store.
+/// Physical warehouse location within a store.
+model Warehouse {
+  id              String          @id @default(uuid()) @db.Uuid
+  storeId         String          @map("store_id") @db.Uuid
+  store           Store           @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  name            String
+  code            String
+  address         String
+  city            String
+  stateProvince   String          @map("state_province")
+  postalCode      String          @map("postal_code")
+  countryCode     String          @map("country_code") @db.Char(2)
+  status          WarehouseStatus @default(active)
+  isDefault       Boolean         @default(false) @map("is_default")
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+  deletedAt       DateTime?       @map("deleted_at")
+  inventoryItems  InventoryItem[]
+  stockMovements  StockMovement[]
+  inventoryAllocations InventoryAllocation[]
+  inventoryAdjustments InventoryAdjustment[]
+  cycleCounts     CycleCount[]
+  shipments       Shipment[]
+
+  @@unique([storeId, code])
+  @@index([storeId])
+  @@index([status])
+  @@index([storeId, status])
+  @@index([storeId, isDefault])
+  @@index([deletedAt])
+  @@index([storeId, deletedAt])
+  @@map("warehouses")
+}
+
+/// Current on-hand stock for a product variant within a store warehouse.
 model InventoryItem {
   id               String          @id @default(uuid()) @db.Uuid
   storeId          String          @map("store_id") @db.Uuid
   store            Store           @relation(fields: [storeId], references: [id], onDelete: Restrict)
-  productVariantId String          @unique @map("product_variant_id") @db.Uuid
+  warehouseId      String          @map("warehouse_id") @db.Uuid
+  warehouse        Warehouse       @relation(fields: [warehouseId], references: [id], onDelete: Restrict)
+  productVariantId String          @map("product_variant_id") @db.Uuid
   productVariant   ProductVariant  @relation(fields: [productVariantId], references: [id], onDelete: Restrict)
   quantityOnHand   Int             @map("quantity_on_hand")
   createdAt        DateTime        @default(now()) @map("created_at")
@@ -461,8 +504,11 @@ model InventoryItem {
   inventoryAdjustments    InventoryAdjustment[]
   cycleCountItems         CycleCountItem[]
 
-  @@unique([storeId, productVariantId])
+  @@unique([storeId, warehouseId, productVariantId])
   @@index([storeId])
+  @@index([warehouseId])
+  @@index([storeId, warehouseId])
+  @@index([productVariantId])
   @@index([deletedAt])
   @@index([storeId, deletedAt])
   @@map("inventory_items")
@@ -473,6 +519,8 @@ model StockMovement {
   id                    String            @id @default(uuid()) @db.Uuid
   storeId               String            @map("store_id") @db.Uuid
   store                 Store               @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  warehouseId           String            @map("warehouse_id") @db.Uuid
+  warehouse             Warehouse           @relation(fields: [warehouseId], references: [id], onDelete: Restrict)
   inventoryItemId       String            @map("inventory_item_id") @db.Uuid
   inventoryItem         InventoryItem       @relation(fields: [inventoryItemId], references: [id], onDelete: Restrict)
   shipmentId            String?           @map("shipment_id") @db.Uuid
@@ -488,10 +536,12 @@ model StockMovement {
   createdAt             DateTime          @default(now()) @map("created_at")
 
   @@index([storeId])
+  @@index([warehouseId])
   @@index([inventoryItemId])
   @@index([shipmentId])
   @@index([inventoryAllocationId])
   @@index([storeId, inventoryItemId])
+  @@index([storeId, warehouseId])
   @@index([storeId, shipmentId])
   @@index([movementType])
   @@index([createdAt])
@@ -973,6 +1023,8 @@ model Shipment {
   shippedAt              DateTime?       @map("shipped_at")
   deliveredAt            DateTime?       @map("delivered_at")
   fulfilledAt            DateTime?       @map("fulfilled_at")
+  warehouseId            String?         @map("warehouse_id") @db.Uuid
+  warehouse              Warehouse?      @relation(fields: [warehouseId], references: [id], onDelete: SetNull)
   createdAt              DateTime        @default(now()) @map("created_at")
   updatedAt              DateTime        @updatedAt @map("updated_at")
   trackingEvents         ShipmentTrackingEvent[]
@@ -988,6 +1040,7 @@ model Shipment {
   @@index([storeId, orderId])
   @@index([status])
   @@index([storeId, status])
+  @@index([warehouseId])
   @@map("shipments")
 }
 
@@ -1064,6 +1117,8 @@ model InventoryAllocation {
   id                String                    @id @default(uuid()) @db.Uuid
   storeId           String                    @map("store_id") @db.Uuid
   store             Store                     @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  warehouseId       String                    @map("warehouse_id") @db.Uuid
+  warehouse         Warehouse                 @relation(fields: [warehouseId], references: [id], onDelete: Restrict)
   pickListItemId    String                    @map("pick_list_item_id") @db.Uuid
   pickListItem      PickListItem              @relation(fields: [pickListItemId], references: [id], onDelete: Cascade)
   inventoryItemId   String                    @map("inventory_item_id") @db.Uuid
@@ -1077,6 +1132,7 @@ model InventoryAllocation {
   stockMovements    StockMovement[]
 
   @@index([storeId])
+  @@index([warehouseId])
   @@index([pickListItemId])
   @@index([inventoryItemId])
   @@index([storeId, pickListItemId])
@@ -1141,6 +1197,8 @@ model InventoryAdjustment {
   id                    String        @id @default(uuid()) @db.Uuid
   storeId               String        @map("store_id") @db.Uuid
   store                 Store         @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  warehouseId           String        @map("warehouse_id") @db.Uuid
+  warehouse             Warehouse     @relation(fields: [warehouseId], references: [id], onDelete: Restrict)
   inventoryItemId       String        @map("inventory_item_id") @db.Uuid
   inventoryItem         InventoryItem @relation(fields: [inventoryItemId], references: [id], onDelete: Restrict)
   adjustmentNumber      String        @map("adjustment_number")
@@ -1156,8 +1214,10 @@ model InventoryAdjustment {
 
   @@unique([storeId, adjustmentNumber])
   @@index([storeId])
+  @@index([warehouseId])
   @@index([inventoryItemId])
   @@index([storeId, inventoryItemId])
+  @@index([storeId, warehouseId])
   @@index([createdAt])
   @@map("inventory_adjustments")
 }
@@ -1167,6 +1227,8 @@ model CycleCount {
   id              String           @id @default(uuid()) @db.Uuid
   storeId         String           @map("store_id") @db.Uuid
   store           Store            @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  warehouseId     String           @map("warehouse_id") @db.Uuid
+  warehouse       Warehouse        @relation(fields: [warehouseId], references: [id], onDelete: Restrict)
   cycleCountNumber String          @map("cycle_count_number")
   status          CycleCountStatus @default(draft)
   startedAt       DateTime?        @map("started_at")
@@ -1177,8 +1239,10 @@ model CycleCount {
 
   @@unique([storeId, cycleCountNumber])
   @@index([storeId])
+  @@index([warehouseId])
   @@index([status])
   @@index([storeId, status])
+  @@index([storeId, warehouseId])
   @@map("cycle_counts")
 }
 

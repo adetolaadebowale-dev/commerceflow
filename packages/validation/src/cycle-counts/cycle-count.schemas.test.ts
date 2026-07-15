@@ -12,6 +12,7 @@ describe("cycle count schemas", () => {
   it("validates create cycle count input", () => {
     const parsed = createCycleCountSchema.safeParse({
       storeId: "11111111-1111-1111-1111-111111111111",
+      warehouseId: "33333333-3333-3333-3333-333333333333",
       inventoryItemIds: ["22222222-2222-2222-2222-222222222222"],
     });
 

@@ -32,6 +32,8 @@ export const STORE_PERMISSIONS = [
   "shipments:lifecycle",
   "shipping-config:read",
   "shipping-config:write",
+  "warehouses:read",
+  "warehouses:write",
 ] as const;
 
 export type StorePermissionCode = (typeof STORE_PERMISSIONS)[number];

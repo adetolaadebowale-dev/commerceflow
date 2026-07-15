@@ -19,6 +19,7 @@ export interface CycleCountItem {
 export interface CycleCount {
   readonly id: string;
   readonly storeId: string;
+  readonly warehouseId: string;
   readonly cycleCountNumber: string;
   readonly status: CycleCountStatus;
   readonly startedAt?: string;

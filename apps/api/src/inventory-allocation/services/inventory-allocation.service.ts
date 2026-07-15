@@ -158,6 +158,7 @@ export class InventoryAllocationService {
     try {
       const allocation = await this.inventoryAllocationRepository.create({
         storeId,
+        warehouseId: inventoryItem.warehouseId,
         pickListItemId,
         inventoryItemId: input.inventoryItemId,
         quantityAllocated: input.quantityAllocated,

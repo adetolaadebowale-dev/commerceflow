@@ -8,11 +8,13 @@ import {
 
 const TEST_STORE_ID = "11111111-1111-1111-1111-111111111111";
 const TEST_VARIANT_ID = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
+const TEST_WAREHOUSE_ID = "33333333-3333-3333-3333-333333333333";
 
 describe("inventory schemas", () => {
   it("validates inventory item creation input", () => {
     const parsed = createInventoryItemSchema.safeParse({
       storeId: TEST_STORE_ID,
+      warehouseId: TEST_WAREHOUSE_ID,
       productVariantId: TEST_VARIANT_ID,
       initialQuantity: 10,
     });
@@ -23,6 +25,7 @@ describe("inventory schemas", () => {
   it("rejects negative initial quantity", () => {
     const parsed = createInventoryItemSchema.safeParse({
       storeId: TEST_STORE_ID,
+      warehouseId: TEST_WAREHOUSE_ID,
       productVariantId: TEST_VARIANT_ID,
       initialQuantity: -1,
     });
@@ -68,6 +71,7 @@ describe("inventory schemas", () => {
       storeId: TEST_STORE_ID,
       page: "2",
       limit: "10",
+      warehouseId: TEST_WAREHOUSE_ID,
       productVariantId: TEST_VARIANT_ID,
     });
 

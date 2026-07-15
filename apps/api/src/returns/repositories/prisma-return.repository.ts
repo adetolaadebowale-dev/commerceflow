@@ -26,6 +26,7 @@ function toInventoryItem(record: PrismaInventoryItem): import("@commerceflow/typ
   return {
     id: record.id,
     storeId: record.storeId,
+    warehouseId: record.warehouseId,
     productVariantId: record.productVariantId,
     quantityOnHand: record.quantityOnHand,
     createdAt: record.createdAt.toISOString(),
@@ -293,6 +294,7 @@ export class PrismaReturnRepository implements ReturnRepository {
           const stockMovement = await tx.stockMovement.create({
             data: {
               storeId,
+              warehouseId: inventory.warehouseId,
               inventoryItemId: inventory.id,
               movementType: "return",
               quantity: quantityRestocked,

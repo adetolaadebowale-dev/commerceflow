@@ -17,6 +17,7 @@ function toInventoryItem(record: PrismaInventoryItem): InventoryItem {
   return {
     id: record.id,
     storeId: record.storeId,
+    warehouseId: record.warehouseId,
     productVariantId: record.productVariantId,
     quantityOnHand: record.quantityOnHand,
     createdAt: record.createdAt.toISOString(),
@@ -30,6 +31,7 @@ function buildListWhere(
   return {
     storeId: query.storeId,
     deletedAt: null,
+    ...(query.warehouseId ? { warehouseId: query.warehouseId } : {}),
     ...(query.productVariantId
       ? { productVariantId: query.productVariantId }
       : {}),
@@ -49,10 +51,11 @@ export class PrismaInventoryItemRepository implements InventoryItemRepository {
 
   async findByProductVariantId(
     storeId: string,
+    warehouseId: string,
     productVariantId: string,
   ): Promise<InventoryItem | null> {
     const record = await this.db.inventoryItem.findFirst({
-      where: { storeId, productVariantId, deletedAt: null },
+      where: { storeId, warehouseId, productVariantId, deletedAt: null },
     });
 
     return record ? toInventoryItem(record) : null;
@@ -87,6 +90,7 @@ export class PrismaInventoryItemRepository implements InventoryItemRepository {
       const inventoryItem = await tx.inventoryItem.create({
         data: {
           storeId: input.storeId,
+          warehouseId: input.warehouseId,
           productVariantId: input.productVariantId,
           quantityOnHand: input.initialQuantity,
         },
@@ -95,6 +99,7 @@ export class PrismaInventoryItemRepository implements InventoryItemRepository {
       const stockMovement = await tx.stockMovement.create({
         data: {
           storeId: input.storeId,
+          warehouseId: input.warehouseId,
           inventoryItemId: inventoryItem.id,
           movementType: "adjustment",
           quantity: input.initialQuantity,
@@ -141,6 +146,7 @@ export class PrismaInventoryItemRepository implements InventoryItemRepository {
       const stockMovement = await tx.stockMovement.create({
         data: {
           storeId: input.storeId,
+          warehouseId: existing.warehouseId,
           inventoryItemId: existing.id,
           movementType: adjustmentMovementTypeFromReason(input.reason),
           quantity: input.quantityChange,
@@ -197,6 +203,7 @@ export class PrismaInventoryItemRepository implements InventoryItemRepository {
       const stockMovement = await tx.stockMovement.create({
         data: {
           storeId,
+          warehouseId: existing.warehouseId,
           inventoryItemId: existing.id,
           movementType: "return",
           quantity,

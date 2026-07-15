@@ -10,6 +10,7 @@ function buildListWhere(
 ): Prisma.StockMovementWhereInput {
   return {
     storeId: query.storeId,
+    ...(query.warehouseId ? { warehouseId: query.warehouseId } : {}),
     ...(query.inventoryItemId
       ? { inventoryItemId: query.inventoryItemId }
       : {}),

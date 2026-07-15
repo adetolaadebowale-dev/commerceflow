@@ -4,6 +4,7 @@
 export interface InventoryItem {
   readonly id: string;
   readonly storeId: string;
+  readonly warehouseId: string;
   readonly productVariantId: string;
   readonly quantityOnHand: number;
   readonly createdAt: string;

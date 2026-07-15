@@ -5,6 +5,7 @@ const storeIdSchema = z.string().uuid("Store id must be a valid UUID");
 
 export const createInventoryItemSchema = z.object({
   storeId: storeIdSchema,
+  warehouseId: z.string().uuid("Warehouse id must be a valid UUID"),
   productVariantId: z
     .string()
     .uuid("Product variant id must be a valid UUID"),
@@ -22,6 +23,7 @@ export const listInventoryItemsQuerySchema = z.object({
   storeId: storeIdSchema,
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
+  warehouseId: z.string().uuid().optional(),
   productVariantId: z.string().uuid().optional(),
 });
 
@@ -39,6 +41,7 @@ export const listStockMovementsQuerySchema = z.object({
   storeId: storeIdSchema,
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
+  warehouseId: z.string().uuid().optional(),
   inventoryItemId: z.string().uuid().optional(),
 });
 

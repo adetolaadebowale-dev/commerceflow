@@ -47,6 +47,7 @@ function toCycleCount(record: CycleCountWithItems): CycleCount {
   return {
     id: record.id,
     storeId: record.storeId,
+    warehouseId: record.warehouseId,
     cycleCountNumber: record.cycleCountNumber,
     status: record.status,
     startedAt: record.startedAt?.toISOString(),
@@ -63,6 +64,7 @@ function toInventoryAdjustment(
   return {
     id: record.id,
     storeId: record.storeId,
+    warehouseId: record.warehouseId,
     inventoryItemId: record.inventoryItemId,
     adjustmentNumber: record.adjustmentNumber,
     movementQuantity: record.movementQuantity,
@@ -118,6 +120,7 @@ export class PrismaCycleCountRepository implements CycleCountRepository {
     const created = await this.db.cycleCount.create({
       data: {
         storeId: record.storeId,
+        warehouseId: record.warehouseId,
         cycleCountNumber: record.cycleCountNumber,
         items: {
           create: record.items.map((item) => ({
@@ -273,6 +276,7 @@ export class PrismaCycleCountRepository implements CycleCountRepository {
         const stockMovement = await tx.stockMovement.create({
           data: {
             storeId: record.storeId,
+            warehouseId: inventory.warehouseId,
             inventoryItemId: inventory.id,
             movementType: "adjustment",
             quantity: item.variance,
@@ -291,6 +295,7 @@ export class PrismaCycleCountRepository implements CycleCountRepository {
         const adjustment = await tx.inventoryAdjustment.create({
           data: {
             storeId: record.storeId,
+            warehouseId: inventory.warehouseId,
             inventoryItemId: inventory.id,
             adjustmentNumber,
             movementQuantity: item.variance,

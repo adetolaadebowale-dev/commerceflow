@@ -84,6 +84,7 @@ export class MemoryInventoryAdjustmentRepository
     const adjustment: InventoryAdjustment = {
       id: adjustmentId,
       storeId: record.storeId,
+      warehouseId: existing.warehouseId,
       inventoryItemId: record.inventoryItemId,
       adjustmentNumber: record.adjustmentNumber,
       movementQuantity: record.movementQuantity,
