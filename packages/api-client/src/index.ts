@@ -241,5 +241,19 @@ export {
   createShippingConfigurationClient,
   type ShippingConfigurationClient,
 } from "./shipping-configuration/shipping-configuration-client";
+export type {
+  CompletePickListRequest,
+  CreatePickListRequest,
+  CreatePickListResponse,
+  GetPickListResponse,
+  ListPickListsResponse,
+  PickListActionResponse,
+  PickListIdParams,
+  PickListParams,
+} from "./pick-lists/contracts";
+export {
+  createPickListClient,
+  type PickListClient,
+} from "./pick-lists/pick-list-client";
 export { ApiClientError } from "./http/api-error";
 export { apiRequest, type ApiClientConfig } from "./http/request";

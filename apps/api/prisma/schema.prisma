@@ -165,6 +165,14 @@ enum DimensionUnit {
   m
 }
 
+/// Mirrors PickListStatus from @commerceflow/types.
+enum PickListStatus {
+  pending
+  picking
+  picked
+  packed
+}
+
 /// Mirrors ShippingZoneStatus from @commerceflow/types.
 enum ShippingZoneStatus {
   active
@@ -267,6 +275,7 @@ model Store {
   shipments             Shipment[]
   shipmentTrackingEvents ShipmentTrackingEvent[]
   shipmentPackages       ShipmentPackage[]
+  pickLists              PickList[]
   shippingZones          ShippingZone[]
   shippingMethods        ShippingMethod[]
 
@@ -506,6 +515,7 @@ model OrderItem {
   lineSubtotal     Decimal        @map("line_subtotal") @db.Decimal(12, 2)
   createdAt        DateTime       @default(now()) @map("created_at")
   inventoryReservation InventoryReservation?
+  pickListItems        PickListItem[]
 
   @@index([orderId])
   @@index([productVariantId])
@@ -913,6 +923,7 @@ model Shipment {
   updatedAt              DateTime        @updatedAt @map("updated_at")
   trackingEvents         ShipmentTrackingEvent[]
   packages               ShipmentPackage[]
+  pickLists              PickList[]
 
   @@unique([storeId, shipmentNumber])
   @@unique([storeId, orderId])
@@ -948,6 +959,47 @@ model ShipmentPackage {
   @@index([shipmentId])
   @@index([storeId, shipmentId])
   @@map("shipment_packages")
+}
+
+/// Warehouse pick list for a shipment with line-level pick progress.
+model PickList {
+  id               String         @id @default(uuid()) @db.Uuid
+  storeId          String         @map("store_id") @db.Uuid
+  store            Store          @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  shipmentId       String         @map("shipment_id") @db.Uuid
+  shipment         Shipment       @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  status           PickListStatus @default(pending)
+  assignedToUserId String?        @map("assigned_to_user_id") @db.Uuid
+  startedAt        DateTime?      @map("started_at")
+  completedAt      DateTime?      @map("completed_at")
+  createdAt        DateTime       @default(now()) @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
+  items            PickListItem[]
+
+  @@index([storeId])
+  @@index([shipmentId])
+  @@index([storeId, shipmentId])
+  @@index([status])
+  @@index([storeId, status])
+  @@map("pick_lists")
+}
+
+/// Line item on a pick list linked to an order item with pick quantities.
+model PickListItem {
+  id               String    @id @default(uuid()) @db.Uuid
+  pickListId       String    @map("pick_list_id") @db.Uuid
+  pickList         PickList  @relation(fields: [pickListId], references: [id], onDelete: Cascade)
+  orderItemId      String    @map("order_item_id") @db.Uuid
+  orderItem        OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Restrict)
+  quantityRequired Int       @map("quantity_required")
+  quantityPicked   Int       @default(0) @map("quantity_picked")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  @@unique([pickListId, orderItemId])
+  @@index([pickListId])
+  @@index([orderItemId])
+  @@map("pick_list_items")
 }
 
 /// Append-only shipment tracking timeline entry.

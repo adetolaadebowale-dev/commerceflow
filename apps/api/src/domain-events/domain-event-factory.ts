@@ -70,6 +70,11 @@ import type {
   ShipmentPackageCreatedPayload,
   ShipmentPackageUpdatedPayload,
   ShipmentPackageDeletedPayload,
+  PickList,
+  PickListCreatedPayload,
+  PickListStartedPayload,
+  PickListCompletedPayload,
+  PickListPackedPayload,
   ShippingZone,
   ShippingMethod,
   ShippingZoneCreatedPayload,
@@ -989,6 +994,80 @@ export function buildShipmentPackageDeletedEvent(
       packageNumber: shipmentPackage.packageNumber,
       shipmentPackage,
       shipment,
+    },
+  });
+}
+
+export function buildPickListCreatedEvent(
+  pickList: PickList,
+): DomainEvent<PickListCreatedPayload> {
+  return createDomainEvent({
+    eventType: "pick-list.created",
+    aggregateType: "pick_list",
+    aggregateId: pickList.id,
+    storeId: pickList.storeId,
+    payload: {
+      pickListId: pickList.id,
+      shipmentId: pickList.shipmentId,
+      status: pickList.status,
+      pickList,
+    },
+  });
+}
+
+export function buildPickListStartedEvent(
+  pickList: PickList,
+  previousStatus: "pending",
+): DomainEvent<PickListStartedPayload> {
+  return createDomainEvent({
+    eventType: "pick-list.started",
+    aggregateType: "pick_list",
+    aggregateId: pickList.id,
+    storeId: pickList.storeId,
+    payload: {
+      pickListId: pickList.id,
+      shipmentId: pickList.shipmentId,
+      previousStatus,
+      status: "picking",
+      pickList,
+    },
+  });
+}
+
+export function buildPickListCompletedEvent(
+  pickList: PickList,
+  previousStatus: "picking",
+): DomainEvent<PickListCompletedPayload> {
+  return createDomainEvent({
+    eventType: "pick-list.completed",
+    aggregateType: "pick_list",
+    aggregateId: pickList.id,
+    storeId: pickList.storeId,
+    payload: {
+      pickListId: pickList.id,
+      shipmentId: pickList.shipmentId,
+      previousStatus,
+      status: "picked",
+      pickList,
+    },
+  });
+}
+
+export function buildPickListPackedEvent(
+  pickList: PickList,
+  previousStatus: "picked",
+): DomainEvent<PickListPackedPayload> {
+  return createDomainEvent({
+    eventType: "pick-list.packed",
+    aggregateType: "pick_list",
+    aggregateId: pickList.id,
+    storeId: pickList.storeId,
+    payload: {
+      pickListId: pickList.id,
+      shipmentId: pickList.shipmentId,
+      previousStatus,
+      status: "packed",
+      pickList,
     },
   });
 }

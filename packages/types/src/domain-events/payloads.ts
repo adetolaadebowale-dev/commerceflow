@@ -21,6 +21,8 @@ import type { ShipmentPackage } from "../shipments/shipment-package";
 import type { OrderShippingMethodSnapshot } from "../shipping-configuration/order-shipping-method-snapshot";
 import type { ShippingZone } from "../shipping-configuration/shipping-zone";
 import type { ShippingMethod } from "../shipping-configuration/shipping-method";
+import type { PickList } from "../pick-lists/pick-list";
+import type { PickListStatus } from "../pick-lists/pick-list-status";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -446,6 +448,37 @@ export interface ShipmentPackageDeletedPayload {
   readonly packageNumber: string;
   readonly shipmentPackage: ShipmentPackage;
   readonly shipment: Shipment;
+}
+
+export interface PickListCreatedPayload {
+  readonly pickListId: string;
+  readonly shipmentId: string;
+  readonly status: PickListStatus;
+  readonly pickList: PickList;
+}
+
+export interface PickListStartedPayload {
+  readonly pickListId: string;
+  readonly shipmentId: string;
+  readonly previousStatus: "pending";
+  readonly status: "picking";
+  readonly pickList: PickList;
+}
+
+export interface PickListCompletedPayload {
+  readonly pickListId: string;
+  readonly shipmentId: string;
+  readonly previousStatus: "picking";
+  readonly status: "picked";
+  readonly pickList: PickList;
+}
+
+export interface PickListPackedPayload {
+  readonly pickListId: string;
+  readonly shipmentId: string;
+  readonly previousStatus: "picked";
+  readonly status: "packed";
+  readonly pickList: PickList;
 }
 
 export interface ShippingZoneCreatedPayload {

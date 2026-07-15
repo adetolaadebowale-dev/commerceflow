@@ -46,6 +46,10 @@ import {
   buildShipmentPackageCreatedEvent,
   buildShipmentPackageUpdatedEvent,
   buildShipmentPackageDeletedEvent,
+  buildPickListCreatedEvent,
+  buildPickListStartedEvent,
+  buildPickListCompletedEvent,
+  buildPickListPackedEvent,
   buildShippingZoneCreatedEvent,
   buildShippingZoneUpdatedEvent,
   buildShippingZoneDeletedEvent,
@@ -78,6 +82,7 @@ import type {
   ShipmentStatus,
   ShipmentTrackingEvent,
   ShipmentPackage,
+  PickList,
   ShippingZone,
   ShippingMethod,
 } from "@commerceflow/types";
@@ -355,6 +360,31 @@ export class DomainEventPublisher {
     this.dispatch(
       buildShipmentPackageDeletedEvent(shipment, shipmentPackage),
     );
+  }
+
+  publishPickListCreated(pickList: PickList): void {
+    this.dispatch(buildPickListCreatedEvent(pickList));
+  }
+
+  publishPickListStarted(
+    pickList: PickList,
+    previousStatus: "pending",
+  ): void {
+    this.dispatch(buildPickListStartedEvent(pickList, previousStatus));
+  }
+
+  publishPickListCompleted(
+    pickList: PickList,
+    previousStatus: "picking",
+  ): void {
+    this.dispatch(buildPickListCompletedEvent(pickList, previousStatus));
+  }
+
+  publishPickListPacked(
+    pickList: PickList,
+    previousStatus: "picked",
+  ): void {
+    this.dispatch(buildPickListPackedEvent(pickList, previousStatus));
   }
 
   publishShippingZoneCreated(shippingZone: ShippingZone): void {

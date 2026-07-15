@@ -21,6 +21,8 @@ export const AUDIT_ACTIONS = [
   "deactivate",
   "ship",
   "deliver",
+  "start",
+  "pack",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];

@@ -96,6 +96,12 @@ export {
   type OrderShippingMethodSnapshot,
 } from "./shipping-configuration";
 export {
+  PICK_LIST_STATUSES,
+  type PickList,
+  type PickListItem,
+  type PickListStatus,
+} from "./pick-lists";
+export {
   type AppliedCartPromotion,
   type OrderPromotionSnapshot,
 } from "./promotion-redemption";
@@ -176,6 +182,10 @@ export {
   type ShipmentPackageCreatedPayload,
   type ShipmentPackageUpdatedPayload,
   type ShipmentPackageDeletedPayload,
+  type PickListCreatedPayload,
+  type PickListStartedPayload,
+  type PickListCompletedPayload,
+  type PickListPackedPayload,
   type ShippingZoneCreatedPayload,
   type ShippingZoneUpdatedPayload,
   type ShippingZoneDeletedPayload,
