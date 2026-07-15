@@ -58,6 +58,12 @@ describe("StorePermissionPolicy", () => {
       ),
     ).toBe(false);
     expect(
+      StorePermissionPolicy.hasPermission("staff", "suppliers:read"),
+    ).toBe(true);
+    expect(
+      StorePermissionPolicy.hasPermission("staff", "suppliers:write"),
+    ).toBe(false);
+    expect(
       StorePermissionPolicy.hasPermission("staff", "catalogue:write"),
     ).toBe(false);
     expect(

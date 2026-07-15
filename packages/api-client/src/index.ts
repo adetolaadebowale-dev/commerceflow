@@ -264,6 +264,27 @@ export {
   type PurchaseOrderClient,
 } from "./purchase-orders/purchase-order-client";
 export type {
+  CreateSupplierContactRequest,
+  CreateSupplierContactResponse,
+  CreateSupplierRequest,
+  CreateSupplierResponse,
+  DeleteSupplierContactResponse,
+  DeleteSupplierResponse,
+  GetSupplierResponse,
+  ListSuppliersParams,
+  ListSuppliersResponse,
+  SupplierContactStoreScopedParams,
+  SupplierStoreScopedParams,
+  UpdateSupplierContactRequest,
+  UpdateSupplierContactResponse,
+  UpdateSupplierRequest,
+  UpdateSupplierResponse,
+} from "./suppliers/contracts";
+export {
+  createSupplierClient,
+  type SupplierClient,
+} from "./suppliers/supplier-client";
+export type {
   CreateShipmentRequest,
   CreateShipmentResponse,
   GetShipmentResponse,

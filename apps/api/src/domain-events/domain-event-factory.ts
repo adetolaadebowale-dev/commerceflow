@@ -80,6 +80,14 @@ import type {
   PurchaseOrderOrderedPayload,
   PurchaseOrderReceiveResult,
   PurchaseOrderReceivedPayload,
+  Supplier,
+  SupplierContact,
+  SupplierContactCreatedPayload,
+  SupplierContactDeletedPayload,
+  SupplierContactUpdatedPayload,
+  SupplierCreatedPayload,
+  SupplierDeletedPayload,
+  SupplierUpdatedPayload,
   Shipment,
   ShipmentStatus,
   ShipmentCreatedPayload,
@@ -1171,6 +1179,120 @@ export function buildPurchaseOrderCancelledEvent(
       previousStatus,
       status: "cancelled",
       purchaseOrder,
+    },
+  });
+}
+
+export function buildSupplierCreatedEvent(
+  supplier: Supplier,
+): DomainEvent<SupplierCreatedPayload> {
+  return createDomainEvent({
+    eventType: "supplier.created",
+    aggregateType: "supplier",
+    aggregateId: supplier.id,
+    storeId: supplier.storeId,
+    payload: {
+      supplierId: supplier.id,
+      code: supplier.code,
+      name: supplier.name,
+      status: supplier.status,
+      supplier,
+    },
+  });
+}
+
+export function buildSupplierUpdatedEvent(
+  supplier: Supplier,
+): DomainEvent<SupplierUpdatedPayload> {
+  return createDomainEvent({
+    eventType: "supplier.updated",
+    aggregateType: "supplier",
+    aggregateId: supplier.id,
+    storeId: supplier.storeId,
+    payload: {
+      supplierId: supplier.id,
+      code: supplier.code,
+      name: supplier.name,
+      status: supplier.status,
+      supplier,
+    },
+  });
+}
+
+export function buildSupplierDeletedEvent(
+  supplier: Supplier,
+): DomainEvent<SupplierDeletedPayload> {
+  return createDomainEvent({
+    eventType: "supplier.deleted",
+    aggregateType: "supplier",
+    aggregateId: supplier.id,
+    storeId: supplier.storeId,
+    payload: {
+      supplierId: supplier.id,
+      code: supplier.code,
+      name: supplier.name,
+      status: supplier.status,
+      supplier,
+    },
+  });
+}
+
+export function buildSupplierContactCreatedEvent(
+  contact: SupplierContact,
+  storeId: string,
+): DomainEvent<SupplierContactCreatedPayload> {
+  return createDomainEvent({
+    eventType: "supplier.contact.created",
+    aggregateType: "supplier_contact",
+    aggregateId: contact.id,
+    storeId,
+    payload: {
+      supplierContactId: contact.id,
+      supplierId: contact.supplierId,
+      firstName: contact.firstName,
+      lastName: contact.lastName,
+      isPrimary: contact.isPrimary,
+      contact,
+    },
+  });
+}
+
+export function buildSupplierContactUpdatedEvent(
+  contact: SupplierContact,
+  storeId: string,
+): DomainEvent<SupplierContactUpdatedPayload> {
+  return createDomainEvent({
+    eventType: "supplier.contact.updated",
+    aggregateType: "supplier_contact",
+    aggregateId: contact.id,
+    storeId,
+    payload: {
+      supplierContactId: contact.id,
+      supplierId: contact.supplierId,
+      firstName: contact.firstName,
+      lastName: contact.lastName,
+      isPrimary: contact.isPrimary,
+      contact,
+    },
+  });
+}
+
+export function buildSupplierContactDeletedEvent(
+  contact: SupplierContact,
+  storeId: string,
+): DomainEvent<SupplierContactDeletedPayload> {
+  return createDomainEvent({
+    eventType: "supplier.contact.deleted",
+    aggregateType: "supplier_contact",
+    aggregateId: contact.id,
+    storeId,
+    payload: {
+      supplierContactId: contact.id,
+      supplierId: contact.supplierId,
+      firstName: contact.firstName,
+      lastName: contact.lastName,
+      isPrimary: contact.isPrimary,
+      contact,
     },
   });
 }

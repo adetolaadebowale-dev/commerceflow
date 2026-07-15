@@ -40,6 +40,8 @@ export const STORE_PERMISSIONS = [
   "purchase-orders:read",
   "purchase-orders:write",
   "purchase-orders:lifecycle",
+  "suppliers:read",
+  "suppliers:write",
 ] as const;
 
 export type StorePermissionCode = (typeof STORE_PERMISSIONS)[number];

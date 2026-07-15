@@ -1,6 +1,6 @@
 import type { DomainEventPublisher } from "@/domain-events";
+import { MemorySupplierRepository } from "@/suppliers/repositories/memory-supplier.repository";
 import { MemoryPurchaseOrderRepository } from "../repositories/memory-purchase-order.repository";
-import { MemorySupplierRepository } from "../repositories/memory-supplier.repository";
 import { PurchaseOrderService } from "../services/purchase-order.service";
 import {
   createMemoryInventoryAdjustmentModule,

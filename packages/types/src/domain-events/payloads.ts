@@ -46,6 +46,7 @@ import type {
   PurchaseOrderReceiveResult,
 } from "../purchase-orders/purchase-order";
 import type { PurchaseOrderStatus } from "../purchase-orders/purchase-order-status";
+import type { Supplier, SupplierContact } from "../suppliers/supplier";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -781,6 +782,57 @@ export interface PurchaseOrderCancelledPayload {
   readonly previousStatus: PurchaseOrderStatus;
   readonly status: "cancelled";
   readonly purchaseOrder: PurchaseOrder;
+}
+
+export interface SupplierCreatedPayload {
+  readonly supplierId: string;
+  readonly code: string;
+  readonly name: string;
+  readonly status: Supplier["status"];
+  readonly supplier: Supplier;
+}
+
+export interface SupplierUpdatedPayload {
+  readonly supplierId: string;
+  readonly code: string;
+  readonly name: string;
+  readonly status: Supplier["status"];
+  readonly supplier: Supplier;
+}
+
+export interface SupplierDeletedPayload {
+  readonly supplierId: string;
+  readonly code: string;
+  readonly name: string;
+  readonly status: Supplier["status"];
+  readonly supplier: Supplier;
+}
+
+export interface SupplierContactCreatedPayload {
+  readonly supplierContactId: string;
+  readonly supplierId: string;
+  readonly firstName: string;
+  readonly lastName: string;
+  readonly isPrimary: boolean;
+  readonly contact: SupplierContact;
+}
+
+export interface SupplierContactUpdatedPayload {
+  readonly supplierContactId: string;
+  readonly supplierId: string;
+  readonly firstName: string;
+  readonly lastName: string;
+  readonly isPrimary: boolean;
+  readonly contact: SupplierContact;
+}
+
+export interface SupplierContactDeletedPayload {
+  readonly supplierContactId: string;
+  readonly supplierId: string;
+  readonly firstName: string;
+  readonly lastName: string;
+  readonly isPrimary: boolean;
+  readonly contact: SupplierContact;
 }
 
 export interface ShippingZoneCreatedPayload {

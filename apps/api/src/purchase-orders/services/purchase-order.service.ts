@@ -23,13 +23,15 @@ import {
   getWarehouseRepository,
   type WarehouseRepository,
 } from "@/warehouses/repositories";
+import {
+  getSupplierRepository,
+  type SupplierRepository,
+} from "@/suppliers/repositories";
 import { PURCHASE_ORDER_ERROR_CODES, PurchaseOrderError } from "../errors";
 import { PurchaseOrderStatusTransitionPolicy } from "../policies/purchase-order-status-transition.policy";
 import {
   getPurchaseOrderRepository,
-  getSupplierRepository,
   type PurchaseOrderRepository,
-  type SupplierRepository,
 } from "../repositories";
 import {
   generatePurchaseOrderNumber,

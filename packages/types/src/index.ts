@@ -154,6 +154,14 @@ export {
   type PurchaseOrderStatus,
 } from "./purchase-orders";
 export {
+  PAYMENT_TERMS,
+  SUPPLIER_STATUSES,
+  type PaymentTerm,
+  type Supplier,
+  type SupplierContact,
+  type SupplierStatus,
+} from "./suppliers";
+export {
   type AppliedCartPromotion,
   type OrderPromotionSnapshot,
 } from "./promotion-redemption";
@@ -274,4 +282,10 @@ export {
   type PurchaseOrderCreatedPayload,
   type PurchaseOrderOrderedPayload,
   type PurchaseOrderReceivedPayload,
+  type SupplierContactCreatedPayload,
+  type SupplierContactDeletedPayload,
+  type SupplierContactUpdatedPayload,
+  type SupplierCreatedPayload,
+  type SupplierDeletedPayload,
+  type SupplierUpdatedPayload,
 } from "./domain-events";

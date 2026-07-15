@@ -238,6 +238,16 @@ enum SupplierStatus {
   inactive
 }
 
+/// Mirrors PaymentTerm from @commerceflow/types.
+enum PaymentTerm {
+  immediate
+  net7
+  net15
+  net30
+  net60
+  custom
+}
+
 /// Mirrors ShippingZoneStatus from @commerceflow/types.
 enum ShippingZoneStatus {
   active
@@ -1348,15 +1358,23 @@ model WarehouseTransferItem {
 
 /// Store-scoped supplier for inbound procurement.
 model Supplier {
-  id             String         @id @default(uuid()) @db.Uuid
-  storeId        String         @map("store_id") @db.Uuid
-  store          Store          @relation(fields: [storeId], references: [id], onDelete: Restrict)
-  name           String
+  id             String            @id @default(uuid()) @db.Uuid
+  storeId        String            @map("store_id") @db.Uuid
+  store          Store             @relation(fields: [storeId], references: [id], onDelete: Restrict)
   code           String
-  status         SupplierStatus @default(active)
-  createdAt      DateTime       @default(now()) @map("created_at")
-  updatedAt      DateTime       @updatedAt @map("updated_at")
-  deletedAt      DateTime?      @map("deleted_at")
+  name           String
+  email          String?
+  phone          String?
+  website        String?
+  taxId          String?           @map("tax_id")
+  paymentTerm    PaymentTerm       @default(net30) @map("payment_term")
+  currency       String            @default("USD") @db.Char(3)
+  status         SupplierStatus    @default(active)
+  notes          String?
+  createdAt      DateTime          @default(now()) @map("created_at")
+  updatedAt      DateTime          @updatedAt @map("updated_at")
+  deletedAt      DateTime?         @map("deleted_at")
+  contacts       SupplierContact[]
   purchaseOrders PurchaseOrder[]
 
   @@unique([storeId, code])
@@ -1366,6 +1384,25 @@ model Supplier {
   @@index([deletedAt])
   @@index([storeId, deletedAt])
   @@map("suppliers")
+}
+
+/// Contact person belonging to a supplier.
+model SupplierContact {
+  id         String   @id @default(uuid()) @db.Uuid
+  supplierId String   @map("supplier_id") @db.Uuid
+  supplier   Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  firstName  String   @map("first_name")
+  lastName   String   @map("last_name")
+  email      String?
+  phone      String?
+  role       String?
+  isPrimary  Boolean  @default(false) @map("is_primary")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@index([supplierId])
+  @@index([supplierId, isPrimary])
+  @@map("supplier_contacts")
 }
 
 /// Store-scoped purchase order for supplier procurement and receiving.

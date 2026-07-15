@@ -280,6 +280,22 @@ export {
   type ReceivePurchaseOrderInput,
 } from "./purchase-orders";
 export {
+  createSupplierContactSchema,
+  createSupplierSchema,
+  listSuppliersQuerySchema,
+  supplierContactIdQuerySchema,
+  supplierIdQuerySchema,
+  updateSupplierContactSchema,
+  updateSupplierSchema,
+  type CreateSupplierContactInput,
+  type CreateSupplierInput,
+  type ListSuppliersQuery,
+  type SupplierContactIdQuery,
+  type SupplierIdQuery,
+  type UpdateSupplierContactInput,
+  type UpdateSupplierInput,
+} from "./suppliers";
+export {
   createShippingMethodSchema,
   createShippingZoneSchema,
   listShippingMethodsQuerySchema,

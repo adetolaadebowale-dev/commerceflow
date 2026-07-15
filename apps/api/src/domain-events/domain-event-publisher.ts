@@ -53,6 +53,12 @@ import {
   buildPurchaseOrderCreatedEvent,
   buildPurchaseOrderOrderedEvent,
   buildPurchaseOrderReceivedEvent,
+  buildSupplierCreatedEvent,
+  buildSupplierUpdatedEvent,
+  buildSupplierDeletedEvent,
+  buildSupplierContactCreatedEvent,
+  buildSupplierContactUpdatedEvent,
+  buildSupplierContactDeletedEvent,
   buildShipmentCreatedEvent,
   buildShipmentShippedEvent,
   buildShipmentDeliveredEvent,
@@ -129,6 +135,8 @@ import type {
   WarehouseTransferShipResult,
   PurchaseOrder,
   PurchaseOrderReceiveResult,
+  Supplier,
+  SupplierContact,
   ShippingZone,
   ShippingMethod,
 } from "@commerceflow/types";
@@ -594,6 +602,39 @@ export class DomainEventPublisher {
     this.dispatch(
       buildPurchaseOrderCancelledEvent(purchaseOrder, previousStatus),
     );
+  }
+
+  publishSupplierCreated(supplier: Supplier): void {
+    this.dispatch(buildSupplierCreatedEvent(supplier));
+  }
+
+  publishSupplierUpdated(supplier: Supplier): void {
+    this.dispatch(buildSupplierUpdatedEvent(supplier));
+  }
+
+  publishSupplierDeleted(supplier: Supplier): void {
+    this.dispatch(buildSupplierDeletedEvent(supplier));
+  }
+
+  publishSupplierContactCreated(
+    contact: SupplierContact,
+    storeId: string,
+  ): void {
+    this.dispatch(buildSupplierContactCreatedEvent(contact, storeId));
+  }
+
+  publishSupplierContactUpdated(
+    contact: SupplierContact,
+    storeId: string,
+  ): void {
+    this.dispatch(buildSupplierContactUpdatedEvent(contact, storeId));
+  }
+
+  publishSupplierContactDeleted(
+    contact: SupplierContact,
+    storeId: string,
+  ): void {
+    this.dispatch(buildSupplierContactDeletedEvent(contact, storeId));
   }
 
   publishShippingZoneCreated(shippingZone: ShippingZone): void {
