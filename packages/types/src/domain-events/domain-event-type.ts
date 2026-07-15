@@ -23,6 +23,9 @@ export const DOMAIN_EVENT_TYPES = [
   "invoice.issued",
   "invoice.paid",
   "invoice.voided",
+  "refund.created",
+  "refund.completed",
+  "refund.cancelled",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

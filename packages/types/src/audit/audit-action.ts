@@ -14,6 +14,7 @@ export const AUDIT_ACTIONS = [
   "fail",
   "issue",
   "void",
+  "complete",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];

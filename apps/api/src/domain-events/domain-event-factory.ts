@@ -38,6 +38,11 @@ import type {
   InvoicePaidPayload,
   InvoiceStatus,
   InvoiceVoidedPayload,
+  Refund,
+  RefundCancelledPayload,
+  RefundCompletedPayload,
+  RefundCreatedPayload,
+  RefundStatus,
 } from "@commerceflow/types";
 
 export function createDomainEvent<TPayload>(input: {
@@ -521,6 +526,71 @@ export function buildInvoiceVoidedEvent(
       subtotal: invoice.subtotal,
       currency: invoice.currency,
       invoice,
+    },
+  });
+}
+
+export function buildRefundCreatedEvent(
+  refund: Refund,
+): DomainEvent<RefundCreatedPayload> {
+  return createDomainEvent({
+    eventType: "refund.created",
+    aggregateType: "refund",
+    aggregateId: refund.id,
+    storeId: refund.storeId,
+    payload: {
+      refundId: refund.id,
+      paymentId: refund.paymentId,
+      amount: refund.amount,
+      currency: refund.currency,
+      status: refund.status,
+      reason: refund.reason,
+      refund,
+    },
+  });
+}
+
+export function buildRefundCompletedEvent(
+  refund: Refund,
+  previousStatus: RefundStatus,
+): DomainEvent<RefundCompletedPayload> {
+  return createDomainEvent({
+    eventType: "refund.completed",
+    aggregateType: "refund",
+    aggregateId: refund.id,
+    storeId: refund.storeId,
+    payload: {
+      refundId: refund.id,
+      paymentId: refund.paymentId,
+      previousStatus,
+      status: "completed",
+      amount: refund.amount,
+      currency: refund.currency,
+      reason: refund.reason,
+      completedAt: refund.completedAt,
+      refund,
+    },
+  });
+}
+
+export function buildRefundCancelledEvent(
+  refund: Refund,
+  previousStatus: RefundStatus,
+): DomainEvent<RefundCancelledPayload> {
+  return createDomainEvent({
+    eventType: "refund.cancelled",
+    aggregateType: "refund",
+    aggregateId: refund.id,
+    storeId: refund.storeId,
+    payload: {
+      refundId: refund.id,
+      paymentId: refund.paymentId,
+      previousStatus,
+      status: "cancelled",
+      amount: refund.amount,
+      currency: refund.currency,
+      reason: refund.reason,
+      refund,
     },
   });
 }

@@ -10,6 +10,8 @@ import type { CartItem } from "../shopping-cart/cart-item";
 import type { CheckoutResult } from "../checkout/checkout-result";
 import type { Invoice } from "../invoices/invoice";
 import type { InvoiceStatus } from "../invoices/invoice-status";
+import type { Refund } from "../refunds/refund";
+import type { RefundStatus } from "../refunds/refund-status";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -232,4 +234,37 @@ export interface InvoiceVoidedPayload {
   readonly subtotal: string;
   readonly currency: string;
   readonly invoice: Invoice;
+}
+
+export interface RefundCreatedPayload {
+  readonly refundId: string;
+  readonly paymentId: string;
+  readonly amount: string;
+  readonly currency: string;
+  readonly status: RefundStatus;
+  readonly reason: string;
+  readonly refund: Refund;
+}
+
+export interface RefundCompletedPayload {
+  readonly refundId: string;
+  readonly paymentId: string;
+  readonly previousStatus: RefundStatus;
+  readonly status: "completed";
+  readonly amount: string;
+  readonly currency: string;
+  readonly reason: string;
+  readonly completedAt?: string;
+  readonly refund: Refund;
+}
+
+export interface RefundCancelledPayload {
+  readonly refundId: string;
+  readonly paymentId: string;
+  readonly previousStatus: RefundStatus;
+  readonly status: "cancelled";
+  readonly amount: string;
+  readonly currency: string;
+  readonly reason: string;
+  readonly refund: Refund;
 }

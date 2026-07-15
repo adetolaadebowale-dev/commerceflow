@@ -155,5 +155,15 @@ export type {
   ListOrderInvoicesResponse,
 } from "./invoices/contracts";
 export { createInvoiceClient, type InvoiceClient } from "./invoices/invoice-client";
+export type {
+  CreateRefundRequest,
+  CreateRefundResponse,
+  GetRefundResponse,
+  ListPaymentRefundsParams,
+  ListPaymentRefundsResponse,
+  RefundActionResponse,
+  RefundStoreScopedParams,
+} from "./refunds/contracts";
+export { createRefundClient, type RefundClient } from "./refunds/refund-client";
 export { ApiClientError } from "./http/api-error";
 export { apiRequest, type ApiClientConfig } from "./http/request";
