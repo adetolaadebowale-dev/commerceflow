@@ -1,16 +1,28 @@
 import type {
   OrderAppliedPromotion as PrismaOrderAppliedPromotion,
+  OrderAppliedTaxRate as PrismaOrderAppliedTaxRate,
   Order as PrismaOrder,
   OrderItem as PrismaOrderItem,
 } from "@prisma/client";
-import type { Order, OrderPromotionSnapshot } from "@commerceflow/types";
+import type { Order, OrderPromotionSnapshot, OrderTaxRateSnapshot } from "@commerceflow/types";
 
 import { toOrderAddressSnapshot } from "./order-address.mapper";
 
 type OrderWithItems = PrismaOrder & {
   items: PrismaOrderItem[];
   appliedPromotion?: PrismaOrderAppliedPromotion | null;
+  appliedTaxRate?: PrismaOrderAppliedTaxRate | null;
 };
+
+function toOrderTaxRateSnapshot(
+  record: PrismaOrderAppliedTaxRate,
+): OrderTaxRateSnapshot {
+  return {
+    taxRateId: record.taxRateId,
+    nameSnapshot: record.nameSnapshot,
+    percentageSnapshot: record.percentageSnapshot.toString(),
+  };
+}
 
 function toOrderPromotionSnapshot(
   record: PrismaOrderAppliedPromotion,
@@ -50,10 +62,14 @@ export function mapPrismaOrder(record: OrderWithItems): Order {
     status: record.status,
     subtotal: record.subtotal.toString(),
     discountAmount: record.discountAmount?.toString(),
+    taxAmount: record.taxAmount?.toString(),
     total: record.total.toString(),
     currency: record.currency,
     appliedPromotion: record.appliedPromotion
       ? toOrderPromotionSnapshot(record.appliedPromotion)
+      : undefined,
+    appliedTaxRate: record.appliedTaxRate
+      ? toOrderTaxRateSnapshot(record.appliedTaxRate)
       : undefined,
     shippingAddress: toOrderAddressSnapshot(record),
     items: record.items.map(toOrderItem),
@@ -72,4 +88,5 @@ export const orderItemsInclude = {
 export const orderWithPromotionInclude = {
   items: orderItemsInclude,
   appliedPromotion: true,
+  appliedTaxRate: true,
 };

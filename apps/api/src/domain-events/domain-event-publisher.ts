@@ -33,6 +33,10 @@ import {
   buildPromotionUpdatedEvent,
   buildPromotionAppliedEvent,
   buildPromotionRemovedEvent,
+  buildTaxCreatedEvent,
+  buildTaxUpdatedEvent,
+  buildTaxActivatedEvent,
+  buildTaxDeactivatedEvent,
 } from "./domain-event-factory";
 import type {
   Cart,
@@ -52,6 +56,8 @@ import type {
   RefundStatus,
   Promotion,
   AppliedCartPromotion,
+  TaxRate,
+  TaxRateStatus,
 } from "@commerceflow/types";
 
 export interface DomainEventPublisherDependencies {
@@ -236,6 +242,28 @@ export class DomainEventPublisher {
 
   publishPromotionRemoved(cart: Cart, applied: AppliedCartPromotion): void {
     this.dispatch(buildPromotionRemovedEvent(cart, applied));
+  }
+
+  publishTaxCreated(taxRate: TaxRate): void {
+    this.dispatch(buildTaxCreatedEvent(taxRate));
+  }
+
+  publishTaxUpdated(taxRate: TaxRate): void {
+    this.dispatch(buildTaxUpdatedEvent(taxRate));
+  }
+
+  publishTaxActivated(
+    taxRate: TaxRate,
+    previousStatus: TaxRateStatus,
+  ): void {
+    this.dispatch(buildTaxActivatedEvent(taxRate, previousStatus));
+  }
+
+  publishTaxDeactivated(
+    taxRate: TaxRate,
+    previousStatus: TaxRateStatus,
+  ): void {
+    this.dispatch(buildTaxDeactivatedEvent(taxRate, previousStatus));
   }
 
   private dispatch(event: DomainEvent): void {

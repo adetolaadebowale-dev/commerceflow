@@ -55,6 +55,7 @@ describe("Checkout audit integration", () => {
         itemCount: result.order.items.length,
         subtotal: result.order.subtotal,
         discountAmount: result.order.discountAmount,
+        taxAmount: result.order.taxAmount,
         total: result.order.total,
         currency: result.order.currency,
       },

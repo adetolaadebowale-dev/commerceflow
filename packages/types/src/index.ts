@@ -61,6 +61,12 @@ export {
   type PromotionType,
 } from "./promotions";
 export {
+  TAX_RATE_STATUSES,
+  type TaxRate,
+  type TaxRateStatus,
+  type OrderTaxRateSnapshot,
+} from "./tax-rates";
+export {
   type AppliedCartPromotion,
   type OrderPromotionSnapshot,
 } from "./promotion-redemption";
@@ -128,4 +134,8 @@ export {
   type PromotionUpdatedPayload,
   type PromotionAppliedPayload,
   type PromotionRemovedPayload,
+  type TaxCreatedPayload,
+  type TaxUpdatedPayload,
+  type TaxActivatedPayload,
+  type TaxDeactivatedPayload,
 } from "./domain-events";

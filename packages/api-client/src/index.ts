@@ -183,5 +183,22 @@ export {
   createPromotionClient,
   type PromotionClient,
 } from "./promotions/promotion-client";
+export type {
+  ActivateTaxRateResponse,
+  CreateTaxRateRequest,
+  CreateTaxRateResponse,
+  DeactivateTaxRateResponse,
+  DeleteTaxRateResponse,
+  GetTaxRateResponse,
+  ListTaxRatesParams,
+  ListTaxRatesResponse,
+  TaxRateStoreScopedParams,
+  UpdateTaxRateRequest,
+  UpdateTaxRateResponse,
+} from "./tax-rates/contracts";
+export {
+  createTaxRateClient,
+  type TaxRateClient,
+} from "./tax-rates/tax-rate-client";
 export { ApiClientError } from "./http/api-error";
 export { apiRequest, type ApiClientConfig } from "./http/request";

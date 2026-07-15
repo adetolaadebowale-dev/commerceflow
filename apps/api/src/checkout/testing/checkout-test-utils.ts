@@ -8,6 +8,8 @@ import { MemoryOrderVariantSnapshotReader } from "@/orders/repositories/memory-o
 import { seedVariant } from "@/orders/testing/order-test-utils";
 import { MemoryCartPromotionRepository } from "@/promotion-redemption/repositories/memory-cart-promotion.repository";
 import { PromotionRedemptionService } from "@/promotion-redemption/services/promotion-redemption.service";
+import { MemoryTaxRateRepository } from "@/tax-rates/repositories/memory-tax-rate.repository";
+import { TaxRateService } from "@/tax-rates/services/tax-rate.service";
 import { MemoryCartRepository } from "@/shopping-cart/repositories/memory-cart.repository";
 import { MemoryCheckoutRepository } from "../repositories/memory-checkout.repository";
 import { CheckoutService } from "../services/checkout.service";
@@ -25,9 +27,14 @@ export function createMemoryCheckoutModule(dependencies: {
   const customerAddressRepository = new MemoryCustomerAddressRepository();
   const variantSnapshotReader = new MemoryOrderVariantSnapshotReader();
   const cartPromotionRepository = new MemoryCartPromotionRepository();
+  const taxRateRepository = new MemoryTaxRateRepository();
   const promotionRedemptionService = new PromotionRedemptionService({
     cartRepository,
     cartPromotionRepository,
+    domainEventPublisher: dependencies.domainEventPublisher,
+  });
+  const taxRateService = new TaxRateService({
+    taxRateRepository,
     domainEventPublisher: dependencies.domainEventPublisher,
   });
 
@@ -38,7 +45,9 @@ export function createMemoryCheckoutModule(dependencies: {
     customerAddressRepository,
     variantSnapshotReader,
     cartPromotionRepository,
+    taxRateRepository,
     promotionRedemptionService,
+    taxRateService,
     checkoutService: new CheckoutService({
       checkoutRepository,
       cartRepository,
@@ -46,6 +55,7 @@ export function createMemoryCheckoutModule(dependencies: {
       customerAddressRepository,
       variantSnapshotReader,
       promotionRedemptionService,
+      taxRateService,
       ...dependencies,
     }),
   };

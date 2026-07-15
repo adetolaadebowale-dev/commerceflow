@@ -119,6 +119,12 @@ enum PromotionStatus {
   expired
 }
 
+/// Mirrors TaxRateStatus from @commerceflow/types.
+enum TaxRateStatus {
+  active
+  inactive
+}
+
 /// Persists User contract fields plus passwordHash (API-internal).
 model User {
   id              String        @id @default(uuid()) @db.Uuid
@@ -201,8 +207,10 @@ model Store {
   invoices              Invoice[]
   refunds               Refund[]
   promotions            Promotion[]
+  taxRates              TaxRate[]
   cartPromotions        CartPromotion[]
   orderAppliedPromotions OrderAppliedPromotion[]
+  orderAppliedTaxRates  OrderAppliedTaxRate[]
 
   @@unique([organizationId, slug])
   @@index([organizationId])
@@ -387,6 +395,7 @@ model Order {
   status      OrderStatus @default(draft)
   subtotal    Decimal     @db.Decimal(12, 2)
   discountAmount Decimal? @map("discount_amount") @db.Decimal(12, 2)
+  taxAmount   Decimal?    @map("tax_amount") @db.Decimal(12, 2)
   total       Decimal     @db.Decimal(12, 2)
   currency    String      @db.Char(3)
   shippingRecipientName  String? @map("shipping_recipient_name")
@@ -407,6 +416,7 @@ model Order {
   payments    Payment[]
   invoices    Invoice[]
   appliedPromotion OrderAppliedPromotion?
+  appliedTaxRate   OrderAppliedTaxRate?
 
   @@unique([storeId, orderNumber])
   @@index([storeId])
@@ -504,6 +514,10 @@ model Invoice {
   status        InvoiceStatus @default(draft)
   subtotal       Decimal       @db.Decimal(12, 2)
   discountAmount Decimal?      @map("discount_amount") @db.Decimal(12, 2)
+  taxAmount      Decimal?      @map("tax_amount") @db.Decimal(12, 2)
+  taxRateId           String?   @map("tax_rate_id") @db.Uuid
+  taxRateNameSnapshot String?   @map("tax_rate_name_snapshot")
+  taxRatePercentageSnapshot Decimal? @map("tax_rate_percentage_snapshot") @db.Decimal(5, 2)
   total          Decimal       @db.Decimal(12, 2)
   currency       String        @db.Char(3)
   issuedAt      DateTime?     @map("issued_at")
@@ -572,6 +586,27 @@ model Promotion {
   @@index([deletedAt])
   @@index([storeId, deletedAt])
   @@map("promotions")
+}
+
+/// Store-scoped tax rate configuration.
+model TaxRate {
+  id          String        @id @default(uuid()) @db.Uuid
+  storeId     String        @map("store_id") @db.Uuid
+  store       Store         @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  name        String
+  percentage  Decimal       @db.Decimal(5, 2)
+  status      TaxRateStatus @default(inactive)
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  deletedAt   DateTime?     @map("deleted_at")
+  orderAppliedTaxRates OrderAppliedTaxRate[]
+
+  @@index([storeId])
+  @@index([status])
+  @@index([storeId, status])
+  @@index([deletedAt])
+  @@index([storeId, deletedAt])
+  @@map("tax_rates")
 }
 
 /// Immutable append-only record of authenticated administrative actions.
@@ -737,4 +772,23 @@ model OrderAppliedPromotion {
   @@index([orderId])
   @@index([promotionId])
   @@map("order_applied_promotions")
+}
+
+model OrderAppliedTaxRate {
+  id                   String   @id @default(uuid()) @db.Uuid
+  storeId              String   @map("store_id") @db.Uuid
+  store                Store    @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  orderId              String   @unique @map("order_id") @db.Uuid
+  order                Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  taxRateId            String   @map("tax_rate_id") @db.Uuid
+  taxRate              TaxRate  @relation(fields: [taxRateId], references: [id], onDelete: Restrict)
+  nameSnapshot         String   @map("name_snapshot")
+  percentageSnapshot   Decimal  @map("percentage_snapshot") @db.Decimal(5, 2)
+  taxAmount            Decimal  @map("tax_amount") @db.Decimal(12, 2)
+  createdAt            DateTime @default(now()) @map("created_at")
+
+  @@index([storeId])
+  @@index([orderId])
+  @@index([taxRateId])
+  @@map("order_applied_tax_rates")
 }

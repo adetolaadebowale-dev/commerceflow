@@ -1,4 +1,5 @@
 import type { InvoiceStatus } from "./invoice-status";
+import type { OrderTaxRateSnapshot } from "../tax-rates/order-tax-rate-snapshot";
 
 /** Store-scoped financial invoice linked to an order. */
 export interface Invoice {
@@ -9,6 +10,8 @@ export interface Invoice {
   readonly status: InvoiceStatus;
   readonly subtotal: string;
   readonly discountAmount?: string;
+  readonly taxAmount?: string;
+  readonly appliedTaxRate?: OrderTaxRateSnapshot;
   readonly total: string;
   readonly currency: string;
   readonly issuedAt?: string;

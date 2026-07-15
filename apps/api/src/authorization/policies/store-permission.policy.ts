@@ -26,6 +26,8 @@ const ALL_STORE_PERMISSIONS: readonly StorePermissionCode[] = [
   "refunds:lifecycle",
   "promotions:read",
   "promotions:write",
+  "tax-rates:read",
+  "tax-rates:write",
 ];
 
 const PERMISSIONS_BY_STORE_ROLE: Readonly<
@@ -59,6 +61,8 @@ const PERMISSIONS_BY_STORE_ROLE: Readonly<
     "refunds:lifecycle",
     "promotions:read",
     "promotions:write",
+    "tax-rates:read",
+    "tax-rates:write",
   ],
   staff: [
     "catalogue:read",
@@ -72,6 +76,7 @@ const PERMISSIONS_BY_STORE_ROLE: Readonly<
     "invoices:read",
     "refunds:read",
     "promotions:read",
+    "tax-rates:read",
   ],
 };
 

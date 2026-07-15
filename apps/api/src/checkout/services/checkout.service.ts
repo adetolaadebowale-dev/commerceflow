@@ -25,7 +25,17 @@ import {
   getPromotionRedemptionService,
   type PromotionRedemptionService,
 } from "@/promotion-redemption/services";
-import { multiplyPrice, subtractPrice, sumPrices } from "@/orders/services/order-pricing";
+import {
+  getTaxRateService,
+  type TaxRateService,
+} from "@/tax-rates/services";
+import {
+  addPrice,
+  calculateTaxAmount,
+  multiplyPrice,
+  subtractPrice,
+  sumPrices,
+} from "@/orders/services/order-pricing";
 import {
   getCartRepository,
   type CartRepository,
@@ -41,6 +51,7 @@ export interface CheckoutServiceDependencies {
   readonly variantSnapshotReader?: OrderVariantSnapshotReader;
   readonly domainEventPublisher?: DomainEventPublisher;
   readonly promotionRedemptionService?: PromotionRedemptionService;
+  readonly taxRateService?: TaxRateService;
 }
 
 export class CheckoutService {
@@ -51,6 +62,7 @@ export class CheckoutService {
   private readonly variantSnapshotReader: OrderVariantSnapshotReader;
   private readonly domainEventPublisher: DomainEventPublisher;
   private readonly promotionRedemptionService: PromotionRedemptionService;
+  private readonly taxRateService: TaxRateService;
 
   constructor(dependencies: CheckoutServiceDependencies = {}) {
     this.checkoutRepository =
@@ -67,6 +79,8 @@ export class CheckoutService {
       dependencies.domainEventPublisher ?? getDomainEventPublisher();
     this.promotionRedemptionService =
       dependencies.promotionRedemptionService ?? getPromotionRedemptionService();
+    this.taxRateService =
+      dependencies.taxRateService ?? getTaxRateService();
   }
 
   async checkoutCart(
@@ -144,7 +158,6 @@ export class CheckoutService {
 
     let discountAmount: string | undefined;
     let appliedPromotionSnapshot;
-    let total = subtotal;
 
     if (appliedPromotion) {
       discountAmount = calculatePromotionDiscountFromSnapshot(
@@ -152,7 +165,6 @@ export class CheckoutService {
         appliedPromotion,
         currency,
       );
-      total = subtractPrice(subtotal, discountAmount);
       appliedPromotionSnapshot = {
         promotionId: appliedPromotion.promotionId,
         promotionCodeSnapshot: appliedPromotion.promotionCodeSnapshot,
@@ -161,6 +173,27 @@ export class CheckoutService {
         discountAmount,
       };
     }
+
+    const taxableAmount = discountAmount
+      ? subtractPrice(subtotal, discountAmount)
+      : subtotal;
+
+    const activeTaxRate = await this.taxRateService.getActiveTaxRate(storeId);
+    let taxAmount: string | undefined;
+    let appliedTaxRateSnapshot;
+
+    if (activeTaxRate) {
+      taxAmount = calculateTaxAmount(taxableAmount, activeTaxRate.percentage);
+      appliedTaxRateSnapshot = {
+        taxRateId: activeTaxRate.id,
+        nameSnapshot: activeTaxRate.name,
+        percentageSnapshot: activeTaxRate.percentage,
+      };
+    }
+
+    const total = taxAmount
+      ? addPrice(taxableAmount, taxAmount)
+      : taxableAmount;
 
     try {
       const result = await this.checkoutRepository.completeCheckout({
@@ -171,10 +204,12 @@ export class CheckoutService {
         shippingAddress,
         subtotal,
         discountAmount,
+        taxAmount,
         total,
         currency,
         items: preparedItems,
         appliedPromotion: appliedPromotionSnapshot,
+        appliedTaxRate: appliedTaxRateSnapshot,
       });
 
       this.domainEventPublisher.publishCheckoutCompleted(

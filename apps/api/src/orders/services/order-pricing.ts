@@ -23,6 +23,10 @@ export function subtractPrice(minuend: string, subtrahend: string): string {
   return fromCents(Math.max(result, 0));
 }
 
+export function addPrice(left: string, right: string): string {
+  return fromCents(toCents(left) + toCents(right));
+}
+
 export function minPrice(left: string, right: string): string {
   return toCents(left) <= toCents(right) ? left : right;
 }
@@ -54,6 +58,17 @@ export function calculatePromotionDiscount(input: {
   }
 
   return minPrice(input.value, input.subtotal);
+}
+
+export function calculateTaxAmount(
+  taxableAmount: string,
+  percentage: string,
+): string {
+  const taxCents = Math.round(
+    (toCents(taxableAmount) * Number.parseFloat(percentage)) / 100,
+  );
+
+  return fromCents(taxCents);
 }
 
 export function generateOrderNumber(): string {

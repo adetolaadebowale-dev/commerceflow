@@ -13,6 +13,7 @@ import type { InvoiceStatus } from "../invoices/invoice-status";
 import type { Refund } from "../refunds/refund";
 import type { RefundStatus } from "../refunds/refund-status";
 import type { Promotion } from "../promotions/promotion";
+import type { TaxRate } from "../tax-rates/tax-rate";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -326,4 +327,38 @@ export interface PromotionRemovedPayload {
   readonly cartId: string;
   readonly promotionId: string;
   readonly promotionCodeSnapshot: string;
+}
+
+export interface TaxCreatedPayload {
+  readonly taxRateId: string;
+  readonly name: string;
+  readonly percentage: string;
+  readonly status: TaxRate["status"];
+  readonly taxRate: TaxRate;
+}
+
+export interface TaxUpdatedPayload {
+  readonly taxRateId: string;
+  readonly name: string;
+  readonly percentage: string;
+  readonly status: TaxRate["status"];
+  readonly taxRate: TaxRate;
+}
+
+export interface TaxActivatedPayload {
+  readonly taxRateId: string;
+  readonly name: string;
+  readonly percentage: string;
+  readonly previousStatus: TaxRate["status"];
+  readonly status: "active";
+  readonly taxRate: TaxRate;
+}
+
+export interface TaxDeactivatedPayload {
+  readonly taxRateId: string;
+  readonly name: string;
+  readonly percentage: string;
+  readonly previousStatus: TaxRate["status"];
+  readonly status: "inactive";
+  readonly taxRate: TaxRate;
 }

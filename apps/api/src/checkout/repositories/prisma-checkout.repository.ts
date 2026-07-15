@@ -7,7 +7,7 @@ import type { Cart, CheckoutResult } from "@commerceflow/types";
 
 import {
   mapPrismaOrder,
-  orderWithPromotionInclude,
+  orderItemsInclude,
 } from "@/orders/repositories/order.mapper";
 import { buildShippingAddressCreateData } from "@/orders/repositories/order-address.mapper";
 import { generateOrderNumber } from "@/orders/services/order-pricing";
@@ -77,6 +77,7 @@ export class PrismaCheckoutRepository implements CheckoutRepository {
               status: "draft",
               subtotal: record.subtotal,
               discountAmount: record.discountAmount ?? null,
+              taxAmount: record.taxAmount ?? null,
               total: record.total,
               currency: record.currency,
               ...buildShippingAddressCreateData(record.shippingAddress),
@@ -108,8 +109,26 @@ export class PrismaCheckoutRepository implements CheckoutRepository {
                     },
                   }
                 : {}),
+              ...(record.appliedTaxRate && record.taxAmount
+                ? {
+                    appliedTaxRate: {
+                      create: {
+                        storeId: record.storeId,
+                        taxRateId: record.appliedTaxRate.taxRateId,
+                        nameSnapshot: record.appliedTaxRate.nameSnapshot,
+                        percentageSnapshot:
+                          record.appliedTaxRate.percentageSnapshot,
+                        taxAmount: record.taxAmount,
+                      },
+                    },
+                  }
+                : {}),
             },
-            include: orderWithPromotionInclude,
+            include: {
+              items: orderItemsInclude,
+              appliedPromotion: true,
+              appliedTaxRate: true,
+            },
           });
 
           const converted = await tx.cart.updateMany({

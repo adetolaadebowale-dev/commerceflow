@@ -50,6 +50,12 @@ import type {
   PromotionAppliedPayload,
   PromotionRemovedPayload,
   AppliedCartPromotion,
+  TaxRate,
+  TaxRateStatus,
+  TaxCreatedPayload,
+  TaxUpdatedPayload,
+  TaxActivatedPayload,
+  TaxDeactivatedPayload,
 } from "@commerceflow/types";
 
 export function createDomainEvent<TPayload>(input: {
@@ -708,6 +714,82 @@ export function buildPromotionRemovedEvent(
       cartId: cart.id,
       promotionId: applied.promotionId,
       promotionCodeSnapshot: applied.promotionCodeSnapshot,
+    },
+  });
+}
+
+export function buildTaxCreatedEvent(
+  taxRate: TaxRate,
+): DomainEvent<TaxCreatedPayload> {
+  return createDomainEvent({
+    eventType: "tax.created",
+    aggregateType: "tax_rate",
+    aggregateId: taxRate.id,
+    storeId: taxRate.storeId,
+    payload: {
+      taxRateId: taxRate.id,
+      name: taxRate.name,
+      percentage: taxRate.percentage,
+      status: taxRate.status,
+      taxRate,
+    },
+  });
+}
+
+export function buildTaxUpdatedEvent(
+  taxRate: TaxRate,
+): DomainEvent<TaxUpdatedPayload> {
+  return createDomainEvent({
+    eventType: "tax.updated",
+    aggregateType: "tax_rate",
+    aggregateId: taxRate.id,
+    storeId: taxRate.storeId,
+    payload: {
+      taxRateId: taxRate.id,
+      name: taxRate.name,
+      percentage: taxRate.percentage,
+      status: taxRate.status,
+      taxRate,
+    },
+  });
+}
+
+export function buildTaxActivatedEvent(
+  taxRate: TaxRate,
+  previousStatus: TaxRateStatus,
+): DomainEvent<TaxActivatedPayload> {
+  return createDomainEvent({
+    eventType: "tax.activated",
+    aggregateType: "tax_rate",
+    aggregateId: taxRate.id,
+    storeId: taxRate.storeId,
+    payload: {
+      taxRateId: taxRate.id,
+      name: taxRate.name,
+      percentage: taxRate.percentage,
+      previousStatus,
+      status: "active",
+      taxRate,
+    },
+  });
+}
+
+export function buildTaxDeactivatedEvent(
+  taxRate: TaxRate,
+  previousStatus: TaxRateStatus,
+): DomainEvent<TaxDeactivatedPayload> {
+  return createDomainEvent({
+    eventType: "tax.deactivated",
+    aggregateType: "tax_rate",
+    aggregateId: taxRate.id,
+    storeId: taxRate.storeId,
+    payload: {
+      taxRateId: taxRate.id,
+      name: taxRate.name,
+      percentage: taxRate.percentage,
+      previousStatus,
+      status: "inactive",
+      taxRate,
     },
   });
 }

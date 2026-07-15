@@ -25,6 +25,8 @@ export const STORE_PERMISSIONS = [
   "refunds:lifecycle",
   "promotions:read",
   "promotions:write",
+  "tax-rates:read",
+  "tax-rates:write",
 ] as const;
 
 export type StorePermissionCode = (typeof STORE_PERMISSIONS)[number];

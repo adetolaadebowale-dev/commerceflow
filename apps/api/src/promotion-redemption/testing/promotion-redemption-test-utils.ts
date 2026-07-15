@@ -11,6 +11,8 @@ import { seedVariant } from "@/orders/testing/order-test-utils";
 import { MemoryPromotionRepository } from "@/promotions/repositories/memory-promotion.repository";
 import { MemoryCartPromotionRepository } from "../repositories/memory-cart-promotion.repository";
 import { PromotionRedemptionService } from "../services/promotion-redemption.service";
+import { MemoryTaxRateRepository } from "@/tax-rates/repositories/memory-tax-rate.repository";
+import { TaxRateService } from "@/tax-rates/services/tax-rate.service";
 import { MemoryCartRepository } from "@/shopping-cart/repositories/memory-cart.repository";
 import { CartService } from "@/shopping-cart/services/cart.service";
 
@@ -24,6 +26,7 @@ export function createMemoryPromotionRedemptionModule(options: {
   const cartRepository = new MemoryCartRepository();
   const cartPromotionRepository = new MemoryCartPromotionRepository();
   const promotionRepository = new MemoryPromotionRepository();
+  const taxRateRepository = new MemoryTaxRateRepository();
   const customerRepository = new MemoryCustomerRepository();
   const customerAddressRepository = new MemoryCustomerAddressRepository();
   const variantSnapshotReader = new MemoryOrderVariantSnapshotReader();
@@ -33,6 +36,11 @@ export function createMemoryPromotionRedemptionModule(options: {
     cartRepository,
     cartPromotionRepository,
     promotionRepository,
+    domainEventPublisher: options.domainEventPublisher,
+  });
+
+  const taxRateService = new TaxRateService({
+    taxRateRepository,
     domainEventPublisher: options.domainEventPublisher,
   });
 
@@ -51,6 +59,7 @@ export function createMemoryPromotionRedemptionModule(options: {
     customerAddressRepository,
     variantSnapshotReader,
     promotionRedemptionService,
+    taxRateService,
     domainEventPublisher: options.domainEventPublisher,
   });
 
@@ -58,11 +67,13 @@ export function createMemoryPromotionRedemptionModule(options: {
     cartRepository,
     cartPromotionRepository,
     promotionRepository,
+    taxRateRepository,
     customerRepository,
     customerAddressRepository,
     variantSnapshotReader,
     checkoutRepository,
     promotionRedemptionService,
+    taxRateService,
     cartService,
     checkoutService,
   };

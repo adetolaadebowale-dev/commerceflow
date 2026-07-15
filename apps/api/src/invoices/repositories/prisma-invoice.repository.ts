@@ -23,6 +23,17 @@ function toInvoice(record: PrismaInvoice): Invoice {
     status: record.status,
     subtotal: record.subtotal.toString(),
     discountAmount: record.discountAmount?.toString(),
+    taxAmount: record.taxAmount?.toString(),
+    appliedTaxRate:
+      record.taxRateId &&
+      record.taxRateNameSnapshot &&
+      record.taxRatePercentageSnapshot
+        ? {
+            taxRateId: record.taxRateId,
+            nameSnapshot: record.taxRateNameSnapshot,
+            percentageSnapshot: record.taxRatePercentageSnapshot.toString(),
+          }
+        : undefined,
     total: record.total.toString(),
     currency: record.currency,
     issuedAt: record.issuedAt?.toISOString(),
@@ -79,6 +90,10 @@ export class PrismaInvoiceRepository implements InvoiceRepository {
             invoiceNumber,
             subtotal: record.subtotal,
             discountAmount: record.discountAmount,
+            taxAmount: record.taxAmount,
+            taxRateId: record.appliedTaxRate?.taxRateId,
+            taxRateNameSnapshot: record.appliedTaxRate?.nameSnapshot,
+            taxRatePercentageSnapshot: record.appliedTaxRate?.percentageSnapshot,
             total: record.total,
             currency: record.currency,
             dueAt: record.dueAt ? new Date(record.dueAt) : undefined,

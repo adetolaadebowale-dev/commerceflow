@@ -147,6 +147,15 @@ export {
   type UpdatePromotionInput,
 } from "./promotions";
 export {
+  createTaxRateSchema,
+  listTaxRatesQuerySchema,
+  taxRateIdQuerySchema,
+  updateTaxRateSchema,
+  type CreateTaxRateInput,
+  type ListTaxRatesQuery,
+  type UpdateTaxRateInput,
+} from "./tax-rates";
+export {
   applyCartPromotionSchema,
   cartPromotionActionSchema,
   type ApplyCartPromotionInput,

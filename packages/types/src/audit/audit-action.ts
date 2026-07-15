@@ -17,6 +17,8 @@ export const AUDIT_ACTIONS = [
   "complete",
   "apply",
   "remove",
+  "activate",
+  "deactivate",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];

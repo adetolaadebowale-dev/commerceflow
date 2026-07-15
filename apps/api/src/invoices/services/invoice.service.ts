@@ -68,6 +68,8 @@ export class InvoiceService {
         orderId,
         subtotal: order.subtotal,
         discountAmount: order.discountAmount,
+        taxAmount: order.taxAmount,
+        appliedTaxRate: order.appliedTaxRate,
         total: order.total,
         currency: order.currency,
         dueAt: input.dueAt,

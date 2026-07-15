@@ -88,6 +88,8 @@ export class MemoryInvoiceRepository implements InvoiceRepository {
         status: "draft",
         subtotal: record.subtotal,
         discountAmount: record.discountAmount,
+        taxAmount: record.taxAmount,
+        appliedTaxRate: record.appliedTaxRate,
         total: record.total,
         currency: record.currency,
         dueAt: record.dueAt,
