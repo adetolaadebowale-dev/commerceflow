@@ -57,6 +57,31 @@ export class PrismaPickListRepository implements PickListRepository {
     return record ? toPickList(record) : null;
   }
 
+  async findItemById(
+    storeId: string,
+    pickListItemId: string,
+  ): Promise<import("./pick-list.repository").PickListItemContext | null> {
+    const record = await this.db.pickListItem.findFirst({
+      where: { id: pickListItemId, pickList: { storeId } },
+      include: {
+        pickList: {
+          include: {
+            items: { orderBy: [{ createdAt: "asc" }, { id: "asc" }] },
+          },
+        },
+      },
+    });
+
+    if (!record) {
+      return null;
+    }
+
+    return {
+      item: toPickListItem(record),
+      pickList: toPickList(record.pickList),
+    };
+  }
+
   async findActiveByShipmentId(
     storeId: string,
     shipmentId: string,
@@ -158,6 +183,25 @@ export class PrismaPickListRepository implements PickListRepository {
     }
 
     return updated;
+  }
+
+  async syncItemQuantityPicked(
+    storeId: string,
+    pickListItemId: string,
+    quantityPicked: number,
+  ): Promise<void> {
+    const item = await this.db.pickListItem.findFirst({
+      where: { id: pickListItemId, pickList: { storeId } },
+    });
+
+    if (!item) {
+      throw new Error(`PickListItem not found: ${pickListItemId}`);
+    }
+
+    await this.db.pickListItem.update({
+      where: { id: pickListItemId },
+      data: { quantityPicked },
+    });
   }
 
   async transitionStatus(

@@ -198,6 +198,16 @@ export {
   type PickListQuery,
 } from "./pick-lists";
 export {
+  allocateInventorySchema,
+  updateInventoryAllocationSchema,
+  reportShortageSchema,
+  inventoryAllocationIdQuerySchema,
+  type AllocateInventoryInput,
+  type UpdateInventoryAllocationInput,
+  type ReportShortageInput,
+  type InventoryAllocationIdQuery,
+} from "./inventory-allocation";
+export {
   createShippingMethodSchema,
   createShippingZoneSchema,
   listShippingMethodsQuerySchema,

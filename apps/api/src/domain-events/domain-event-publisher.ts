@@ -50,6 +50,10 @@ import {
   buildPickListStartedEvent,
   buildPickListCompletedEvent,
   buildPickListPackedEvent,
+  buildInventoryAllocatedEvent,
+  buildInventoryPartiallyPickedEvent,
+  buildInventoryPickedEvent,
+  buildInventoryShortageReportedEvent,
   buildShippingZoneCreatedEvent,
   buildShippingZoneUpdatedEvent,
   buildShippingZoneDeletedEvent,
@@ -83,6 +87,8 @@ import type {
   ShipmentTrackingEvent,
   ShipmentPackage,
   PickList,
+  InventoryAllocation,
+  InventoryAllocationStatus,
   ShippingZone,
   ShippingMethod,
 } from "@commerceflow/types";
@@ -385,6 +391,35 @@ export class DomainEventPublisher {
     previousStatus: "picked",
   ): void {
     this.dispatch(buildPickListPackedEvent(pickList, previousStatus));
+  }
+
+  publishInventoryAllocated(allocation: InventoryAllocation): void {
+    this.dispatch(buildInventoryAllocatedEvent(allocation));
+  }
+
+  publishInventoryPartiallyPicked(
+    allocation: InventoryAllocation,
+    previousStatus: InventoryAllocationStatus,
+  ): void {
+    this.dispatch(
+      buildInventoryPartiallyPickedEvent(allocation, previousStatus),
+    );
+  }
+
+  publishInventoryPicked(
+    allocation: InventoryAllocation,
+    previousStatus: InventoryAllocationStatus,
+  ): void {
+    this.dispatch(buildInventoryPickedEvent(allocation, previousStatus));
+  }
+
+  publishInventoryShortageReported(
+    allocation: InventoryAllocation,
+    previousStatus: InventoryAllocationStatus,
+  ): void {
+    this.dispatch(
+      buildInventoryShortageReportedEvent(allocation, previousStatus),
+    );
   }
 
   publishShippingZoneCreated(shippingZone: ShippingZone): void {

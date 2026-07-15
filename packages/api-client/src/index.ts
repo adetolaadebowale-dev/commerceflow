@@ -255,5 +255,19 @@ export {
   createPickListClient,
   type PickListClient,
 } from "./pick-lists/pick-list-client";
+export type {
+  AllocateInventoryRequest,
+  AllocateInventoryResponse,
+  GetInventoryAllocationResponse,
+  InventoryAllocationParams,
+  ReportShortageRequest,
+  ReportShortageResponse,
+  UpdateInventoryAllocationRequest,
+  UpdateInventoryAllocationResponse,
+} from "./inventory-allocation/allocation-client";
+export {
+  createAllocationClient,
+  type AllocationClient,
+} from "./inventory-allocation/allocation-client";
 export { ApiClientError } from "./http/api-error";
 export { apiRequest, type ApiClientConfig } from "./http/request";

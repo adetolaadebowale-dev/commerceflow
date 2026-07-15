@@ -1,4 +1,4 @@
-import type { PickList } from "@commerceflow/types";
+import type { PickList, PickListItem } from "@commerceflow/types";
 import type { UpdatePickListInput } from "@commerceflow/validation";
 
 import type {
@@ -6,8 +6,17 @@ import type {
   PickListStatusTransitionInput,
 } from "./pick-list-create-record";
 
+export interface PickListItemContext {
+  readonly item: PickListItem;
+  readonly pickList: PickList;
+}
+
 export interface PickListRepository {
   findById(storeId: string, id: string): Promise<PickList | null>;
+  findItemById(
+    storeId: string,
+    pickListItemId: string,
+  ): Promise<PickListItemContext | null>;
   findActiveByShipmentId(
     storeId: string,
     shipmentId: string,
@@ -27,4 +36,9 @@ export interface PickListRepository {
     id: string,
     transition: PickListStatusTransitionInput,
   ): Promise<PickList>;
+  syncItemQuantityPicked(
+    storeId: string,
+    pickListItemId: string,
+    quantityPicked: number,
+  ): Promise<void>;
 }

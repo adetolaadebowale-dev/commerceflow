@@ -173,6 +173,14 @@ enum PickListStatus {
   packed
 }
 
+/// Mirrors InventoryAllocationStatus from @commerceflow/types.
+enum InventoryAllocationStatus {
+  allocated
+  partially_picked
+  picked
+  shortage
+}
+
 /// Mirrors ShippingZoneStatus from @commerceflow/types.
 enum ShippingZoneStatus {
   active
@@ -276,6 +284,7 @@ model Store {
   shipmentTrackingEvents ShipmentTrackingEvent[]
   shipmentPackages       ShipmentPackage[]
   pickLists              PickList[]
+  inventoryAllocations   InventoryAllocation[]
   shippingZones          ShippingZone[]
   shippingMethods        ShippingMethod[]
 
@@ -417,6 +426,7 @@ model InventoryItem {
   deletedAt        DateTime?       @map("deleted_at")
   stockMovements   StockMovement[]
   inventoryReservations InventoryReservation[]
+  inventoryAllocations    InventoryAllocation[]
 
   @@unique([storeId, productVariantId])
   @@index([storeId])
@@ -995,11 +1005,37 @@ model PickListItem {
   quantityPicked   Int       @default(0) @map("quantity_picked")
   createdAt        DateTime  @default(now()) @map("created_at")
   updatedAt        DateTime  @updatedAt @map("updated_at")
+  inventoryAllocations InventoryAllocation[]
 
   @@unique([pickListId, orderItemId])
   @@index([pickListId])
   @@index([orderItemId])
   @@map("pick_list_items")
+}
+
+/// Warehouse inventory allocated to a pick list line item.
+model InventoryAllocation {
+  id                String                    @id @default(uuid()) @db.Uuid
+  storeId           String                    @map("store_id") @db.Uuid
+  store             Store                     @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  pickListItemId    String                    @map("pick_list_item_id") @db.Uuid
+  pickListItem      PickListItem              @relation(fields: [pickListItemId], references: [id], onDelete: Cascade)
+  inventoryItemId   String                    @map("inventory_item_id") @db.Uuid
+  inventoryItem     InventoryItem             @relation(fields: [inventoryItemId], references: [id], onDelete: Restrict)
+  quantityAllocated Int                       @map("quantity_allocated")
+  quantityPicked    Int                       @default(0) @map("quantity_picked")
+  status            InventoryAllocationStatus @default(allocated)
+  shortageReason    String?                   @map("shortage_reason")
+  createdAt         DateTime                  @default(now()) @map("created_at")
+  updatedAt         DateTime                  @updatedAt @map("updated_at")
+
+  @@index([storeId])
+  @@index([pickListItemId])
+  @@index([inventoryItemId])
+  @@index([storeId, pickListItemId])
+  @@index([storeId, inventoryItemId])
+  @@index([status])
+  @@map("inventory_allocations")
 }
 
 /// Append-only shipment tracking timeline entry.

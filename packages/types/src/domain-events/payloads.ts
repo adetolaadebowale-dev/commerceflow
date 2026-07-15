@@ -23,6 +23,8 @@ import type { ShippingZone } from "../shipping-configuration/shipping-zone";
 import type { ShippingMethod } from "../shipping-configuration/shipping-method";
 import type { PickList } from "../pick-lists/pick-list";
 import type { PickListStatus } from "../pick-lists/pick-list-status";
+import type { InventoryAllocation } from "../inventory-allocation/inventory-allocation";
+import type { InventoryAllocationStatus } from "../inventory-allocation/inventory-allocation-status";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -479,6 +481,49 @@ export interface PickListPackedPayload {
   readonly previousStatus: "picked";
   readonly status: "packed";
   readonly pickList: PickList;
+}
+
+export interface InventoryAllocatedPayload {
+  readonly inventoryAllocationId: string;
+  readonly pickListItemId: string;
+  readonly inventoryItemId: string;
+  readonly quantityAllocated: number;
+  readonly status: InventoryAllocationStatus;
+  readonly inventoryAllocation: InventoryAllocation;
+}
+
+export interface InventoryPartiallyPickedPayload {
+  readonly inventoryAllocationId: string;
+  readonly pickListItemId: string;
+  readonly inventoryItemId: string;
+  readonly previousStatus: InventoryAllocationStatus;
+  readonly status: "partially_picked";
+  readonly quantityPicked: number;
+  readonly quantityAllocated: number;
+  readonly inventoryAllocation: InventoryAllocation;
+}
+
+export interface InventoryPickedPayload {
+  readonly inventoryAllocationId: string;
+  readonly pickListItemId: string;
+  readonly inventoryItemId: string;
+  readonly previousStatus: InventoryAllocationStatus;
+  readonly status: "picked";
+  readonly quantityPicked: number;
+  readonly quantityAllocated: number;
+  readonly inventoryAllocation: InventoryAllocation;
+}
+
+export interface InventoryShortageReportedPayload {
+  readonly inventoryAllocationId: string;
+  readonly pickListItemId: string;
+  readonly inventoryItemId: string;
+  readonly previousStatus: InventoryAllocationStatus;
+  readonly status: "shortage";
+  readonly shortageReason: string;
+  readonly quantityPicked: number;
+  readonly quantityAllocated: number;
+  readonly inventoryAllocation: InventoryAllocation;
 }
 
 export interface ShippingZoneCreatedPayload {

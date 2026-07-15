@@ -102,6 +102,11 @@ export {
   type PickListStatus,
 } from "./pick-lists";
 export {
+  INVENTORY_ALLOCATION_STATUSES,
+  type InventoryAllocation,
+  type InventoryAllocationStatus,
+} from "./inventory-allocation";
+export {
   type AppliedCartPromotion,
   type OrderPromotionSnapshot,
 } from "./promotion-redemption";
@@ -186,6 +191,10 @@ export {
   type PickListStartedPayload,
   type PickListCompletedPayload,
   type PickListPackedPayload,
+  type InventoryAllocatedPayload,
+  type InventoryPartiallyPickedPayload,
+  type InventoryPickedPayload,
+  type InventoryShortageReportedPayload,
   type ShippingZoneCreatedPayload,
   type ShippingZoneUpdatedPayload,
   type ShippingZoneDeletedPayload,

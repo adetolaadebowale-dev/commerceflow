@@ -10,7 +10,7 @@ export function getPickListRepository(): PickListRepository {
   return pickListRepository;
 }
 
-export type { PickListRepository } from "./pick-list.repository";
+export type { PickListItemContext, PickListRepository } from "./pick-list.repository";
 export type {
   CreatePickListRecord,
   CreatePickListItemRecord,

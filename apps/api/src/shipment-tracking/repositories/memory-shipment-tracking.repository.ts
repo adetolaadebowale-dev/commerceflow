@@ -7,11 +7,14 @@ export class MemoryShipmentTrackingRepository
   implements ShipmentTrackingRepository
 {
   private readonly eventsById = new Map<string, ShipmentTrackingEvent>();
+  private lastCreatedAtMs = 0;
 
   async append(
     record: CreateShipmentTrackingEventRecord,
   ): Promise<ShipmentTrackingEvent> {
-    const now = new Date().toISOString();
+    const nowMs = Math.max(Date.now(), this.lastCreatedAtMs + 1);
+    this.lastCreatedAtMs = nowMs;
+    const now = new Date(nowMs).toISOString();
     const event: ShipmentTrackingEvent = {
       id: crypto.randomUUID(),
       storeId: record.storeId,

@@ -26,6 +26,25 @@ export class MemoryPickListRepository implements PickListRepository {
     return pickList;
   }
 
+  async findItemById(
+    storeId: string,
+    pickListItemId: string,
+  ): Promise<import("./pick-list.repository").PickListItemContext | null> {
+    for (const pickList of this.pickListsById.values()) {
+      if (pickList.storeId !== storeId) {
+        continue;
+      }
+
+      const item = pickList.items.find((entry) => entry.id === pickListItemId);
+
+      if (item) {
+        return { item, pickList };
+      }
+    }
+
+    return null;
+  }
+
   async findActiveByShipmentId(
     storeId: string,
     shipmentId: string,
@@ -141,6 +160,47 @@ export class MemoryPickListRepository implements PickListRepository {
 
     this.pickListsById.set(id, updated);
     return updated;
+  }
+
+  async syncItemQuantityPicked(
+    storeId: string,
+    pickListItemId: string,
+    quantityPicked: number,
+  ): Promise<void> {
+    if (this.transactionFailure) {
+      throw this.transactionFailure;
+    }
+
+    for (const [pickListId, pickList] of this.pickListsById.entries()) {
+      if (pickList.storeId !== storeId) {
+        continue;
+      }
+
+      const itemIndex = pickList.items.findIndex(
+        (entry) => entry.id === pickListItemId,
+      );
+
+      if (itemIndex === -1) {
+        continue;
+      }
+
+      const now = new Date().toISOString();
+      const items = pickList.items.map((item, index) =>
+        index === itemIndex
+          ? { ...item, quantityPicked, updatedAt: now }
+          : item,
+      );
+
+      this.pickListsById.set(pickListId, {
+        ...pickList,
+        items,
+        updatedAt: now,
+      });
+
+      return;
+    }
+
+    throw new Error(`PickListItem not found: ${pickListItemId}`);
   }
 
   async transitionStatus(

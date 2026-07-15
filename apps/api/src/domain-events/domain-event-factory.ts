@@ -75,6 +75,12 @@ import type {
   PickListStartedPayload,
   PickListCompletedPayload,
   PickListPackedPayload,
+  InventoryAllocation,
+  InventoryAllocationStatus,
+  InventoryAllocatedPayload,
+  InventoryPartiallyPickedPayload,
+  InventoryPickedPayload,
+  InventoryShortageReportedPayload,
   ShippingZone,
   ShippingMethod,
   ShippingZoneCreatedPayload,
@@ -1068,6 +1074,92 @@ export function buildPickListPackedEvent(
       previousStatus,
       status: "packed",
       pickList,
+    },
+  });
+}
+
+export function buildInventoryAllocatedEvent(
+  allocation: InventoryAllocation,
+): DomainEvent<InventoryAllocatedPayload> {
+  return createDomainEvent({
+    eventType: "inventory.allocated",
+    aggregateType: "inventory_allocation",
+    aggregateId: allocation.id,
+    storeId: allocation.storeId,
+    payload: {
+      inventoryAllocationId: allocation.id,
+      pickListItemId: allocation.pickListItemId,
+      inventoryItemId: allocation.inventoryItemId,
+      quantityAllocated: allocation.quantityAllocated,
+      status: allocation.status,
+      inventoryAllocation: allocation,
+    },
+  });
+}
+
+export function buildInventoryPartiallyPickedEvent(
+  allocation: InventoryAllocation,
+  previousStatus: InventoryAllocationStatus,
+): DomainEvent<InventoryPartiallyPickedPayload> {
+  return createDomainEvent({
+    eventType: "inventory.partially-picked",
+    aggregateType: "inventory_allocation",
+    aggregateId: allocation.id,
+    storeId: allocation.storeId,
+    payload: {
+      inventoryAllocationId: allocation.id,
+      pickListItemId: allocation.pickListItemId,
+      inventoryItemId: allocation.inventoryItemId,
+      previousStatus,
+      status: "partially_picked",
+      quantityPicked: allocation.quantityPicked,
+      quantityAllocated: allocation.quantityAllocated,
+      inventoryAllocation: allocation,
+    },
+  });
+}
+
+export function buildInventoryPickedEvent(
+  allocation: InventoryAllocation,
+  previousStatus: InventoryAllocationStatus,
+): DomainEvent<InventoryPickedPayload> {
+  return createDomainEvent({
+    eventType: "inventory.picked",
+    aggregateType: "inventory_allocation",
+    aggregateId: allocation.id,
+    storeId: allocation.storeId,
+    payload: {
+      inventoryAllocationId: allocation.id,
+      pickListItemId: allocation.pickListItemId,
+      inventoryItemId: allocation.inventoryItemId,
+      previousStatus,
+      status: "picked",
+      quantityPicked: allocation.quantityPicked,
+      quantityAllocated: allocation.quantityAllocated,
+      inventoryAllocation: allocation,
+    },
+  });
+}
+
+export function buildInventoryShortageReportedEvent(
+  allocation: InventoryAllocation,
+  previousStatus: InventoryAllocationStatus,
+): DomainEvent<InventoryShortageReportedPayload> {
+  return createDomainEvent({
+    eventType: "inventory.shortage-reported",
+    aggregateType: "inventory_allocation",
+    aggregateId: allocation.id,
+    storeId: allocation.storeId,
+    payload: {
+      inventoryAllocationId: allocation.id,
+      pickListItemId: allocation.pickListItemId,
+      inventoryItemId: allocation.inventoryItemId,
+      previousStatus,
+      status: "shortage",
+      shortageReason: allocation.shortageReason ?? "",
+      quantityPicked: allocation.quantityPicked,
+      quantityAllocated: allocation.quantityAllocated,
+      inventoryAllocation: allocation,
     },
   });
 }
