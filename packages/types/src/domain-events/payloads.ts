@@ -54,6 +54,11 @@ import type {
 import type { ReplenishmentRecommendationStatus } from "../replenishment/replenishment-recommendation-status";
 import type { AcceptReplenishmentRecommendationResult } from "../replenishment/accept-replenishment-result";
 import type { IntegrityCheckResult } from "../operations/integrity";
+import type {
+  Phase3ReadinessReport,
+  Phase3ValidationResult,
+  ReadinessStatus,
+} from "../operations/readiness";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -921,6 +926,21 @@ export interface InventoryIntegrityCheckedPayload {
   readonly valid: boolean;
   readonly issueCount: number;
   readonly result: IntegrityCheckResult;
+}
+
+export interface OperationsPhase3ValidationCompletedPayload {
+  readonly storeId: string;
+  readonly valid: boolean;
+  readonly overallStatus: ReadinessStatus;
+  readonly issueCount: number;
+  readonly result: Phase3ValidationResult;
+}
+
+export interface OperationsReadinessGeneratedPayload {
+  readonly storeId: string;
+  readonly overallStatus: ReadinessStatus;
+  readonly issueCount: number;
+  readonly report: Phase3ReadinessReport;
 }
 
 export interface ShippingZoneCreatedPayload {

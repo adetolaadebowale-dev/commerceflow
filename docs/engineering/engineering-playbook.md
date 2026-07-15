@@ -20,6 +20,8 @@ CommerceFlow is an enterprise-grade **headless ecommerce platform** built as a p
 
 Identity, Customer, Catalogue, Inventory, Shopping, Checkout, Orders, Payments, Promotions, Reviews, Notifications, Analytics, Platform Administration.
 
+**Phase 3 — Shipping & Fulfillment Operations** (Sprints 8.2–8.9): Suppliers, Purchase Orders, Warehouses, Warehouse Transfers, Replenishment, Reservations, Pick Lists, Inventory Allocations, Shipment Packages, Shipments, Shipment Tracking, Warehouse Fulfillment, Returns, Inventory Adjustments, Cycle Counts, and the cross-domain Operations orchestration layer. See [Phase 3 Operational Readiness](../architecture/phase3-operational-readiness.md) and [ADR 0034](../adr/0034-phase3-operational-readiness.md).
+
 ### Principles
 
 - Business logic belongs in the backend.

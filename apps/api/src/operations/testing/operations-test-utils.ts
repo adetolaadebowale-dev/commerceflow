@@ -24,6 +24,7 @@ import { MemoryWarehouseTransferRepository } from "@/warehouse-transfers/reposit
 import { WarehouseTransferService } from "@/warehouse-transfers/services/warehouse-transfer.service";
 import { StaticOperationsContextProvider } from "../providers/static-operations-context.provider";
 import { OperationalIntegrityService } from "../services/operational-integrity.service";
+import { Phase3ReadinessService } from "../services/phase3-readiness.service";
 
 export {
   seedPackedShipmentWithAllocations,
@@ -141,6 +142,10 @@ export function createMemoryOperationsModule(
     contextProvider,
     domainEventPublisher: publisher,
   });
+  const phase3ReadinessService = new Phase3ReadinessService({
+    contextProvider,
+    domainEventPublisher: publisher,
+  });
   const auditService = new AuditService({ auditLogRepository });
 
   return {
@@ -162,6 +167,7 @@ export function createMemoryOperationsModule(
     auditService,
     contextProvider,
     operationalIntegrityService,
+    phase3ReadinessService,
     dispatcher: "dispatcher" in eventing ? eventing.dispatcher : undefined,
     domainEventPublisher: publisher,
   };

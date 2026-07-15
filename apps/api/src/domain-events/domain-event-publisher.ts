@@ -66,6 +66,8 @@ import {
   buildReplenishmentRecommendationAcceptedEvent,
   buildReplenishmentRecommendationDismissedEvent,
   buildOperationsIntegrityCheckedEvent,
+  buildOperationsPhase3ValidationCompletedEvent,
+  buildOperationsReadinessGeneratedEvent,
   buildWarehouseIntegrityCheckedEvent,
   buildInventoryIntegrityCheckedEvent,
   buildShipmentCreatedEvent,
@@ -150,6 +152,8 @@ import type {
   ReplenishmentRecommendation,
   AcceptReplenishmentRecommendationResult,
   IntegrityCheckResult,
+  Phase3ReadinessReport,
+  Phase3ValidationResult,
   ShippingZone,
   ShippingMethod,
 } from "@commerceflow/types";
@@ -703,6 +707,20 @@ export class DomainEventPublisher {
     result: IntegrityCheckResult,
   ): void {
     this.dispatch(buildInventoryIntegrityCheckedEvent(storeId, result));
+  }
+
+  publishOperationsPhase3ValidationCompleted(
+    storeId: string,
+    result: Phase3ValidationResult,
+  ): void {
+    this.dispatch(buildOperationsPhase3ValidationCompletedEvent(storeId, result));
+  }
+
+  publishOperationsReadinessGenerated(
+    storeId: string,
+    report: Phase3ReadinessReport,
+  ): void {
+    this.dispatch(buildOperationsReadinessGeneratedEvent(storeId, report));
   }
 
   publishShippingZoneCreated(shippingZone: ShippingZone): void {

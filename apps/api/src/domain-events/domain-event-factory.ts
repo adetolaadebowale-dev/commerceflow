@@ -101,6 +101,10 @@ import type {
   OperationsIntegrityCheckedPayload,
   WarehouseIntegrityCheckedPayload,
   InventoryIntegrityCheckedPayload,
+  OperationsPhase3ValidationCompletedPayload,
+  OperationsReadinessGeneratedPayload,
+  Phase3ReadinessReport,
+  Phase3ValidationResult,
   Shipment,
   ShipmentStatus,
   ShipmentCreatedPayload,
@@ -1480,6 +1484,43 @@ export function buildInventoryIntegrityCheckedEvent(
       valid: result.valid,
       issueCount: result.issues.length,
       result,
+    },
+  });
+}
+
+export function buildOperationsPhase3ValidationCompletedEvent(
+  storeId: string,
+  result: Phase3ValidationResult,
+): DomainEvent<OperationsPhase3ValidationCompletedPayload> {
+  return createDomainEvent({
+    eventType: "operations.phase3.validation.completed",
+    aggregateType: "operations",
+    aggregateId: storeId,
+    storeId,
+    payload: {
+      storeId,
+      valid: result.valid,
+      overallStatus: result.overallStatus,
+      issueCount: result.issues.length,
+      result,
+    },
+  });
+}
+
+export function buildOperationsReadinessGeneratedEvent(
+  storeId: string,
+  report: Phase3ReadinessReport,
+): DomainEvent<OperationsReadinessGeneratedPayload> {
+  return createDomainEvent({
+    eventType: "operations.readiness.generated",
+    aggregateType: "operations",
+    aggregateId: storeId,
+    storeId,
+    payload: {
+      storeId,
+      overallStatus: report.overallStatus,
+      issueCount: report.validation.issues.length,
+      report,
     },
   });
 }

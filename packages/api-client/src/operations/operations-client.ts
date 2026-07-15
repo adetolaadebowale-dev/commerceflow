@@ -2,10 +2,12 @@ import type {
   GetFulfillmentDashboardResponse,
   GetInventoryHealthSummaryResponse,
   GetProcurementDashboardResponse,
+  GetReadinessReportResponse,
   GetWarehouseOperationalSummaryResponse,
   OperationsStoreScopedParams,
   RunIntegrityCheckResponse,
   RunInventoryValidationResponse,
+  RunPhase3ValidationResponse,
   RunWarehouseValidationResponse,
 } from "./contracts";
 import type { ApiClientConfig } from "../http/request";
@@ -88,6 +90,27 @@ export function createOperationsClient(config: ApiClientConfig) {
       return apiRequest(config, {
         method: "POST",
         path: "/api/operations/inventory-validation",
+        body: params,
+        accessToken: config.getAccessToken?.(),
+      });
+    },
+
+    getReadinessReport(
+      params: OperationsStoreScopedParams,
+    ): Promise<GetReadinessReportResponse> {
+      return apiRequest(config, {
+        method: "GET",
+        path: `/api/operations/readiness-report${toQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      });
+    },
+
+    runPhase3Validation(
+      params: OperationsStoreScopedParams,
+    ): Promise<RunPhase3ValidationResponse> {
+      return apiRequest(config, {
+        method: "POST",
+        path: "/api/operations/run-phase3-validation",
         body: params,
         accessToken: config.getAccessToken?.(),
       });

@@ -99,6 +99,8 @@ export const DOMAIN_EVENT_TYPES = [
   "operations.integrity.checked",
   "warehouse.integrity.checked",
   "inventory.integrity.checked",
+  "operations.phase3.validation.completed",
+  "operations.readiness.generated",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

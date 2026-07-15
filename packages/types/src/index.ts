@@ -173,7 +173,10 @@ export {
   type IntegrityCheckResult,
   type IntegrityIssue,
   type InventoryHealthSummary,
+  type Phase3ReadinessReport,
+  type Phase3ValidationResult,
   type ProcurementDashboard,
+  type ReadinessStatus,
   type StatusCountSummary,
   type WarehouseOperationalSummary,
 } from "./operations";
@@ -313,4 +316,6 @@ export {
   type OperationsIntegrityCheckedPayload,
   type WarehouseIntegrityCheckedPayload,
   type InventoryIntegrityCheckedPayload,
+  type OperationsPhase3ValidationCompletedPayload,
+  type OperationsReadinessGeneratedPayload,
 } from "./domain-events";

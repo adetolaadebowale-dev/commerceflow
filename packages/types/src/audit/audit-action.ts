@@ -35,6 +35,8 @@ export const AUDIT_ACTIONS = [
   "integrity_check",
   "warehouse_validation",
   "inventory_validation",
+  "phase3_validation",
+  "readiness_report",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
