@@ -237,6 +237,16 @@ export {
   type NotificationClient,
 } from "./notifications/notification-client";
 export type {
+  CreateJobRequest,
+  CreateJobResponse,
+  GetJobResponse,
+  JobStoreScopedParams,
+  ListJobsParams,
+  ListJobsResponse,
+  RunJobResponse,
+} from "./jobs/contracts";
+export { createJobsClient, type JobsClient } from "./jobs/jobs-client";
+export type {
   ActivateWarehouseResponse,
   CreateWarehouseRequest,
   CreateWarehouseResponse,

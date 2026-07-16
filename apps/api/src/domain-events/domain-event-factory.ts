@@ -72,6 +72,11 @@ import type {
   SmsFailedPayload,
   InAppNotificationReadPayload,
   InAppNotificationUnreadPayload,
+  Job,
+  JobCreatedPayload,
+  JobStartedPayload,
+  JobCompletedPayload,
+  JobFailedPayload,
   Warehouse,
   WarehouseStatus,
   WarehouseCreatedPayload,
@@ -2549,6 +2554,73 @@ export function buildInAppNotificationUnreadEvent(
       notificationId: notification.id,
       storeId: notification.storeId,
       userId: notification.userId ?? "",
+    },
+  });
+}
+
+export function buildJobCreatedEvent(job: Job): DomainEvent<JobCreatedPayload> {
+  return createDomainEvent({
+    eventType: "job.created",
+    aggregateType: "job",
+    aggregateId: job.id,
+    storeId: job.storeId,
+    payload: {
+      jobId: job.id,
+      storeId: job.storeId,
+      type: job.type,
+      scheduledFor: job.scheduledFor,
+      job,
+    },
+  });
+}
+
+export function buildJobStartedEvent(job: Job): DomainEvent<JobStartedPayload> {
+  return createDomainEvent({
+    eventType: "job.started",
+    aggregateType: "job",
+    aggregateId: job.id,
+    storeId: job.storeId,
+    payload: {
+      jobId: job.id,
+      storeId: job.storeId,
+      type: job.type,
+      startedAt: job.startedAt ?? new Date().toISOString(),
+      job,
+    },
+  });
+}
+
+export function buildJobCompletedEvent(
+  job: Job,
+): DomainEvent<JobCompletedPayload> {
+  return createDomainEvent({
+    eventType: "job.completed",
+    aggregateType: "job",
+    aggregateId: job.id,
+    storeId: job.storeId,
+    payload: {
+      jobId: job.id,
+      storeId: job.storeId,
+      type: job.type,
+      completedAt: job.completedAt ?? new Date().toISOString(),
+      job,
+    },
+  });
+}
+
+export function buildJobFailedEvent(job: Job): DomainEvent<JobFailedPayload> {
+  return createDomainEvent({
+    eventType: "job.failed",
+    aggregateType: "job",
+    aggregateId: job.id,
+    storeId: job.storeId,
+    payload: {
+      jobId: job.id,
+      storeId: job.storeId,
+      type: job.type,
+      completedAt: job.completedAt ?? new Date().toISOString(),
+      failureReason: job.failureReason,
+      job,
     },
   });
 }

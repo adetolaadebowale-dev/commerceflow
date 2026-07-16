@@ -187,6 +187,13 @@ export {
   type InAppNotificationQuery,
 } from "./notifications/in-app";
 export {
+  createJobSchema,
+  listJobsQuerySchema,
+  jobIdQuerySchema,
+  type CreateJobInput,
+  type ListJobsQuery,
+} from "./jobs";
+export {
   applyCartPromotionSchema,
   cartPromotionActionSchema,
   type ApplyCartPromotionInput,

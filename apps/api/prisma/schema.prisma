@@ -140,6 +140,14 @@ enum NotificationStatus {
   failed
 }
 
+/// Mirrors JobStatus from @commerceflow/types.
+enum JobStatus {
+  pending
+  running
+  completed
+  failed
+}
+
 /// Mirrors ShipmentStatus from @commerceflow/types.
 enum ShipmentStatus {
   pending
@@ -388,6 +396,7 @@ model Store {
   replenishmentRules     ReplenishmentRule[]
   replenishmentRecommendations ReplenishmentRecommendation[]
   notifications                Notification[]
+  jobs                         Job[]
 
   @@unique([organizationId, slug])
   @@index([organizationId])
@@ -1646,4 +1655,26 @@ model Notification {
   @@index([createdAt])
   @@index([storeId, userId, channel, readAt])
   @@map("notifications")
+}
+
+/// Store-scoped background job record for deferred manual execution.
+model Job {
+  id            String    @id @default(uuid()) @db.Uuid
+  storeId       String    @map("store_id") @db.Uuid
+  store         Store     @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  type          String
+  status        JobStatus @default(pending)
+  payload       Json
+  scheduledFor  DateTime  @map("scheduled_for")
+  startedAt     DateTime? @map("started_at")
+  completedAt   DateTime? @map("completed_at")
+  failureReason String?   @map("failure_reason")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  @@index([storeId])
+  @@index([storeId, status])
+  @@index([storeId, scheduledFor])
+  @@index([createdAt])
+  @@map("jobs")
 }

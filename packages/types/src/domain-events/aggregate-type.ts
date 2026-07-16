@@ -41,6 +41,7 @@ export const DOMAIN_AGGREGATE_TYPES = [
   "email_notification",
   "sms_notification",
   "in_app_notification",
+  "job",
 ] as const;
 
 export type DomainAggregateType = (typeof DOMAIN_AGGREGATE_TYPES)[number];

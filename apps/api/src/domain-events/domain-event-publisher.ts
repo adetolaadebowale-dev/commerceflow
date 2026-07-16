@@ -120,6 +120,10 @@ import {
   buildSmsFailedEvent,
   buildInAppNotificationReadEvent,
   buildInAppNotificationUnreadEvent,
+  buildJobCreatedEvent,
+  buildJobStartedEvent,
+  buildJobCompletedEvent,
+  buildJobFailedEvent,
 } from "./domain-event-factory";
 import type {
   Cart,
@@ -143,6 +147,7 @@ import type {
   TaxRate,
   TaxRateStatus,
   Notification,
+  Job,
   EmailMessage,
   EmailSendResult,
   SmsMessage,
@@ -463,6 +468,22 @@ export class DomainEventPublisher {
 
   publishInAppNotificationUnread(notification: Notification): void {
     this.dispatch(buildInAppNotificationUnreadEvent(notification));
+  }
+
+  publishJobCreated(job: Job): void {
+    this.dispatch(buildJobCreatedEvent(job));
+  }
+
+  publishJobStarted(job: Job): void {
+    this.dispatch(buildJobStartedEvent(job));
+  }
+
+  publishJobCompleted(job: Job): void {
+    this.dispatch(buildJobCompletedEvent(job));
+  }
+
+  publishJobFailed(job: Job): void {
+    this.dispatch(buildJobFailedEvent(job));
   }
 
   publishWarehouseCreated(warehouse: Warehouse): void {

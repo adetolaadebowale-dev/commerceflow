@@ -101,6 +101,21 @@ describe("StorePermissionPolicy", () => {
     );
   });
 
+  it("grants staff jobs read but not write access", () => {
+    expect(StorePermissionPolicy.hasPermission("staff", "jobs:read")).toBe(
+      true,
+    );
+    expect(StorePermissionPolicy.hasPermission("staff", "jobs:write")).toBe(
+      false,
+    );
+  });
+
+  it("grants managers jobs write access", () => {
+    expect(StorePermissionPolicy.hasPermission("manager", "jobs:write")).toBe(
+      true,
+    );
+  });
+
   it("grants staff customer read but not write access", () => {
     expect(StorePermissionPolicy.hasPermission("staff", "customers:read")).toBe(
       true,

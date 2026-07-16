@@ -118,6 +118,10 @@ export const DOMAIN_EVENT_TYPES = [
   "sms.failed",
   "in-app-notification.read",
   "in-app-notification.unread",
+  "job.created",
+  "job.started",
+  "job.completed",
+  "job.failed",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

@@ -60,6 +60,7 @@ export const AUDIT_ACTIONS = [
   "send",
   "read",
   "unread",
+  "run",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];

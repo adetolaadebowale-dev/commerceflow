@@ -15,6 +15,7 @@ import type { RefundStatus } from "../refunds/refund-status";
 import type { Promotion } from "../promotions/promotion";
 import type { TaxRate } from "../tax-rates/tax-rate";
 import type { Notification } from "../notifications/notification";
+import type { Job } from "../jobs/job";
 import type { EmailMessage } from "../notifications/email";
 import type { SmsMessage } from "../notifications/sms";
 import type { Shipment } from "../shipments/shipment";
@@ -1201,4 +1202,37 @@ export interface InAppNotificationUnreadPayload {
   readonly notificationId: string;
   readonly storeId: string;
   readonly userId: string;
+}
+
+export interface JobCreatedPayload {
+  readonly jobId: string;
+  readonly storeId: string;
+  readonly type: Job["type"];
+  readonly scheduledFor: string;
+  readonly job: Job;
+}
+
+export interface JobStartedPayload {
+  readonly jobId: string;
+  readonly storeId: string;
+  readonly type: Job["type"];
+  readonly startedAt: string;
+  readonly job: Job;
+}
+
+export interface JobCompletedPayload {
+  readonly jobId: string;
+  readonly storeId: string;
+  readonly type: Job["type"];
+  readonly completedAt: string;
+  readonly job: Job;
+}
+
+export interface JobFailedPayload {
+  readonly jobId: string;
+  readonly storeId: string;
+  readonly type: Job["type"];
+  readonly completedAt: string;
+  readonly failureReason?: string;
+  readonly job: Job;
 }
