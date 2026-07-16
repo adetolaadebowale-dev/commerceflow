@@ -130,6 +130,13 @@ import type {
   FinancialSummary,
   InvoiceReport,
   PaymentReport,
+  ProcurementReportGeneratedPayload,
+  ProcurementReportKind,
+  ProcurementSummary,
+  PurchaseOrderAnalytics,
+  ReplenishmentAnalytics,
+  SupplierAnalytics,
+  WarehouseAnalytics,
   RefundReport,
   RevenueTimelineReport,
   Shipment,
@@ -1670,6 +1677,31 @@ export function buildFinancialReportGeneratedEvent(
   return createDomainEvent({
     eventType: "reports.financial.generated",
     aggregateType: "financial_report",
+    aggregateId: storeId,
+    storeId,
+    payload: {
+      storeId,
+      reportKind,
+      rowCount,
+      report,
+    },
+  });
+}
+
+export function buildProcurementReportGeneratedEvent(
+  storeId: string,
+  reportKind: ProcurementReportKind,
+  rowCount: number,
+  report:
+    | ProcurementSummary
+    | PurchaseOrderAnalytics
+    | SupplierAnalytics
+    | WarehouseAnalytics
+    | ReplenishmentAnalytics,
+): DomainEvent<ProcurementReportGeneratedPayload> {
+  return createDomainEvent({
+    eventType: "reports.procurement.generated",
+    aggregateType: "procurement_report",
     aggregateId: storeId,
     storeId,
     payload: {

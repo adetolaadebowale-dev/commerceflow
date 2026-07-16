@@ -69,6 +69,35 @@ export type GetPaymentReportResponse = ApiSuccessResponse<PaymentReport>;
 export type GetInvoiceReportResponse = ApiSuccessResponse<InvoiceReport>;
 export type GetRefundReportResponse = ApiSuccessResponse<RefundReport>;
 
+import type {
+  ProcurementSummary,
+  PurchaseOrderAnalytics,
+  ReplenishmentAnalytics,
+  SupplierAnalytics,
+  WarehouseAnalytics,
+} from "@commerceflow/types";
+import type {
+  ProcurementSummaryQuery,
+  PurchaseOrderAnalyticsQuery,
+  ReplenishmentAnalyticsQuery,
+  SupplierAnalyticsQuery,
+  WarehouseAnalyticsQuery,
+} from "@commerceflow/validation";
+
+export type ProcurementSummaryParams = ProcurementSummaryQuery;
+export type PurchaseOrderAnalyticsParams = PurchaseOrderAnalyticsQuery;
+export type SupplierAnalyticsParams = SupplierAnalyticsQuery;
+export type WarehouseAnalyticsParams = WarehouseAnalyticsQuery;
+export type ReplenishmentAnalyticsParams = ReplenishmentAnalyticsQuery;
+
+export type GetProcurementSummaryResponse = ApiSuccessResponse<ProcurementSummary>;
+export type GetPurchaseOrderAnalyticsResponse =
+  ApiSuccessResponse<PurchaseOrderAnalytics>;
+export type GetSupplierAnalyticsResponse = ApiSuccessResponse<SupplierAnalytics>;
+export type GetWarehouseAnalyticsResponse = ApiSuccessResponse<WarehouseAnalytics>;
+export type GetReplenishmentAnalyticsResponse =
+  ApiSuccessResponse<ReplenishmentAnalytics>;
+
 export type ReportHealthParams = import("@commerceflow/validation").ReportHealthQuery;
 export type ReportDashboardParams =
   import("@commerceflow/validation").ReportDashboardQuery;

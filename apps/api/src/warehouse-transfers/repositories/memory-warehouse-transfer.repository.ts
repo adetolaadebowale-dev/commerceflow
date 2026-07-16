@@ -387,4 +387,12 @@ export class MemoryWarehouseTransferRepository
 
     return toWarehouseTransfer(existing);
   }
+
+  /** Test helper: insert a fully-formed warehouse transfer record. */
+  seedWarehouseTransfer(transfer: WarehouseTransfer): void {
+    this.transfersById.set(transfer.id, {
+      ...transfer,
+      items: transfer.items.map((item) => ({ ...item })),
+    });
+  }
 }

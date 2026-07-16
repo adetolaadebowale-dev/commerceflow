@@ -70,3 +70,23 @@ export type {
   ShippingRevenueSummary,
   TaxSummary,
 } from "./financial";
+export type {
+  FulfillmentAnalytics,
+  ProcurementMetrics,
+  ProcurementSummary,
+  PurchaseOrderAnalytics,
+  PurchaseOrderAnalyticsRow,
+  PurchaseOrderAnalyticsSummary,
+  PurchaseOrderStatusSummary,
+  ReceivingAnalytics,
+  ReplenishmentAnalytics,
+  ReplenishmentAnalyticsRow,
+  ReplenishmentMetrics,
+  SupplierAnalytics,
+  SupplierAnalyticsRow,
+  SupplierAnalyticsSummary,
+  TransferAnalytics,
+  WarehouseAnalytics,
+  WarehouseAnalyticsRow,
+  WarehouseAnalyticsSummary,
+} from "./procurement";

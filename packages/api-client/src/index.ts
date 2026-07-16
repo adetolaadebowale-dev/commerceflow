@@ -362,6 +362,16 @@ export type {
   GetPaymentReportResponse,
   GetInvoiceReportResponse,
   GetRefundReportResponse,
+  ProcurementSummaryParams,
+  PurchaseOrderAnalyticsParams,
+  SupplierAnalyticsParams,
+  WarehouseAnalyticsParams,
+  ReplenishmentAnalyticsParams,
+  GetProcurementSummaryResponse,
+  GetPurchaseOrderAnalyticsResponse,
+  GetSupplierAnalyticsResponse,
+  GetWarehouseAnalyticsResponse,
+  GetReplenishmentAnalyticsResponse,
 } from "./reports/contracts";
 export {
   createReportsClient,

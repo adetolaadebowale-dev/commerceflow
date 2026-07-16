@@ -110,6 +110,8 @@ export type {
   CustomerReportKind,
   FinancialReportGeneratedPayload,
   FinancialReportKind,
+  ProcurementReportGeneratedPayload,
+  ProcurementReportKind,
   ShippingZoneCreatedPayload,
   ShippingZoneUpdatedPayload,
   ShippingZoneDeletedPayload,

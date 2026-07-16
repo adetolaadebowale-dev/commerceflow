@@ -84,6 +84,13 @@ import type {
   RefundReport,
   RevenueTimelineReport,
 } from "../reports/financial";
+import type {
+  ProcurementSummary,
+  PurchaseOrderAnalytics,
+  ReplenishmentAnalytics,
+  SupplierAnalytics,
+  WarehouseAnalytics,
+} from "../reports/procurement";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -1042,6 +1049,25 @@ export interface FinancialReportGeneratedPayload {
     | PaymentReport
     | InvoiceReport
     | RefundReport;
+}
+
+export type ProcurementReportKind =
+  | "summary"
+  | "purchase_orders"
+  | "suppliers"
+  | "warehouses"
+  | "replenishment";
+
+export interface ProcurementReportGeneratedPayload {
+  readonly storeId: string;
+  readonly reportKind: ProcurementReportKind;
+  readonly rowCount: number;
+  readonly report:
+    | ProcurementSummary
+    | PurchaseOrderAnalytics
+    | SupplierAnalytics
+    | WarehouseAnalytics
+    | ReplenishmentAnalytics;
 }
 
 export interface ShippingZoneCreatedPayload {

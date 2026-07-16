@@ -74,6 +74,7 @@ import {
   buildInventoryReportGeneratedEvent,
   buildCustomerReportGeneratedEvent,
   buildFinancialReportGeneratedEvent,
+  buildProcurementReportGeneratedEvent,
   buildWarehouseIntegrityCheckedEvent,
   buildInventoryIntegrityCheckedEvent,
   buildShipmentCreatedEvent,
@@ -181,6 +182,12 @@ import type {
   RefundReport,
   RevenueTimelineReport,
   FinancialReportKind,
+  ProcurementSummary,
+  PurchaseOrderAnalytics,
+  ReplenishmentAnalytics,
+  SupplierAnalytics,
+  WarehouseAnalytics,
+  ProcurementReportKind,
   ShippingZone,
   ShippingMethod,
 } from "@commerceflow/types";
@@ -818,6 +825,22 @@ export class DomainEventPublisher {
   ): void {
     this.dispatch(
       buildFinancialReportGeneratedEvent(storeId, reportKind, rowCount, report),
+    );
+  }
+
+  publishProcurementReportGenerated(
+    storeId: string,
+    reportKind: ProcurementReportKind,
+    rowCount: number,
+    report:
+      | ProcurementSummary
+      | PurchaseOrderAnalytics
+      | SupplierAnalytics
+      | WarehouseAnalytics
+      | ReplenishmentAnalytics,
+  ): void {
+    this.dispatch(
+      buildProcurementReportGeneratedEvent(storeId, reportKind, rowCount, report),
     );
   }
 

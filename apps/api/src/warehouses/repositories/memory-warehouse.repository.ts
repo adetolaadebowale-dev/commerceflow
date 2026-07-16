@@ -279,4 +279,9 @@ export class MemoryWarehouseRepository implements WarehouseRepository {
       }
     }
   }
+
+  /** Test helper: insert a fully-formed warehouse record. */
+  seedWarehouse(warehouse: Warehouse): void {
+    this.warehousesById.set(warehouse.id, warehouse);
+  }
 }

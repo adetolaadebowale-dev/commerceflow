@@ -31,6 +31,11 @@ export class MemoryInventoryItemRepository implements InventoryItemRepository {
     this.seedProductVariant(item.storeId, item.productVariantId);
   }
 
+  /** Test helper: insert a stock movement ledger entry. */
+  seedStockMovement(movement: StockMovement): void {
+    this.movementsById.set(movement.id, movement);
+  }
+
   /** Simulates a mid-transaction failure for rollback tests. */
   setTransactionFailure(error: Error | null): void {
     this.transactionFailure = error;

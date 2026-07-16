@@ -26,6 +26,16 @@ import type {
   GetPaymentReportResponse,
   GetInvoiceReportResponse,
   GetRefundReportResponse,
+  ProcurementSummaryParams,
+  PurchaseOrderAnalyticsParams,
+  SupplierAnalyticsParams,
+  WarehouseAnalyticsParams,
+  ReplenishmentAnalyticsParams,
+  GetProcurementSummaryResponse,
+  GetPurchaseOrderAnalyticsResponse,
+  GetSupplierAnalyticsResponse,
+  GetWarehouseAnalyticsResponse,
+  GetReplenishmentAnalyticsResponse,
   ReportDashboardParams,
   ReportHealthParams,
   SalesOrderReportParams,
@@ -344,6 +354,94 @@ function toRefundReportQueryString(params: RefundReportParams): string {
   return query ? `?${query}` : "";
 }
 
+function appendProcurementFilterParams(
+  searchParams: URLSearchParams,
+  params: {
+    storeId: string;
+    fromDate?: string;
+    toDate?: string;
+    timezone?: string;
+    currency?: string;
+    purchaseOrderStatus?: string;
+    warehouseIds?: readonly string[];
+    supplierIds?: readonly string[];
+  },
+): void {
+  searchParams.set("storeId", params.storeId);
+  appendQueryParam(searchParams, "fromDate", params.fromDate);
+  appendQueryParam(searchParams, "toDate", params.toDate);
+  appendQueryParam(searchParams, "timezone", params.timezone);
+  appendQueryParam(searchParams, "currency", params.currency);
+  appendQueryParam(searchParams, "purchaseOrderStatus", params.purchaseOrderStatus);
+
+  for (const warehouseId of params.warehouseIds ?? []) {
+    searchParams.append("warehouseIds", warehouseId);
+  }
+
+  for (const supplierId of params.supplierIds ?? []) {
+    searchParams.append("supplierIds", supplierId);
+  }
+}
+
+function toProcurementSummaryQueryString(
+  params: ProcurementSummaryParams,
+): string {
+  const searchParams = new URLSearchParams();
+  appendProcurementFilterParams(searchParams, params);
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
+}
+
+function toPurchaseOrderAnalyticsQueryString(
+  params: PurchaseOrderAnalyticsParams,
+): string {
+  const searchParams = new URLSearchParams();
+  appendProcurementFilterParams(searchParams, params);
+  appendQueryParam(searchParams, "page", params.page);
+  appendQueryParam(searchParams, "limit", params.limit);
+  appendQueryParam(searchParams, "sortBy", params.sortBy);
+  appendQueryParam(searchParams, "sortDirection", params.sortDirection);
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
+}
+
+function toSupplierAnalyticsQueryString(params: SupplierAnalyticsParams): string {
+  const searchParams = new URLSearchParams();
+  appendProcurementFilterParams(searchParams, params);
+  appendQueryParam(searchParams, "page", params.page);
+  appendQueryParam(searchParams, "limit", params.limit);
+  appendQueryParam(searchParams, "sortBy", params.sortBy);
+  appendQueryParam(searchParams, "sortDirection", params.sortDirection);
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
+}
+
+function toWarehouseAnalyticsQueryString(
+  params: WarehouseAnalyticsParams,
+): string {
+  const searchParams = new URLSearchParams();
+  appendProcurementFilterParams(searchParams, params);
+  appendQueryParam(searchParams, "page", params.page);
+  appendQueryParam(searchParams, "limit", params.limit);
+  appendQueryParam(searchParams, "sortBy", params.sortBy);
+  appendQueryParam(searchParams, "sortDirection", params.sortDirection);
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
+}
+
+function toReplenishmentAnalyticsQueryString(
+  params: ReplenishmentAnalyticsParams,
+): string {
+  const searchParams = new URLSearchParams();
+  appendProcurementFilterParams(searchParams, params);
+  appendQueryParam(searchParams, "page", params.page);
+  appendQueryParam(searchParams, "limit", params.limit);
+  appendQueryParam(searchParams, "sortBy", params.sortBy);
+  appendQueryParam(searchParams, "sortDirection", params.sortDirection);
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
+}
+
 export function createReportsClient(config: ApiClientConfig) {
   return {
     getHealth(params: ReportHealthParams): Promise<GetReportHealthResponse> {
@@ -520,6 +618,56 @@ export function createReportsClient(config: ApiClientConfig) {
       return apiRequest(config, {
         method: "GET",
         path: `/api/reports/financial/refunds${toRefundReportQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      });
+    },
+
+    getProcurementSummary(
+      params: ProcurementSummaryParams,
+    ): Promise<GetProcurementSummaryResponse> {
+      return apiRequest(config, {
+        method: "GET",
+        path: `/api/reports/procurement/summary${toProcurementSummaryQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      });
+    },
+
+    getPurchaseOrderAnalytics(
+      params: PurchaseOrderAnalyticsParams,
+    ): Promise<GetPurchaseOrderAnalyticsResponse> {
+      return apiRequest(config, {
+        method: "GET",
+        path: `/api/reports/procurement/purchase-orders${toPurchaseOrderAnalyticsQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      });
+    },
+
+    getSupplierAnalytics(
+      params: SupplierAnalyticsParams,
+    ): Promise<GetSupplierAnalyticsResponse> {
+      return apiRequest(config, {
+        method: "GET",
+        path: `/api/reports/procurement/suppliers${toSupplierAnalyticsQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      });
+    },
+
+    getWarehouseAnalytics(
+      params: WarehouseAnalyticsParams,
+    ): Promise<GetWarehouseAnalyticsResponse> {
+      return apiRequest(config, {
+        method: "GET",
+        path: `/api/reports/procurement/warehouses${toWarehouseAnalyticsQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      });
+    },
+
+    getReplenishmentAnalytics(
+      params: ReplenishmentAnalyticsParams,
+    ): Promise<GetReplenishmentAnalyticsResponse> {
+      return apiRequest(config, {
+        method: "GET",
+        path: `/api/reports/procurement/replenishment${toReplenishmentAnalyticsQueryString(params)}`,
         accessToken: config.getAccessToken?.(),
       });
     },

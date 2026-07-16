@@ -51,6 +51,10 @@ export const AUDIT_ACTIONS = [
   "generate_payments",
   "generate_invoices",
   "generate_refunds",
+  "generate_purchase_orders",
+  "generate_suppliers",
+  "generate_warehouses",
+  "generate_replenishment",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
