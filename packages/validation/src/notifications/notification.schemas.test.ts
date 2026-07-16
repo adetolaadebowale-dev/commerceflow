@@ -12,6 +12,7 @@ describe("notification schemas", () => {
     const parsed = createNotificationSchema.safeParse({
       storeId: validUuid,
       channel: "email",
+      to: { email: "user@example.com" },
       body: "Your order has shipped.",
       subject: "Order update",
     });
@@ -20,6 +21,17 @@ describe("notification schemas", () => {
     if (parsed.success) {
       expect(parsed.data.provider).toBe("console");
     }
+  });
+
+  it("requires recipient for email channel notifications", () => {
+    const parsed = createNotificationSchema.safeParse({
+      storeId: validUuid,
+      channel: "email",
+      body: "Your order has shipped.",
+      subject: "Order update",
+    });
+
+    expect(parsed.success).toBe(false);
   });
 
   it("rejects create payloads without body", () => {

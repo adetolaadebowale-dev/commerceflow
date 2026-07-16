@@ -82,6 +82,12 @@ export {
   type NotificationResult,
   type NotificationSendRequest,
   type NotificationProvider,
+  EMAIL_PROVIDER_TYPES,
+  type EmailRecipient,
+  type EmailMessage,
+  type EmailSendResult,
+  type EmailProviderType,
+  type EmailProvider,
 } from "./notifications";
 export {
   SHIPMENT_CARRIERS,
@@ -389,6 +395,8 @@ export {
   type NotificationCreatedPayload,
   type NotificationSentPayload,
   type NotificationFailedPayload,
+  type EmailSentPayload,
+  type EmailFailedPayload,
   type WarehouseCreatedPayload,
   type WarehouseUpdatedPayload,
   type WarehouseActivatedPayload,

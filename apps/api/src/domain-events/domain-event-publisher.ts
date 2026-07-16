@@ -114,6 +114,8 @@ import {
   buildNotificationCreatedEvent,
   buildNotificationSentEvent,
   buildNotificationFailedEvent,
+  buildEmailSentEvent,
+  buildEmailFailedEvent,
 } from "./domain-event-factory";
 import type {
   Cart,
@@ -137,6 +139,8 @@ import type {
   TaxRate,
   TaxRateStatus,
   Notification,
+  EmailMessage,
+  EmailSendResult,
   Warehouse,
   WarehouseStatus,
   Shipment,
@@ -429,6 +433,14 @@ export class DomainEventPublisher {
     message?: string,
   ): void {
     this.dispatch(buildNotificationFailedEvent(notification, message));
+  }
+
+  publishEmailSent(message: EmailMessage, result: EmailSendResult): void {
+    this.dispatch(buildEmailSentEvent(message, result));
+  }
+
+  publishEmailFailed(message: EmailMessage, result: EmailSendResult): void {
+    this.dispatch(buildEmailFailedEvent(message, result));
   }
 
   publishWarehouseCreated(warehouse: Warehouse): void {

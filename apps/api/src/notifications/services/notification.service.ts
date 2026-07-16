@@ -2,12 +2,14 @@ import type { Notification } from "@commerceflow/types";
 import type {
   CreateNotificationInput,
   ListNotificationsQuery,
+  SendTestEmailNotificationInput,
 } from "@commerceflow/validation";
 
 import {
   getDomainEventPublisher,
   type DomainEventPublisher,
 } from "@/domain-events";
+import { emailService, type EmailService } from "../email/services";
 import { NOTIFICATION_ERROR_CODES, NotificationError } from "../errors";
 import {
   getNotificationProviderFactory,
@@ -17,16 +19,23 @@ import {
   getNotificationRepository,
   type NotificationRepository,
 } from "../repositories";
+import {
+  buildEmailMessageFromNotification,
+  mapEmailSendResultToNotificationResult,
+  toEmailProviderType,
+} from "./notification-email.utils";
 
 export interface NotificationServiceDependencies {
   readonly notificationRepository?: NotificationRepository;
   readonly notificationProviderFactory?: NotificationProviderFactory;
+  readonly emailService?: EmailService;
   readonly domainEventPublisher?: DomainEventPublisher;
 }
 
 export class NotificationService {
   private readonly notificationRepository: NotificationRepository;
   private readonly notificationProviderFactory: NotificationProviderFactory;
+  private readonly emailService: EmailService;
   private readonly domainEventPublisher: DomainEventPublisher;
 
   constructor(dependencies: NotificationServiceDependencies = {}) {
@@ -35,8 +44,23 @@ export class NotificationService {
     this.notificationProviderFactory =
       dependencies.notificationProviderFactory ??
       getNotificationProviderFactory();
+    this.emailService = dependencies.emailService ?? emailService;
     this.domainEventPublisher =
       dependencies.domainEventPublisher ?? getDomainEventPublisher();
+  }
+
+  async sendTestEmailNotification(
+    input: SendTestEmailNotificationInput,
+  ): Promise<Notification> {
+    return this.createNotification({
+      storeId: input.storeId,
+      channel: "email",
+      provider: input.provider,
+      to: input.to,
+      subject: input.subject,
+      body: input.body,
+      metadata: input.metadata,
+    });
   }
 
   async createNotification(input: CreateNotificationInput): Promise<Notification> {
@@ -50,18 +74,10 @@ export class NotificationService {
 
     this.domainEventPublisher.publishNotificationCreated(notification);
 
-    const provider = this.notificationProviderFactory.resolve(input.provider);
-    const sendResult = await provider.send({
-      notificationId: notification.id,
-      storeId: notification.storeId,
-      channel: notification.channel,
-      subject: notification.subject,
-      title: notification.title,
-      body: notification.body,
-      userId: notification.userId,
-      customerId: notification.customerId,
-      metadata: notification.metadata,
-    });
+    const sendResult =
+      notification.channel === "email"
+        ? await this.dispatchEmailNotification(notification, input)
+        : await this.dispatchGenericNotification(notification, input);
 
     if (sendResult.success) {
       try {
@@ -112,6 +128,44 @@ export class NotificationService {
 
   async listNotifications(query: ListNotificationsQuery) {
     return this.notificationRepository.list(query);
+  }
+
+  private async dispatchGenericNotification(
+    notification: Notification,
+    input: CreateNotificationInput,
+  ) {
+    const provider = this.notificationProviderFactory.resolve(input.provider);
+
+    return provider.send({
+      notificationId: notification.id,
+      storeId: notification.storeId,
+      channel: notification.channel,
+      subject: notification.subject,
+      title: notification.title,
+      body: notification.body,
+      userId: notification.userId,
+      customerId: notification.customerId,
+      metadata: notification.metadata,
+    });
+  }
+
+  private async dispatchEmailNotification(
+    notification: Notification,
+    input: CreateNotificationInput,
+  ) {
+    if (!input.to) {
+      return {
+        success: false,
+        message: "Email recipient is required",
+      };
+    }
+
+    const emailResult = await this.emailService.sendEmail(
+      buildEmailMessageFromNotification(notification, input),
+      toEmailProviderType(input.provider),
+    );
+
+    return mapEmailSendResultToNotificationResult(emailResult);
   }
 
   private mapRepositoryError(error: unknown): NotificationError {

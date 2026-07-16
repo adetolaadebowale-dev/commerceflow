@@ -123,4 +123,6 @@ export type {
   NotificationCreatedPayload,
   NotificationSentPayload,
   NotificationFailedPayload,
+  EmailSentPayload,
+  EmailFailedPayload,
 } from "./payloads";

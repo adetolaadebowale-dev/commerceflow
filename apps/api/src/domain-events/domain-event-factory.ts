@@ -62,6 +62,10 @@ import type {
   NotificationCreatedPayload,
   NotificationSentPayload,
   NotificationFailedPayload,
+  EmailMessage,
+  EmailSendResult,
+  EmailSentPayload,
+  EmailFailedPayload,
   Warehouse,
   WarehouseStatus,
   WarehouseCreatedPayload,
@@ -2432,6 +2436,44 @@ export function buildNotificationFailedEvent(
       channel: notification.channel,
       message,
       notification,
+    },
+  });
+}
+
+export function buildEmailSentEvent(
+  message: EmailMessage,
+  result: EmailSendResult,
+): DomainEvent<EmailSentPayload> {
+  return createDomainEvent({
+    eventType: "email.sent",
+    aggregateType: "email_notification",
+    aggregateId: message.notificationId,
+    storeId: message.storeId,
+    payload: {
+      notificationId: message.notificationId,
+      storeId: message.storeId,
+      to: message.to,
+      subject: message.subject,
+      providerReference: result.providerReference,
+    },
+  });
+}
+
+export function buildEmailFailedEvent(
+  message: EmailMessage,
+  result: EmailSendResult,
+): DomainEvent<EmailFailedPayload> {
+  return createDomainEvent({
+    eventType: "email.failed",
+    aggregateType: "email_notification",
+    aggregateId: message.notificationId,
+    storeId: message.storeId,
+    payload: {
+      notificationId: message.notificationId,
+      storeId: message.storeId,
+      to: message.to,
+      subject: message.subject,
+      message: result.message,
     },
   });
 }

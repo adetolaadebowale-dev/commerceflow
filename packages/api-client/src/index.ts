@@ -214,6 +214,10 @@ export type {
   ListNotificationsResponse,
   NotificationStoreScopedParams,
 } from "./notifications/contracts";
+export type {
+  SendTestEmailNotificationRequest,
+  SendTestEmailNotificationResponse,
+} from "./notifications/email/contracts";
 export {
   createNotificationClient,
   type NotificationClient,

@@ -15,6 +15,7 @@ import type { RefundStatus } from "../refunds/refund-status";
 import type { Promotion } from "../promotions/promotion";
 import type { TaxRate } from "../tax-rates/tax-rate";
 import type { Notification } from "../notifications/notification";
+import type { EmailMessage, EmailSendResult } from "../notifications/email";
 import type { Shipment } from "../shipments/shipment";
 import type { ShipmentStatus } from "../shipments/shipment-status";
 import type { ShipmentTrackingEvent } from "../shipments/shipment-tracking-event";
@@ -1156,4 +1157,20 @@ export interface NotificationFailedPayload {
   readonly channel: Notification["channel"];
   readonly message?: string;
   readonly notification: Notification;
+}
+
+export interface EmailSentPayload {
+  readonly notificationId: string;
+  readonly storeId: string;
+  readonly to: EmailMessage["to"];
+  readonly subject: string;
+  readonly providerReference?: string;
+}
+
+export interface EmailFailedPayload {
+  readonly notificationId: string;
+  readonly storeId: string;
+  readonly to: EmailMessage["to"];
+  readonly subject: string;
+  readonly message?: string;
 }

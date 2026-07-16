@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { EMAIL_SIMULATE_FAILURE_KEY } from "../email/providers/console-email.provider";
 import { NOTIFICATION_SIMULATE_FAILURE_KEY } from "../providers/console-notification.provider";
 import { NOTIFICATION_ERROR_CODES } from "../errors";
 import {
@@ -10,7 +11,7 @@ import {
 } from "../testing/notification-test-utils";
 
 describe("NotificationService", () => {
-  it("creates and sends a notification via the memory provider", async () => {
+  it("creates and sends an email notification via the email provider", async () => {
     const module = createMemoryNotificationModule();
     const notification = await module.notificationService.createNotification(
       validNotificationInput(),
@@ -18,13 +19,28 @@ describe("NotificationService", () => {
 
     expect(notification.status).toBe("sent");
     expect(notification.sentAt).toBeDefined();
-    expect(module.memoryProvider.getDeliveries()).toHaveLength(1);
+    expect(module.memoryEmailProvider.getDeliveries()).toHaveLength(1);
+    expect(module.memoryProvider.getDeliveries()).toHaveLength(0);
   });
 
-  it("marks notification as failed when provider returns failure", async () => {
+  it("marks email notifications as failed when the email provider returns failure", async () => {
     const module = createMemoryNotificationModule();
     const notification = await module.notificationService.createNotification(
       validNotificationInput({
+        metadata: { [EMAIL_SIMULATE_FAILURE_KEY]: true },
+      }),
+    );
+
+    expect(notification.status).toBe("failed");
+    expect(notification.sentAt).toBeUndefined();
+  });
+
+  it("marks non-email notifications as failed when the generic provider returns failure", async () => {
+    const module = createMemoryNotificationModule();
+    const notification = await module.notificationService.createNotification(
+      validNotificationInput({
+        channel: "in_app",
+        to: undefined,
         metadata: { [NOTIFICATION_SIMULATE_FAILURE_KEY]: true },
       }),
     );
@@ -110,7 +126,7 @@ describe("NotificationService", () => {
     await expect(
       module.notificationService.createNotification(
         validNotificationInput({
-          metadata: { [NOTIFICATION_SIMULATE_FAILURE_KEY]: true },
+          metadata: { [EMAIL_SIMULATE_FAILURE_KEY]: true },
         }),
       ),
     ).rejects.toMatchObject({

@@ -169,6 +169,12 @@ export {
   type ListNotificationsQuery,
 } from "./notifications";
 export {
+  emailRecipientSchema,
+  sendTestEmailNotificationSchema,
+  type EmailRecipientInput,
+  type SendTestEmailNotificationInput,
+} from "./notifications/email";
+export {
   applyCartPromotionSchema,
   cartPromotionActionSchema,
   type ApplyCartPromotionInput,

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { createTestDomainEventPublisher } from "@/domain-events/testing/domain-events-test-utils";
-import { NOTIFICATION_SIMULATE_FAILURE_KEY } from "../providers/console-notification.provider";
+import { EMAIL_SIMULATE_FAILURE_KEY } from "../email/providers/console-email.provider";
 import {
   createMemoryNotificationModule,
   TEST_STORE_A_ID,
@@ -51,7 +51,7 @@ describe("NotificationService domain events", () => {
     });
     const notification = await module.notificationService.createNotification(
       validNotificationInput({
-        metadata: { [NOTIFICATION_SIMULATE_FAILURE_KEY]: true },
+        metadata: { [EMAIL_SIMULATE_FAILURE_KEY]: true },
       }),
     );
 

@@ -5,6 +5,8 @@ import {
 } from "@commerceflow/types";
 import { z } from "zod";
 
+import { emailRecipientSchema } from "./email/email.schemas";
+
 const storeIdSchema = z.string().uuid("Store id must be a valid UUID");
 const optionalUuidSchema = z.string().uuid().optional();
 
@@ -30,17 +32,28 @@ const notificationTitleSchema = z
 
 const notificationMetadataSchema = z.record(z.unknown()).optional();
 
-export const createNotificationSchema = z.object({
-  storeId: storeIdSchema,
-  userId: optionalUuidSchema,
-  customerId: optionalUuidSchema,
-  channel: z.enum(NOTIFICATION_CHANNELS),
-  provider: z.enum(NOTIFICATION_PROVIDER_TYPES).default("console"),
-  subject: notificationSubjectSchema,
-  title: notificationTitleSchema,
-  body: notificationBodySchema,
-  metadata: notificationMetadataSchema,
-});
+export const createNotificationSchema = z
+  .object({
+    storeId: storeIdSchema,
+    userId: optionalUuidSchema,
+    customerId: optionalUuidSchema,
+    channel: z.enum(NOTIFICATION_CHANNELS),
+    provider: z.enum(NOTIFICATION_PROVIDER_TYPES).default("console"),
+    to: emailRecipientSchema.optional(),
+    subject: notificationSubjectSchema,
+    title: notificationTitleSchema,
+    body: notificationBodySchema,
+    metadata: notificationMetadataSchema,
+  })
+  .superRefine((data, ctx) => {
+    if (data.channel === "email" && !data.to) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Recipient is required for email notifications",
+        path: ["to"],
+      });
+    }
+  });
 
 export const listNotificationsQuerySchema = z.object({
   storeId: storeIdSchema,

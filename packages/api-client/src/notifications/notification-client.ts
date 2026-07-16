@@ -6,6 +6,10 @@ import type {
   ListNotificationsResponse,
   NotificationStoreScopedParams,
 } from "./contracts";
+import type {
+  SendTestEmailNotificationRequest,
+  SendTestEmailNotificationResponse,
+} from "./email/contracts";
 import type { ApiClientConfig } from "../http/request";
 import { apiRequest } from "../http/request";
 
@@ -46,6 +50,9 @@ export interface NotificationClient {
   createNotification(
     input: CreateNotificationRequest,
   ): Promise<CreateNotificationResponse["data"]>;
+  sendTestEmailNotification(
+    input: SendTestEmailNotificationRequest,
+  ): Promise<SendTestEmailNotificationResponse["data"]>;
   listNotifications(
     params: ListNotificationsParams,
   ): Promise<ListNotificationsResponse["data"]>;
@@ -63,6 +70,14 @@ export function createNotificationClient(
       apiRequest<CreateNotificationResponse["data"]>(config, {
         method: "POST",
         path: "/api/notifications",
+        body: input,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    sendTestEmailNotification: (input) =>
+      apiRequest<SendTestEmailNotificationResponse["data"]>(config, {
+        method: "POST",
+        path: "/api/notifications/email/test",
         body: input,
         accessToken: config.getAccessToken?.(),
       }),

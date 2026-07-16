@@ -1,6 +1,7 @@
 import type { ApiErrorResponse, ApiSuccessResponse } from "@commerceflow/api-client";
 
 import { respondKnownRouteError } from "@/lib/route-errors";
+import { EmailError } from "../email/errors";
 import { NotificationError } from "../errors";
 
 export function jsonSuccess<T>(data: T, status = 200): Response {
@@ -23,6 +24,17 @@ export function handleNotificationRouteError(error: unknown): Response {
   }
 
   if (error instanceof NotificationError) {
+    return jsonError(
+      {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+      },
+      error.status,
+    );
+  }
+
+  if (error instanceof EmailError) {
     return jsonError(
       {
         code: error.code,
