@@ -14,6 +14,7 @@ export interface Notification {
   readonly body: string;
   readonly metadata?: Record<string, unknown>;
   readonly sentAt?: string;
+  readonly readAt?: string;
   readonly createdAt: string;
   readonly updatedAt: string;
 }

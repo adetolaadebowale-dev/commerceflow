@@ -70,6 +70,8 @@ import type {
   SmsSendResult,
   SmsSentPayload,
   SmsFailedPayload,
+  InAppNotificationReadPayload,
+  InAppNotificationUnreadPayload,
   Warehouse,
   WarehouseStatus,
   WarehouseCreatedPayload,
@@ -2514,6 +2516,39 @@ export function buildSmsFailedEvent(
       storeId: message.storeId,
       to: message.to,
       message: result.message,
+    },
+  });
+}
+
+export function buildInAppNotificationReadEvent(
+  notification: Notification,
+): DomainEvent<InAppNotificationReadPayload> {
+  return createDomainEvent({
+    eventType: "in-app-notification.read",
+    aggregateType: "in_app_notification",
+    aggregateId: notification.id,
+    storeId: notification.storeId,
+    payload: {
+      notificationId: notification.id,
+      storeId: notification.storeId,
+      userId: notification.userId ?? "",
+      readAt: notification.readAt ?? new Date().toISOString(),
+    },
+  });
+}
+
+export function buildInAppNotificationUnreadEvent(
+  notification: Notification,
+): DomainEvent<InAppNotificationUnreadPayload> {
+  return createDomainEvent({
+    eventType: "in-app-notification.unread",
+    aggregateType: "in_app_notification",
+    aggregateId: notification.id,
+    storeId: notification.storeId,
+    payload: {
+      notificationId: notification.id,
+      storeId: notification.storeId,
+      userId: notification.userId ?? "",
     },
   });
 }

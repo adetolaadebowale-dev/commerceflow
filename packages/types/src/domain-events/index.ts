@@ -127,4 +127,6 @@ export type {
   EmailFailedPayload,
   SmsSentPayload,
   SmsFailedPayload,
+  InAppNotificationReadPayload,
+  InAppNotificationUnreadPayload,
 } from "./payloads";

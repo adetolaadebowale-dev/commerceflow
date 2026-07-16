@@ -63,6 +63,14 @@ export const createNotificationSchema = z
         path: ["smsTo"],
       });
     }
+
+    if (data.channel === "in_app" && !data.userId) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "User id is required for in-app notifications",
+        path: ["userId"],
+      });
+    }
   });
 
 export const listNotificationsQuerySchema = z.object({

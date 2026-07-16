@@ -118,6 +118,8 @@ import {
   buildEmailFailedEvent,
   buildSmsSentEvent,
   buildSmsFailedEvent,
+  buildInAppNotificationReadEvent,
+  buildInAppNotificationUnreadEvent,
 } from "./domain-event-factory";
 import type {
   Cart,
@@ -453,6 +455,14 @@ export class DomainEventPublisher {
 
   publishSmsFailed(message: SmsMessage, result: SmsSendResult): void {
     this.dispatch(buildSmsFailedEvent(message, result));
+  }
+
+  publishInAppNotificationRead(notification: Notification): void {
+    this.dispatch(buildInAppNotificationReadEvent(notification));
+  }
+
+  publishInAppNotificationUnread(notification: Notification): void {
+    this.dispatch(buildInAppNotificationUnreadEvent(notification));
   }
 
   publishWarehouseCreated(warehouse: Warehouse): void {

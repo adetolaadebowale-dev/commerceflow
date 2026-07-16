@@ -7,6 +7,16 @@ import type {
   NotificationStoreScopedParams,
 } from "./contracts";
 import type {
+  GetInAppNotificationParams,
+  GetInAppNotificationResponse,
+  ListInAppNotificationsParams,
+  ListInAppNotificationsResponse,
+  MarkInAppNotificationReadParams,
+  MarkInAppNotificationReadResponse,
+  MarkInAppNotificationUnreadParams,
+  MarkInAppNotificationUnreadResponse,
+} from "./in-app/contracts";
+import type {
   SendTestEmailNotificationRequest,
   SendTestEmailNotificationResponse,
 } from "./email/contracts";
@@ -50,6 +60,26 @@ function toListQueryString(params: ListNotificationsParams): string {
   return query ? `?${query}` : "";
 }
 
+function toInAppQueryString(
+  params: ListInAppNotificationsParams | GetInAppNotificationParams,
+): string {
+  const searchParams = new URLSearchParams();
+  searchParams.set("storeId", params.storeId);
+  searchParams.set("userId", params.userId);
+
+  if ("page" in params) {
+    searchParams.set("page", String(params.page));
+    searchParams.set("limit", String(params.limit));
+
+    if (params.unreadOnly) {
+      searchParams.set("unreadOnly", "true");
+    }
+  }
+
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
+}
+
 export interface NotificationClient {
   createNotification(
     input: CreateNotificationRequest,
@@ -67,6 +97,21 @@ export interface NotificationClient {
     id: string,
     params: NotificationStoreScopedParams,
   ): Promise<GetNotificationResponse["data"]>;
+  listInAppNotifications(
+    params: ListInAppNotificationsParams,
+  ): Promise<ListInAppNotificationsResponse["data"]>;
+  getInAppNotification(
+    id: string,
+    params: GetInAppNotificationParams,
+  ): Promise<GetInAppNotificationResponse["data"]>;
+  markInAppNotificationRead(
+    id: string,
+    params: MarkInAppNotificationReadParams,
+  ): Promise<MarkInAppNotificationReadResponse["data"]>;
+  markInAppNotificationUnread(
+    id: string,
+    params: MarkInAppNotificationUnreadParams,
+  ): Promise<MarkInAppNotificationUnreadResponse["data"]>;
 }
 
 export function createNotificationClient(
@@ -108,6 +153,34 @@ export function createNotificationClient(
       apiRequest<GetNotificationResponse["data"]>(config, {
         method: "GET",
         path: `/api/notifications/${id}${toQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    listInAppNotifications: (params) =>
+      apiRequest<ListInAppNotificationsResponse["data"]>(config, {
+        method: "GET",
+        path: `/api/notifications/in-app${toInAppQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    getInAppNotification: (id, params) =>
+      apiRequest<GetInAppNotificationResponse["data"]>(config, {
+        method: "GET",
+        path: `/api/notifications/in-app/${id}${toInAppQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    markInAppNotificationRead: (id, params) =>
+      apiRequest<MarkInAppNotificationReadResponse["data"]>(config, {
+        method: "POST",
+        path: `/api/notifications/in-app/${id}/read${toInAppQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    markInAppNotificationUnread: (id, params) =>
+      apiRequest<MarkInAppNotificationUnreadResponse["data"]>(config, {
+        method: "POST",
+        path: `/api/notifications/in-app/${id}/unread${toInAppQueryString(params)}`,
         accessToken: config.getAccessToken?.(),
       }),
   };

@@ -44,6 +44,17 @@ describe("notification schemas", () => {
     expect(parsed.success).toBe(false);
   });
 
+  it("requires user id for in-app channel notifications", () => {
+    const parsed = createNotificationSchema.safeParse({
+      storeId: validUuid,
+      channel: "in_app",
+      body: "Your order has shipped.",
+      title: "Order update",
+    });
+
+    expect(parsed.success).toBe(false);
+  });
+
   it("rejects create payloads without body", () => {
     const parsed = createNotificationSchema.safeParse({
       storeId: validUuid,

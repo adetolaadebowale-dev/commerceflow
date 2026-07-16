@@ -9,6 +9,7 @@ import {
 } from "@commerceflow/types";
 import type {
   CreateNotificationInput,
+  ListInAppNotificationsQuery,
   ListNotificationsQuery,
 } from "@commerceflow/validation";
 
@@ -41,6 +42,7 @@ function toNotification(record: PrismaNotification): Notification {
     body: record.body,
     metadata: toMetadata(record.metadata),
     sentAt: record.sentAt?.toISOString(),
+    readAt: record.readAt?.toISOString(),
     createdAt: record.createdAt.toISOString(),
     updatedAt: record.updatedAt.toISOString(),
   };
@@ -58,6 +60,18 @@ function buildListWhere(
   };
 }
 
+function buildInAppListWhere(
+  query: ListInAppNotificationsQuery,
+): Prisma.NotificationWhereInput {
+  return {
+    storeId: query.storeId,
+    userId: query.userId,
+    channel: "in_app",
+    status: "sent",
+    ...(query.unreadOnly ? { readAt: null } : {}),
+  };
+}
+
 export class PrismaNotificationRepository implements NotificationRepository {
   constructor(private readonly db: PrismaClient) {}
 
@@ -71,6 +85,28 @@ export class PrismaNotificationRepository implements NotificationRepository {
 
   async list(query: ListNotificationsQuery) {
     const where = buildListWhere(query);
+    const skip = (query.page - 1) * query.limit;
+
+    const [records, total] = await Promise.all([
+      this.db.notification.findMany({
+        where,
+        orderBy: [{ createdAt: "desc" }, { id: "asc" }],
+        skip,
+        take: query.limit,
+      }),
+      this.db.notification.count({ where }),
+    ]);
+
+    return buildCatalogueListResult({
+      items: records.map(toNotification),
+      total,
+      page: query.page,
+      limit: query.limit,
+    });
+  }
+
+  async listInApp(query: ListInAppNotificationsQuery) {
+    const where = buildInAppListWhere(query);
     const skip = (query.page - 1) * query.limit;
 
     const [records, total] = await Promise.all([
@@ -144,6 +180,58 @@ export class PrismaNotificationRepository implements NotificationRepository {
 
     if (result.count === 0) {
       throw new Error(`Notification not found or not pending: ${id}`);
+    }
+
+    const record = await this.db.notification.findFirstOrThrow({
+      where: { id, storeId },
+    });
+
+    return toNotification(record);
+  }
+
+  async markRead(
+    storeId: string,
+    id: string,
+    readAt: string,
+  ): Promise<Notification> {
+    const result = await this.db.notification.updateMany({
+      where: {
+        id,
+        storeId,
+        channel: "in_app",
+        status: "sent",
+      },
+      data: {
+        readAt: new Date(readAt),
+      },
+    });
+
+    if (result.count === 0) {
+      throw new Error(`In-app notification not found: ${id}`);
+    }
+
+    const record = await this.db.notification.findFirstOrThrow({
+      where: { id, storeId },
+    });
+
+    return toNotification(record);
+  }
+
+  async markUnread(storeId: string, id: string): Promise<Notification> {
+    const result = await this.db.notification.updateMany({
+      where: {
+        id,
+        storeId,
+        channel: "in_app",
+        status: "sent",
+      },
+      data: {
+        readAt: null,
+      },
+    });
+
+    if (result.count === 0) {
+      throw new Error(`In-app notification not found: ${id}`);
     }
 
     const record = await this.db.notification.findFirstOrThrow({

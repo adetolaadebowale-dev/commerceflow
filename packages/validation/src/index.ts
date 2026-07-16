@@ -181,6 +181,12 @@ export {
   type SendTestSmsNotificationInput,
 } from "./notifications/sms";
 export {
+  listInAppNotificationsQuerySchema,
+  inAppNotificationQuerySchema,
+  type ListInAppNotificationsQuery,
+  type InAppNotificationQuery,
+} from "./notifications/in-app";
+export {
   applyCartPromotionSchema,
   cartPromotionActionSchema,
   type ApplyCartPromotionInput,

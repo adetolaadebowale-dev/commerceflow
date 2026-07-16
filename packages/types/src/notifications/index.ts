@@ -28,5 +28,6 @@ export type {
   SmsProvider,
 } from "./sms";
 export { SMS_PROVIDER_TYPES } from "./sms";
+export type { InAppNotification } from "./in-app";
 export type { NotificationSendRequest } from "./provider/notification-send-request";
 export type { NotificationProvider } from "./provider/notification-provider";

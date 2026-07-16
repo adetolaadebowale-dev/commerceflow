@@ -116,6 +116,8 @@ export const DOMAIN_EVENT_TYPES = [
   "email.failed",
   "sms.sent",
   "sms.failed",
+  "in-app-notification.read",
+  "in-app-notification.unread",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

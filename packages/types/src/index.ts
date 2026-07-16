@@ -94,6 +94,7 @@ export {
   type SmsSendResult,
   type SmsProviderType,
   type SmsProvider,
+  type InAppNotification,
 } from "./notifications";
 export {
   SHIPMENT_CARRIERS,
@@ -405,6 +406,8 @@ export {
   type EmailFailedPayload,
   type SmsSentPayload,
   type SmsFailedPayload,
+  type InAppNotificationReadPayload,
+  type InAppNotificationUnreadPayload,
   type WarehouseCreatedPayload,
   type WarehouseUpdatedPayload,
   type WarehouseActivatedPayload,

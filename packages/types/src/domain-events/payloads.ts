@@ -1189,3 +1189,16 @@ export interface SmsFailedPayload {
   readonly to: SmsMessage["to"];
   readonly message?: string;
 }
+
+export interface InAppNotificationReadPayload {
+  readonly notificationId: string;
+  readonly storeId: string;
+  readonly userId: string;
+  readonly readAt: string;
+}
+
+export interface InAppNotificationUnreadPayload {
+  readonly notificationId: string;
+  readonly storeId: string;
+  readonly userId: string;
+}

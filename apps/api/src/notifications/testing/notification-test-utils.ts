@@ -14,10 +14,13 @@ import {
 import { MemoryNotificationRepository } from "../repositories/memory-notification.repository";
 import { DefaultSmsProviderFactory, MemorySmsProvider } from "../sms/providers";
 import { SmsService } from "../sms/services/sms.service";
+import { InAppNotificationService } from "../in-app/services/in-app-notification.service";
 import { NotificationService } from "../services/notification.service";
 
 export const TEST_STORE_A_ID = "11111111-1111-1111-1111-111111111111";
 export const TEST_STORE_B_ID = "22222222-2222-2222-2222-222222222222";
+export const TEST_USER_A_ID = "33333333-3333-3333-3333-333333333333";
+export const TEST_USER_B_ID = "44444444-4444-4444-4444-444444444444";
 
 export function createMemoryNotificationModule(options: {
   domainEventPublisher?: DomainEventPublisher;
@@ -52,6 +55,10 @@ export function createMemoryNotificationModule(options: {
     memorySmsProvider,
     emailService,
     smsService,
+    inAppNotificationService: new InAppNotificationService({
+      notificationRepository,
+      domainEventPublisher: options.domainEventPublisher,
+    }),
     notificationService: new NotificationService({
       notificationRepository,
       notificationProviderFactory: new DefaultNotificationProviderFactory(
@@ -112,6 +119,20 @@ export function validTestSmsInput(
     to: { phone: "+15551234567", name: "Jane Doe" },
     body: "Hello from CommerceFlow.",
     provider: "memory",
+    ...overrides,
+  };
+}
+
+export function validInAppNotificationInput(
+  overrides: Partial<CreateNotificationInput> = {},
+): CreateNotificationInput {
+  return {
+    storeId: TEST_STORE_A_ID,
+    userId: TEST_USER_A_ID,
+    channel: "in_app",
+    provider: "memory",
+    title: "Order update",
+    body: "Your order has shipped.",
     ...overrides,
   };
 }

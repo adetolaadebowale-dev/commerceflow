@@ -4,6 +4,7 @@ import {
 } from "@commerceflow/types";
 import type {
   CreateNotificationInput,
+  ListInAppNotificationsQuery,
   ListNotificationsQuery,
 } from "@commerceflow/validation";
 
@@ -53,6 +54,37 @@ export class MemoryNotificationRepository implements NotificationRepository {
       items = items.filter(
         (notification) => notification.customerId === query.customerId,
       );
+    }
+
+    items.sort(
+      (left, right) =>
+        right.createdAt.localeCompare(left.createdAt) ||
+        left.id.localeCompare(right.id),
+    );
+
+    const total = items.length;
+    const start = (query.page - 1) * query.limit;
+    const paged = items.slice(start, start + query.limit);
+
+    return buildCatalogueListResult({
+      items: paged,
+      total,
+      page: query.page,
+      limit: query.limit,
+    });
+  }
+
+  async listInApp(query: ListInAppNotificationsQuery) {
+    let items = [...this.notificationsById.values()].filter(
+      (notification) =>
+        notification.storeId === query.storeId &&
+        notification.userId === query.userId &&
+        notification.channel === "in_app" &&
+        notification.status === "sent",
+    );
+
+    if (query.unreadOnly) {
+      items = items.filter((notification) => !notification.readAt);
     }
 
     items.sort(
@@ -138,6 +170,60 @@ export class MemoryNotificationRepository implements NotificationRepository {
     const updated: Notification = {
       ...existing,
       status: "failed",
+      updatedAt: new Date().toISOString(),
+    };
+
+    this.notificationsById.set(id, updated);
+    return updated;
+  }
+
+  async markRead(
+    storeId: string,
+    id: string,
+    readAt: string,
+  ): Promise<Notification> {
+    if (this.transactionFailure) {
+      throw this.transactionFailure;
+    }
+
+    const existing = await this.findById(storeId, id);
+
+    if (
+      !existing ||
+      existing.channel !== "in_app" ||
+      existing.status !== "sent"
+    ) {
+      throw new Error(`In-app notification not found: ${id}`);
+    }
+
+    const updated: Notification = {
+      ...existing,
+      readAt,
+      updatedAt: new Date().toISOString(),
+    };
+
+    this.notificationsById.set(id, updated);
+    return updated;
+  }
+
+  async markUnread(storeId: string, id: string): Promise<Notification> {
+    if (this.transactionFailure) {
+      throw this.transactionFailure;
+    }
+
+    const existing = await this.findById(storeId, id);
+
+    if (
+      !existing ||
+      existing.channel !== "in_app" ||
+      existing.status !== "sent"
+    ) {
+      throw new Error(`In-app notification not found: ${id}`);
+    }
+
+    const updated: Notification = {
+      ...existing,
+      readAt: undefined,
       updatedAt: new Date().toISOString(),
     };
 

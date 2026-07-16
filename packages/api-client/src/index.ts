@@ -222,6 +222,16 @@ export type {
   SendTestSmsNotificationRequest,
   SendTestSmsNotificationResponse,
 } from "./notifications/sms/contracts";
+export type {
+  GetInAppNotificationParams,
+  GetInAppNotificationResponse,
+  ListInAppNotificationsParams,
+  ListInAppNotificationsResponse,
+  MarkInAppNotificationReadParams,
+  MarkInAppNotificationReadResponse,
+  MarkInAppNotificationUnreadParams,
+  MarkInAppNotificationUnreadResponse,
+} from "./notifications/in-app/contracts";
 export {
   createNotificationClient,
   type NotificationClient,
