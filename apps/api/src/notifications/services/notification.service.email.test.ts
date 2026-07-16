@@ -3,7 +3,6 @@ import { describe, expect, it, vi } from "vitest";
 import { createTestDomainEventPublisher } from "@/domain-events/testing/domain-events-test-utils";
 import {
   createMemoryNotificationModule,
-  TEST_STORE_A_ID,
   TEST_STORE_B_ID,
   validNotificationInput,
   validTestEmailInput,

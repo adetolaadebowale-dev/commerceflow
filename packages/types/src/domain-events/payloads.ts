@@ -15,7 +15,8 @@ import type { RefundStatus } from "../refunds/refund-status";
 import type { Promotion } from "../promotions/promotion";
 import type { TaxRate } from "../tax-rates/tax-rate";
 import type { Notification } from "../notifications/notification";
-import type { EmailMessage, EmailSendResult } from "../notifications/email";
+import type { EmailMessage } from "../notifications/email";
+import type { SmsMessage } from "../notifications/sms";
 import type { Shipment } from "../shipments/shipment";
 import type { ShipmentStatus } from "../shipments/shipment-status";
 import type { ShipmentTrackingEvent } from "../shipments/shipment-tracking-event";
@@ -1172,5 +1173,19 @@ export interface EmailFailedPayload {
   readonly storeId: string;
   readonly to: EmailMessage["to"];
   readonly subject: string;
+  readonly message?: string;
+}
+
+export interface SmsSentPayload {
+  readonly notificationId: string;
+  readonly storeId: string;
+  readonly to: SmsMessage["to"];
+  readonly providerReference?: string;
+}
+
+export interface SmsFailedPayload {
+  readonly notificationId: string;
+  readonly storeId: string;
+  readonly to: SmsMessage["to"];
   readonly message?: string;
 }

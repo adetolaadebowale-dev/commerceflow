@@ -34,6 +34,16 @@ describe("notification schemas", () => {
     expect(parsed.success).toBe(false);
   });
 
+  it("requires phone recipient for SMS channel notifications", () => {
+    const parsed = createNotificationSchema.safeParse({
+      storeId: validUuid,
+      channel: "sms",
+      body: "Your order has shipped.",
+    });
+
+    expect(parsed.success).toBe(false);
+  });
+
   it("rejects create payloads without body", () => {
     const parsed = createNotificationSchema.safeParse({
       storeId: validUuid,

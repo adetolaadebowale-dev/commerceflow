@@ -45,6 +45,7 @@ export const AUDIT_ENTITY_TYPES = [
   "dashboard_report",
   "notification",
   "email_notification",
+  "sms_notification",
 ] as const;
 
 export type AuditEntityType = (typeof AUDIT_ENTITY_TYPES)[number];

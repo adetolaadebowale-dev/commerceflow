@@ -10,6 +10,10 @@ import type {
   SendTestEmailNotificationRequest,
   SendTestEmailNotificationResponse,
 } from "./email/contracts";
+import type {
+  SendTestSmsNotificationRequest,
+  SendTestSmsNotificationResponse,
+} from "./sms/contracts";
 import type { ApiClientConfig } from "../http/request";
 import { apiRequest } from "../http/request";
 
@@ -53,6 +57,9 @@ export interface NotificationClient {
   sendTestEmailNotification(
     input: SendTestEmailNotificationRequest,
   ): Promise<SendTestEmailNotificationResponse["data"]>;
+  sendTestSmsNotification(
+    input: SendTestSmsNotificationRequest,
+  ): Promise<SendTestSmsNotificationResponse["data"]>;
   listNotifications(
     params: ListNotificationsParams,
   ): Promise<ListNotificationsResponse["data"]>;
@@ -78,6 +85,14 @@ export function createNotificationClient(
       apiRequest<SendTestEmailNotificationResponse["data"]>(config, {
         method: "POST",
         path: "/api/notifications/email/test",
+        body: input,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    sendTestSmsNotification: (input) =>
+      apiRequest<SendTestSmsNotificationResponse["data"]>(config, {
+        method: "POST",
+        path: "/api/notifications/sms/test",
         body: input,
         accessToken: config.getAccessToken?.(),
       }),

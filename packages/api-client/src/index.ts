@@ -218,6 +218,10 @@ export type {
   SendTestEmailNotificationRequest,
   SendTestEmailNotificationResponse,
 } from "./notifications/email/contracts";
+export type {
+  SendTestSmsNotificationRequest,
+  SendTestSmsNotificationResponse,
+} from "./notifications/sms/contracts";
 export {
   createNotificationClient,
   type NotificationClient,

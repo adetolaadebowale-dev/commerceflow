@@ -67,7 +67,7 @@ describe("NotificationService", () => {
     const module = createMemoryNotificationModule();
     await module.notificationService.createNotification(validNotificationInput());
     await module.notificationService.createNotification(
-      validNotificationInput({ channel: "sms", body: "SMS alert" }),
+      validNotificationInput({ channel: "sms", to: undefined, smsTo: { phone: "+15559876543" }, body: "SMS alert" }),
     );
 
     const result = await module.notificationService.listNotifications({

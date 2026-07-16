@@ -175,6 +175,12 @@ export {
   type SendTestEmailNotificationInput,
 } from "./notifications/email";
 export {
+  smsRecipientSchema,
+  sendTestSmsNotificationSchema,
+  type SmsRecipientInput,
+  type SendTestSmsNotificationInput,
+} from "./notifications/sms";
+export {
   applyCartPromotionSchema,
   cartPromotionActionSchema,
   type ApplyCartPromotionInput,

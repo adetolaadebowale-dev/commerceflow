@@ -6,6 +6,7 @@ import {
 import { z } from "zod";
 
 import { emailRecipientSchema } from "./email/email.schemas";
+import { smsRecipientSchema } from "./sms/sms.schemas";
 
 const storeIdSchema = z.string().uuid("Store id must be a valid UUID");
 const optionalUuidSchema = z.string().uuid().optional();
@@ -40,6 +41,7 @@ export const createNotificationSchema = z
     channel: z.enum(NOTIFICATION_CHANNELS),
     provider: z.enum(NOTIFICATION_PROVIDER_TYPES).default("console"),
     to: emailRecipientSchema.optional(),
+    smsTo: smsRecipientSchema.optional(),
     subject: notificationSubjectSchema,
     title: notificationTitleSchema,
     body: notificationBodySchema,
@@ -51,6 +53,14 @@ export const createNotificationSchema = z
         code: z.ZodIssueCode.custom,
         message: "Recipient is required for email notifications",
         path: ["to"],
+      });
+    }
+
+    if (data.channel === "sms" && !data.smsTo) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Phone recipient is required for SMS notifications",
+        path: ["smsTo"],
       });
     }
   });

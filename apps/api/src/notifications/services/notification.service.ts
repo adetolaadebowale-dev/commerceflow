@@ -3,6 +3,7 @@ import type {
   CreateNotificationInput,
   ListNotificationsQuery,
   SendTestEmailNotificationInput,
+  SendTestSmsNotificationInput,
 } from "@commerceflow/validation";
 
 import {
@@ -19,16 +20,23 @@ import {
   getNotificationRepository,
   type NotificationRepository,
 } from "../repositories";
+import { smsService, type SmsService } from "../sms/services";
 import {
   buildEmailMessageFromNotification,
   mapEmailSendResultToNotificationResult,
   toEmailProviderType,
 } from "./notification-email.utils";
+import {
+  buildSmsMessageFromNotification,
+  mapSmsSendResultToNotificationResult,
+  toSmsProviderType,
+} from "./notification-sms.utils";
 
 export interface NotificationServiceDependencies {
   readonly notificationRepository?: NotificationRepository;
   readonly notificationProviderFactory?: NotificationProviderFactory;
   readonly emailService?: EmailService;
+  readonly smsService?: SmsService;
   readonly domainEventPublisher?: DomainEventPublisher;
 }
 
@@ -36,6 +44,7 @@ export class NotificationService {
   private readonly notificationRepository: NotificationRepository;
   private readonly notificationProviderFactory: NotificationProviderFactory;
   private readonly emailService: EmailService;
+  private readonly smsService: SmsService;
   private readonly domainEventPublisher: DomainEventPublisher;
 
   constructor(dependencies: NotificationServiceDependencies = {}) {
@@ -45,6 +54,7 @@ export class NotificationService {
       dependencies.notificationProviderFactory ??
       getNotificationProviderFactory();
     this.emailService = dependencies.emailService ?? emailService;
+    this.smsService = dependencies.smsService ?? smsService;
     this.domainEventPublisher =
       dependencies.domainEventPublisher ?? getDomainEventPublisher();
   }
@@ -63,6 +73,19 @@ export class NotificationService {
     });
   }
 
+  async sendTestSmsNotification(
+    input: SendTestSmsNotificationInput,
+  ): Promise<Notification> {
+    return this.createNotification({
+      storeId: input.storeId,
+      channel: "sms",
+      provider: input.provider,
+      smsTo: input.to,
+      body: input.body,
+      metadata: input.metadata,
+    });
+  }
+
   async createNotification(input: CreateNotificationInput): Promise<Notification> {
     let notification: Notification;
 
@@ -74,10 +97,7 @@ export class NotificationService {
 
     this.domainEventPublisher.publishNotificationCreated(notification);
 
-    const sendResult =
-      notification.channel === "email"
-        ? await this.dispatchEmailNotification(notification, input)
-        : await this.dispatchGenericNotification(notification, input);
+    const sendResult = await this.dispatchNotification(notification, input);
 
     if (sendResult.success) {
       try {
@@ -130,6 +150,21 @@ export class NotificationService {
     return this.notificationRepository.list(query);
   }
 
+  private async dispatchNotification(
+    notification: Notification,
+    input: CreateNotificationInput,
+  ) {
+    if (notification.channel === "email") {
+      return this.dispatchEmailNotification(notification, input);
+    }
+
+    if (notification.channel === "sms") {
+      return this.dispatchSmsNotification(notification, input);
+    }
+
+    return this.dispatchGenericNotification(notification, input);
+  }
+
   private async dispatchGenericNotification(
     notification: Notification,
     input: CreateNotificationInput,
@@ -166,6 +201,25 @@ export class NotificationService {
     );
 
     return mapEmailSendResultToNotificationResult(emailResult);
+  }
+
+  private async dispatchSmsNotification(
+    notification: Notification,
+    input: CreateNotificationInput,
+  ) {
+    if (!input.smsTo) {
+      return {
+        success: false,
+        message: "SMS phone recipient is required",
+      };
+    }
+
+    const smsResult = await this.smsService.sendSms(
+      buildSmsMessageFromNotification(notification, input),
+      toSmsProviderType(input.provider),
+    );
+
+    return mapSmsSendResultToNotificationResult(smsResult);
   }
 
   private mapRepositoryError(error: unknown): NotificationError {

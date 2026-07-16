@@ -20,5 +20,13 @@ export type {
   EmailProvider,
 } from "./email";
 export { EMAIL_PROVIDER_TYPES } from "./email";
+export type {
+  SmsRecipient,
+  SmsMessage,
+  SmsSendResult,
+  SmsProviderType,
+  SmsProvider,
+} from "./sms";
+export { SMS_PROVIDER_TYPES } from "./sms";
 export type { NotificationSendRequest } from "./provider/notification-send-request";
 export type { NotificationProvider } from "./provider/notification-provider";

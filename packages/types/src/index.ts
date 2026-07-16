@@ -88,6 +88,12 @@ export {
   type EmailSendResult,
   type EmailProviderType,
   type EmailProvider,
+  SMS_PROVIDER_TYPES,
+  type SmsRecipient,
+  type SmsMessage,
+  type SmsSendResult,
+  type SmsProviderType,
+  type SmsProvider,
 } from "./notifications";
 export {
   SHIPMENT_CARRIERS,
@@ -397,6 +403,8 @@ export {
   type NotificationFailedPayload,
   type EmailSentPayload,
   type EmailFailedPayload,
+  type SmsSentPayload,
+  type SmsFailedPayload,
   type WarehouseCreatedPayload,
   type WarehouseUpdatedPayload,
   type WarehouseActivatedPayload,

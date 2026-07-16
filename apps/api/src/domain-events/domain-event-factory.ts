@@ -66,6 +66,10 @@ import type {
   EmailSendResult,
   EmailSentPayload,
   EmailFailedPayload,
+  SmsMessage,
+  SmsSendResult,
+  SmsSentPayload,
+  SmsFailedPayload,
   Warehouse,
   WarehouseStatus,
   WarehouseCreatedPayload,
@@ -2473,6 +2477,42 @@ export function buildEmailFailedEvent(
       storeId: message.storeId,
       to: message.to,
       subject: message.subject,
+      message: result.message,
+    },
+  });
+}
+
+export function buildSmsSentEvent(
+  message: SmsMessage,
+  result: SmsSendResult,
+): DomainEvent<SmsSentPayload> {
+  return createDomainEvent({
+    eventType: "sms.sent",
+    aggregateType: "sms_notification",
+    aggregateId: message.notificationId,
+    storeId: message.storeId,
+    payload: {
+      notificationId: message.notificationId,
+      storeId: message.storeId,
+      to: message.to,
+      providerReference: result.providerReference,
+    },
+  });
+}
+
+export function buildSmsFailedEvent(
+  message: SmsMessage,
+  result: SmsSendResult,
+): DomainEvent<SmsFailedPayload> {
+  return createDomainEvent({
+    eventType: "sms.failed",
+    aggregateType: "sms_notification",
+    aggregateId: message.notificationId,
+    storeId: message.storeId,
+    payload: {
+      notificationId: message.notificationId,
+      storeId: message.storeId,
+      to: message.to,
       message: result.message,
     },
   });
