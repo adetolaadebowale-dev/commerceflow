@@ -76,6 +76,9 @@ describe("StorePermissionPolicy", () => {
       StorePermissionPolicy.hasPermission("staff", "operations:run"),
     ).toBe(false);
     expect(
+      StorePermissionPolicy.hasPermission("staff", "reports:read"),
+    ).toBe(true);
+    expect(
       StorePermissionPolicy.hasPermission("manager", "operations:run"),
     ).toBe(true);
     expect(

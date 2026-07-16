@@ -181,6 +181,16 @@ export {
   type WarehouseOperationalSummary,
 } from "./operations";
 export {
+  type DashboardMetric,
+  type ReportDashboardResponse,
+  type ReportDateRange,
+  type ReportFilter,
+  type ReportHealthResponse,
+  type ReportPagination,
+  type ReportSummary,
+  type StoreReportingContext,
+} from "./reports";
+export {
   type AppliedCartPromotion,
   type OrderPromotionSnapshot,
 } from "./promotion-redemption";
@@ -318,4 +328,6 @@ export {
   type InventoryIntegrityCheckedPayload,
   type OperationsPhase3ValidationCompletedPayload,
   type OperationsReadinessGeneratedPayload,
+  type ReportsGeneratedPayload,
+  type DashboardViewedPayload,
 } from "./domain-events";

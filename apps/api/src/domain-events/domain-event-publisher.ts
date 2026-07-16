@@ -68,6 +68,8 @@ import {
   buildOperationsIntegrityCheckedEvent,
   buildOperationsPhase3ValidationCompletedEvent,
   buildOperationsReadinessGeneratedEvent,
+  buildReportsGeneratedEvent,
+  buildDashboardViewedEvent,
   buildWarehouseIntegrityCheckedEvent,
   buildInventoryIntegrityCheckedEvent,
   buildShipmentCreatedEvent,
@@ -154,6 +156,7 @@ import type {
   IntegrityCheckResult,
   Phase3ReadinessReport,
   Phase3ValidationResult,
+  ReportDashboardResponse,
   ShippingZone,
   ShippingMethod,
 } from "@commerceflow/types";
@@ -721,6 +724,20 @@ export class DomainEventPublisher {
     report: Phase3ReadinessReport,
   ): void {
     this.dispatch(buildOperationsReadinessGeneratedEvent(storeId, report));
+  }
+
+  publishReportsGenerated(
+    storeId: string,
+    report: ReportDashboardResponse,
+  ): void {
+    this.dispatch(buildReportsGeneratedEvent(storeId, report));
+  }
+
+  publishDashboardViewed(
+    storeId: string,
+    report: ReportDashboardResponse,
+  ): void {
+    this.dispatch(buildDashboardViewedEvent(storeId, report));
   }
 
   publishShippingZoneCreated(shippingZone: ShippingZone): void {

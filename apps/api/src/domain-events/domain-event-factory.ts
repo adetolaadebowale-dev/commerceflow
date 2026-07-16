@@ -103,8 +103,11 @@ import type {
   InventoryIntegrityCheckedPayload,
   OperationsPhase3ValidationCompletedPayload,
   OperationsReadinessGeneratedPayload,
+  ReportsGeneratedPayload,
+  DashboardViewedPayload,
   Phase3ReadinessReport,
   Phase3ValidationResult,
+  ReportDashboardResponse,
   Shipment,
   ShipmentStatus,
   ShipmentCreatedPayload,
@@ -1520,6 +1523,42 @@ export function buildOperationsReadinessGeneratedEvent(
       storeId,
       overallStatus: report.overallStatus,
       issueCount: report.validation.issues.length,
+      report,
+    },
+  });
+}
+
+export function buildReportsGeneratedEvent(
+  storeId: string,
+  report: ReportDashboardResponse,
+): DomainEvent<ReportsGeneratedPayload> {
+  return createDomainEvent({
+    eventType: "reports.generated",
+    aggregateType: "report",
+    aggregateId: storeId,
+    storeId,
+    payload: {
+      storeId,
+      metricCount: report.metrics.length,
+      rowCount: report.summary.rowCount,
+      report,
+    },
+  });
+}
+
+export function buildDashboardViewedEvent(
+  storeId: string,
+  report: ReportDashboardResponse,
+): DomainEvent<DashboardViewedPayload> {
+  return createDomainEvent({
+    eventType: "dashboard.viewed",
+    aggregateType: "report",
+    aggregateId: storeId,
+    storeId,
+    payload: {
+      storeId,
+      timezone: report.timezone,
+      currency: report.currency,
       report,
     },
   });

@@ -100,6 +100,8 @@ export type {
   InventoryIntegrityCheckedPayload,
   OperationsPhase3ValidationCompletedPayload,
   OperationsReadinessGeneratedPayload,
+  ReportsGeneratedPayload,
+  DashboardViewedPayload,
   ShippingZoneCreatedPayload,
   ShippingZoneUpdatedPayload,
   ShippingZoneDeletedPayload,

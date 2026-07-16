@@ -59,6 +59,7 @@ import type {
   Phase3ValidationResult,
   ReadinessStatus,
 } from "../operations/readiness";
+import type { ReportDashboardResponse } from "../reports/report-foundation";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -941,6 +942,20 @@ export interface OperationsReadinessGeneratedPayload {
   readonly overallStatus: ReadinessStatus;
   readonly issueCount: number;
   readonly report: Phase3ReadinessReport;
+}
+
+export interface ReportsGeneratedPayload {
+  readonly storeId: string;
+  readonly metricCount: number;
+  readonly rowCount: number;
+  readonly report: ReportDashboardResponse;
+}
+
+export interface DashboardViewedPayload {
+  readonly storeId: string;
+  readonly timezone: string;
+  readonly currency: string;
+  readonly report: ReportDashboardResponse;
 }
 
 export interface ShippingZoneCreatedPayload {

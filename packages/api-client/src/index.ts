@@ -326,6 +326,16 @@ export {
   type OperationsClient,
 } from "./operations/operations-client";
 export type {
+  GetReportDashboardResponse,
+  GetReportHealthResponse,
+  ReportDashboardParams,
+  ReportHealthParams,
+} from "./reports/contracts";
+export {
+  createReportsClient,
+  type ReportsClient,
+} from "./reports/reports-client";
+export type {
   CreateShipmentRequest,
   CreateShipmentResponse,
   GetShipmentResponse,

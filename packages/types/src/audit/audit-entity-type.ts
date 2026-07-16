@@ -36,6 +36,7 @@ export const AUDIT_ENTITY_TYPES = [
   "replenishment_rule",
   "replenishment_recommendation",
   "operations",
+  "report",
 ] as const;
 
 export type AuditEntityType = (typeof AUDIT_ENTITY_TYPES)[number];
