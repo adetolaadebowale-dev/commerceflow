@@ -48,6 +48,8 @@ const ALL_STORE_PERMISSIONS: readonly StorePermissionCode[] = [
     "operations:read",
     "operations:run",
     "reports:read",
+    "notifications:read",
+    "notifications:write",
 ];
 
 const PERMISSIONS_BY_STORE_ROLE: Readonly<
@@ -103,6 +105,8 @@ const PERMISSIONS_BY_STORE_ROLE: Readonly<
     "operations:read",
     "operations:run",
     "reports:read",
+    "notifications:read",
+    "notifications:write",
   ],
   staff: [
     "catalogue:read",
@@ -126,6 +130,7 @@ const PERMISSIONS_BY_STORE_ROLE: Readonly<
     "replenishment:read",
     "operations:read",
     "reports:read",
+    "notifications:read",
   ],
 };
 

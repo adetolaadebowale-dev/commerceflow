@@ -14,6 +14,7 @@ import type { Refund } from "../refunds/refund";
 import type { RefundStatus } from "../refunds/refund-status";
 import type { Promotion } from "../promotions/promotion";
 import type { TaxRate } from "../tax-rates/tax-rate";
+import type { Notification } from "../notifications/notification";
 import type { Shipment } from "../shipments/shipment";
 import type { ShipmentStatus } from "../shipments/shipment-status";
 import type { ShipmentTrackingEvent } from "../shipments/shipment-tracking-event";
@@ -1134,4 +1135,25 @@ export interface ShippingMethodDeletedPayload {
   readonly name: string;
   readonly status: ShippingMethod["status"];
   readonly shippingMethod: ShippingMethod;
+}
+
+export interface NotificationCreatedPayload {
+  readonly notificationId: string;
+  readonly channel: Notification["channel"];
+  readonly status: Notification["status"];
+  readonly notification: Notification;
+}
+
+export interface NotificationSentPayload {
+  readonly notificationId: string;
+  readonly channel: Notification["channel"];
+  readonly sentAt: string;
+  readonly notification: Notification;
+}
+
+export interface NotificationFailedPayload {
+  readonly notificationId: string;
+  readonly channel: Notification["channel"];
+  readonly message?: string;
+  readonly notification: Notification;
 }

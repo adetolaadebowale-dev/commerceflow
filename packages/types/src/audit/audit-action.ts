@@ -57,6 +57,7 @@ export const AUDIT_ACTIONS = [
   "generate_replenishment",
   "generate_executive",
   "generate_kpis",
+  "send",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];

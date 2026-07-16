@@ -111,6 +111,9 @@ import {
   buildShippingMethodCreatedEvent,
   buildShippingMethodUpdatedEvent,
   buildShippingMethodDeletedEvent,
+  buildNotificationCreatedEvent,
+  buildNotificationSentEvent,
+  buildNotificationFailedEvent,
 } from "./domain-event-factory";
 import type {
   Cart,
@@ -133,6 +136,7 @@ import type {
   AppliedCartPromotion,
   TaxRate,
   TaxRateStatus,
+  Notification,
   Warehouse,
   WarehouseStatus,
   Shipment,
@@ -410,6 +414,21 @@ export class DomainEventPublisher {
     previousStatus: TaxRateStatus,
   ): void {
     this.dispatch(buildTaxDeactivatedEvent(taxRate, previousStatus));
+  }
+
+  publishNotificationCreated(notification: Notification): void {
+    this.dispatch(buildNotificationCreatedEvent(notification));
+  }
+
+  publishNotificationSent(notification: Notification): void {
+    this.dispatch(buildNotificationSentEvent(notification));
+  }
+
+  publishNotificationFailed(
+    notification: Notification,
+    message?: string,
+  ): void {
+    this.dispatch(buildNotificationFailedEvent(notification, message));
   }
 
   publishWarehouseCreated(warehouse: Warehouse): void {

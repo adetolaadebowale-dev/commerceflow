@@ -120,4 +120,7 @@ export type {
   ShippingMethodCreatedPayload,
   ShippingMethodUpdatedPayload,
   ShippingMethodDeletedPayload,
+  NotificationCreatedPayload,
+  NotificationSentPayload,
+  NotificationFailedPayload,
 } from "./payloads";

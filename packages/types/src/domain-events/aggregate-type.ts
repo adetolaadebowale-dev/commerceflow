@@ -37,6 +37,7 @@ export const DOMAIN_AGGREGATE_TYPES = [
   "financial_report",
   "procurement_report",
   "dashboard_report",
+  "notification",
 ] as const;
 
 export type DomainAggregateType = (typeof DOMAIN_AGGREGATE_TYPES)[number];

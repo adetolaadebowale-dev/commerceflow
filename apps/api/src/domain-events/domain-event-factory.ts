@@ -58,6 +58,10 @@ import type {
   TaxUpdatedPayload,
   TaxActivatedPayload,
   TaxDeactivatedPayload,
+  Notification,
+  NotificationCreatedPayload,
+  NotificationSentPayload,
+  NotificationFailedPayload,
   Warehouse,
   WarehouseStatus,
   WarehouseCreatedPayload,
@@ -2376,6 +2380,58 @@ export function buildShippingMethodDeletedEvent(
       name: shippingMethod.name,
       status: shippingMethod.status,
       shippingMethod,
+    },
+  });
+}
+
+export function buildNotificationCreatedEvent(
+  notification: Notification,
+): DomainEvent<NotificationCreatedPayload> {
+  return createDomainEvent({
+    eventType: "notification.created",
+    aggregateType: "notification",
+    aggregateId: notification.id,
+    storeId: notification.storeId,
+    payload: {
+      notificationId: notification.id,
+      channel: notification.channel,
+      status: notification.status,
+      notification,
+    },
+  });
+}
+
+export function buildNotificationSentEvent(
+  notification: Notification,
+): DomainEvent<NotificationSentPayload> {
+  return createDomainEvent({
+    eventType: "notification.sent",
+    aggregateType: "notification",
+    aggregateId: notification.id,
+    storeId: notification.storeId,
+    payload: {
+      notificationId: notification.id,
+      channel: notification.channel,
+      sentAt: notification.sentAt ?? new Date().toISOString(),
+      notification,
+    },
+  });
+}
+
+export function buildNotificationFailedEvent(
+  notification: Notification,
+  message?: string,
+): DomainEvent<NotificationFailedPayload> {
+  return createDomainEvent({
+    eventType: "notification.failed",
+    aggregateType: "notification",
+    aggregateId: notification.id,
+    storeId: notification.storeId,
+    payload: {
+      notificationId: notification.id,
+      channel: notification.channel,
+      message,
+      notification,
     },
   });
 }

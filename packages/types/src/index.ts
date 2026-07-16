@@ -72,6 +72,18 @@ export {
   type OrderTaxRateSnapshot,
 } from "./tax-rates";
 export {
+  NOTIFICATION_CHANNELS,
+  NOTIFICATION_STATUSES,
+  NOTIFICATION_PROVIDER_TYPES,
+  type Notification,
+  type NotificationChannel,
+  type NotificationStatus,
+  type NotificationProviderType,
+  type NotificationResult,
+  type NotificationSendRequest,
+  type NotificationProvider,
+} from "./notifications";
+export {
   SHIPMENT_CARRIERS,
   SHIPMENT_STATUSES,
   SHIPMENT_TRACKING_EVENT_TYPES,
@@ -374,6 +386,9 @@ export {
   type ShippingMethodCreatedPayload,
   type ShippingMethodUpdatedPayload,
   type ShippingMethodDeletedPayload,
+  type NotificationCreatedPayload,
+  type NotificationSentPayload,
+  type NotificationFailedPayload,
   type WarehouseCreatedPayload,
   type WarehouseUpdatedPayload,
   type WarehouseActivatedPayload,

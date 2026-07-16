@@ -109,6 +109,9 @@ export const DOMAIN_EVENT_TYPES = [
   "reports.procurement.generated",
   "reports.dashboard.generated",
   "dashboard.viewed",
+  "notification.created",
+  "notification.sent",
+  "notification.failed",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

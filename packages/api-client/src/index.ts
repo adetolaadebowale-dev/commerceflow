@@ -207,6 +207,18 @@ export {
   type TaxRateClient,
 } from "./tax-rates/tax-rate-client";
 export type {
+  CreateNotificationRequest,
+  CreateNotificationResponse,
+  GetNotificationResponse,
+  ListNotificationsParams,
+  ListNotificationsResponse,
+  NotificationStoreScopedParams,
+} from "./notifications/contracts";
+export {
+  createNotificationClient,
+  type NotificationClient,
+} from "./notifications/notification-client";
+export type {
   ActivateWarehouseResponse,
   CreateWarehouseRequest,
   CreateWarehouseResponse,

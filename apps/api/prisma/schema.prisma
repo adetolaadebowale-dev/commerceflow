@@ -125,6 +125,21 @@ enum TaxRateStatus {
   inactive
 }
 
+/// Mirrors NotificationChannel from @commerceflow/types.
+enum NotificationChannel {
+  email
+  sms
+  in_app
+  webhook
+}
+
+/// Mirrors NotificationStatus from @commerceflow/types.
+enum NotificationStatus {
+  pending
+  sent
+  failed
+}
+
 /// Mirrors ShipmentStatus from @commerceflow/types.
 enum ShipmentStatus {
   pending
@@ -284,6 +299,7 @@ model User {
   orders          Order[]
   auditLogs       AuditLog[]
   inventoryAdjustments InventoryAdjustment[]
+  notifications   Notification[]
 
   @@index([deletedAt])
   @@map("users")
@@ -371,6 +387,7 @@ model Store {
   shippingMethods        ShippingMethod[]
   replenishmentRules     ReplenishmentRule[]
   replenishmentRecommendations ReplenishmentRecommendation[]
+  notifications                Notification[]
 
   @@unique([organizationId, slug])
   @@index([organizationId])
@@ -887,7 +904,8 @@ model Customer {
   deletedAt DateTime?      @map("deleted_at")
   addresses CustomerAddress[]
   carts     Cart[]
-  orders    Order[]
+  orders        Order[]
+  notifications Notification[]
 
   @@index([storeId])
   @@index([deletedAt])
@@ -1598,4 +1616,32 @@ model ShippingMethod {
   @@index([deletedAt])
   @@index([storeId, deletedAt])
   @@map("shipping_methods")
+}
+
+/// Store-scoped notification record for outbound and in-app messaging.
+model Notification {
+  id         String              @id @default(uuid()) @db.Uuid
+  storeId    String              @map("store_id") @db.Uuid
+  store      Store               @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  userId     String?             @map("user_id") @db.Uuid
+  user       User?               @relation(fields: [userId], references: [id], onDelete: SetNull)
+  customerId String?             @map("customer_id") @db.Uuid
+  customer   Customer?           @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  channel    NotificationChannel
+  status     NotificationStatus  @default(pending)
+  subject    String?
+  title      String?
+  body       String
+  metadata   Json?
+  sentAt     DateTime?           @map("sent_at")
+  createdAt  DateTime            @default(now()) @map("created_at")
+  updatedAt  DateTime            @updatedAt @map("updated_at")
+
+  @@index([storeId])
+  @@index([storeId, status])
+  @@index([storeId, channel])
+  @@index([userId])
+  @@index([customerId])
+  @@index([createdAt])
+  @@map("notifications")
 }
