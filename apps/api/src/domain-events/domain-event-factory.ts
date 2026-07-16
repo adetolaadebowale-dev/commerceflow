@@ -119,6 +119,12 @@ import type {
   InventorySummary,
   InventoryValuationReport,
   LowStockReport,
+  CustomerGrowthReport,
+  CustomerOrdersReport,
+  CustomerReportGeneratedPayload,
+  CustomerReportKind,
+  CustomerSummary,
+  TopCustomersReport,
   Shipment,
   ShipmentStatus,
   ShipmentCreatedPayload,
@@ -1608,6 +1614,30 @@ export function buildInventoryReportGeneratedEvent(
   return createDomainEvent({
     eventType: "reports.inventory.generated",
     aggregateType: "inventory_report",
+    aggregateId: storeId,
+    storeId,
+    payload: {
+      storeId,
+      reportKind,
+      rowCount,
+      report,
+    },
+  });
+}
+
+export function buildCustomerReportGeneratedEvent(
+  storeId: string,
+  reportKind: CustomerReportKind,
+  rowCount: number,
+  report:
+    | CustomerSummary
+    | CustomerGrowthReport
+    | TopCustomersReport
+    | CustomerOrdersReport,
+): DomainEvent<CustomerReportGeneratedPayload> {
+  return createDomainEvent({
+    eventType: "reports.customers.generated",
+    aggregateType: "customer_report",
     aggregateId: storeId,
     storeId,
     payload: {

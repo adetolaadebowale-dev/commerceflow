@@ -71,6 +71,12 @@ import type {
   SalesSummary,
   SalesTimelineReport,
 } from "../reports/sales";
+import type {
+  CustomerGrowthReport,
+  CustomerOrdersReport,
+  CustomerSummary,
+  TopCustomersReport,
+} from "../reports/customers";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -993,6 +999,23 @@ export interface InventoryReportGeneratedPayload {
     | InventoryMovementReport
     | LowStockReport
     | InventoryValuationReport;
+}
+
+export type CustomerReportKind =
+  | "summary"
+  | "growth"
+  | "top"
+  | "orders";
+
+export interface CustomerReportGeneratedPayload {
+  readonly storeId: string;
+  readonly reportKind: CustomerReportKind;
+  readonly rowCount: number;
+  readonly report:
+    | CustomerSummary
+    | CustomerGrowthReport
+    | TopCustomersReport
+    | CustomerOrdersReport;
 }
 
 export interface ShippingZoneCreatedPayload {

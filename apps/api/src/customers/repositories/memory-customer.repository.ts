@@ -142,4 +142,8 @@ export class MemoryCustomerRepository implements CustomerRepository {
     this.deletedIds.add(id);
     return existing;
   }
+
+  seedCustomer(customer: Customer): void {
+    this.customersById.set(customer.id, customer);
+  }
 }

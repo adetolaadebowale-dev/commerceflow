@@ -350,6 +350,14 @@ export {
   type InventoryMovementQuery,
   type InventorySummaryQuery,
   type InventoryValuationQuery,
+  customerGrowthQuerySchema,
+  customerOrdersQuerySchema,
+  customerSummaryQuerySchema,
+  topCustomersQuerySchema,
+  type CustomerGrowthQuery,
+  type CustomerOrdersQuery,
+  type CustomerSummaryQuery,
+  type TopCustomersQuery,
 } from "./reports";
 export {
   createShippingMethodSchema,

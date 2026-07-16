@@ -213,6 +213,19 @@ export {
   type InventoryWarehouseReport,
   type LowStockReport,
   type LowStockReportItem,
+  type CustomerGeographicDistributionRow,
+  type CustomerGrowthGranularity,
+  type CustomerGrowthPoint,
+  type CustomerGrowthReport,
+  type CustomerLifetimeValue,
+  type CustomerMetrics,
+  type CustomerNewVsReturningBreakdown,
+  type CustomerOrderReport,
+  type CustomerOrdersReport,
+  type CustomerPurchaseFrequencyBand,
+  type CustomerSummary,
+  type TopCustomerReport,
+  type TopCustomersReport,
 } from "./reports";
 export {
   type AppliedCartPromotion,
@@ -358,4 +371,6 @@ export {
   type SalesReportKind,
   type InventoryReportGeneratedPayload,
   type InventoryReportKind,
+  type CustomerReportGeneratedPayload,
+  type CustomerReportKind,
 } from "./domain-events";

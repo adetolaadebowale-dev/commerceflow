@@ -36,3 +36,18 @@ export type {
   SalesTimelineReport,
   SalesWarehouseBreakdown,
 } from "./sales";
+export type {
+  CustomerGeographicDistributionRow,
+  CustomerGrowthGranularity,
+  CustomerGrowthPoint,
+  CustomerGrowthReport,
+  CustomerLifetimeValue,
+  CustomerMetrics,
+  CustomerNewVsReturningBreakdown,
+  CustomerOrderReport,
+  CustomerOrdersReport,
+  CustomerPurchaseFrequencyBand,
+  CustomerSummary,
+  TopCustomerReport,
+  TopCustomersReport,
+} from "./customers";

@@ -36,3 +36,13 @@ export {
   type InventorySummaryQuery,
   type InventoryValuationQuery,
 } from "./inventory";
+export {
+  customerGrowthQuerySchema,
+  customerOrdersQuerySchema,
+  customerSummaryQuerySchema,
+  topCustomersQuerySchema,
+  type CustomerGrowthQuery,
+  type CustomerOrdersQuery,
+  type CustomerSummaryQuery,
+  type TopCustomersQuery,
+} from "./customers";

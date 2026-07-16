@@ -344,6 +344,14 @@ export type {
   InventoryMovementParams,
   InventoryLowStockParams,
   InventoryValuationParams,
+  CustomerSummaryParams,
+  CustomerGrowthParams,
+  TopCustomersParams,
+  CustomerOrdersParams,
+  GetCustomerSummaryResponse,
+  GetCustomerGrowthResponse,
+  GetTopCustomersResponse,
+  GetCustomerOrdersResponse,
 } from "./reports/contracts";
 export {
   createReportsClient,

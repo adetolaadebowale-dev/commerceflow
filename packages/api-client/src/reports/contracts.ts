@@ -17,7 +17,30 @@ import type {
   SalesTimelineQuery,
 } from "@commerceflow/validation";
 
+import type {
+  CustomerGrowthReport,
+  CustomerOrdersReport,
+  CustomerSummary,
+  TopCustomersReport,
+} from "@commerceflow/types";
+import type {
+  CustomerGrowthQuery,
+  CustomerOrdersQuery,
+  CustomerSummaryQuery,
+  TopCustomersQuery,
+} from "@commerceflow/validation";
+
 import type { ApiSuccessResponse } from "../common/api-response";
+
+export type CustomerSummaryParams = CustomerSummaryQuery;
+export type CustomerGrowthParams = CustomerGrowthQuery;
+export type TopCustomersParams = TopCustomersQuery;
+export type CustomerOrdersParams = CustomerOrdersQuery;
+
+export type GetCustomerSummaryResponse = ApiSuccessResponse<CustomerSummary>;
+export type GetCustomerGrowthResponse = ApiSuccessResponse<CustomerGrowthReport>;
+export type GetTopCustomersResponse = ApiSuccessResponse<TopCustomersReport>;
+export type GetCustomerOrdersResponse = ApiSuccessResponse<CustomerOrdersReport>;
 
 export type ReportHealthParams = import("@commerceflow/validation").ReportHealthQuery;
 export type ReportDashboardParams =

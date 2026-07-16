@@ -106,6 +106,8 @@ export type {
   SalesReportKind,
   InventoryReportGeneratedPayload,
   InventoryReportKind,
+  CustomerReportGeneratedPayload,
+  CustomerReportKind,
   ShippingZoneCreatedPayload,
   ShippingZoneUpdatedPayload,
   ShippingZoneDeletedPayload,

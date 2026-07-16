@@ -148,6 +148,10 @@ export class MemoryCustomerAddressRepository implements CustomerAddressRepositor
     return existing;
   }
 
+  seedCustomerAddress(address: CustomerAddress): void {
+    this.addressesById.set(address.id, address);
+  }
+
   private async clearDefault(
     storeId: string,
     customerId: string,

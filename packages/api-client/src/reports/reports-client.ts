@@ -8,6 +8,14 @@ import type {
   GetInventoryMovementResponse,
   GetLowStockReportResponse,
   GetInventoryValuationResponse,
+  CustomerSummaryParams,
+  CustomerGrowthParams,
+  TopCustomersParams,
+  CustomerOrdersParams,
+  GetCustomerSummaryResponse,
+  GetCustomerGrowthResponse,
+  GetTopCustomersResponse,
+  GetCustomerOrdersResponse,
   ReportDashboardParams,
   ReportHealthParams,
   SalesOrderReportParams,
@@ -187,6 +195,69 @@ function toInventoryValuationQueryString(
   return query ? `?${query}` : "";
 }
 
+function appendCustomerFilterParams(
+  searchParams: URLSearchParams,
+  params: {
+    storeId: string;
+    fromDate?: string;
+    toDate?: string;
+    timezone?: string;
+    currency?: string;
+    orderStatus?: string;
+    customerStatus?: string;
+    customerIds?: readonly string[];
+  },
+): void {
+  searchParams.set("storeId", params.storeId);
+  appendQueryParam(searchParams, "fromDate", params.fromDate);
+  appendQueryParam(searchParams, "toDate", params.toDate);
+  appendQueryParam(searchParams, "timezone", params.timezone);
+  appendQueryParam(searchParams, "currency", params.currency);
+  appendQueryParam(searchParams, "orderStatus", params.orderStatus);
+  appendQueryParam(searchParams, "customerStatus", params.customerStatus);
+
+  for (const customerId of params.customerIds ?? []) {
+    searchParams.append("customerIds", customerId);
+  }
+}
+
+function toCustomerSummaryQueryString(params: CustomerSummaryParams): string {
+  const searchParams = new URLSearchParams();
+  appendCustomerFilterParams(searchParams, params);
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
+}
+
+function toCustomerGrowthQueryString(params: CustomerGrowthParams): string {
+  const searchParams = new URLSearchParams();
+  appendCustomerFilterParams(searchParams, params);
+  appendQueryParam(searchParams, "granularity", params.granularity);
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
+}
+
+function toTopCustomersQueryString(params: TopCustomersParams): string {
+  const searchParams = new URLSearchParams();
+  appendCustomerFilterParams(searchParams, params);
+  appendQueryParam(searchParams, "page", params.page);
+  appendQueryParam(searchParams, "limit", params.limit);
+  appendQueryParam(searchParams, "sortBy", params.sortBy);
+  appendQueryParam(searchParams, "sortDirection", params.sortDirection);
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
+}
+
+function toCustomerOrdersQueryString(params: CustomerOrdersParams): string {
+  const searchParams = new URLSearchParams();
+  appendCustomerFilterParams(searchParams, params);
+  appendQueryParam(searchParams, "page", params.page);
+  appendQueryParam(searchParams, "limit", params.limit);
+  appendQueryParam(searchParams, "sortBy", params.sortBy);
+  appendQueryParam(searchParams, "sortDirection", params.sortDirection);
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
+}
+
 export function createReportsClient(config: ApiClientConfig) {
   return {
     getHealth(params: ReportHealthParams): Promise<GetReportHealthResponse> {
@@ -273,6 +344,46 @@ export function createReportsClient(config: ApiClientConfig) {
       return apiRequest(config, {
         method: "GET",
         path: `/api/reports/inventory/valuation${toInventoryValuationQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      });
+    },
+
+    getCustomerSummary(
+      params: CustomerSummaryParams,
+    ): Promise<GetCustomerSummaryResponse> {
+      return apiRequest(config, {
+        method: "GET",
+        path: `/api/reports/customers/summary${toCustomerSummaryQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      });
+    },
+
+    getCustomerGrowth(
+      params: CustomerGrowthParams,
+    ): Promise<GetCustomerGrowthResponse> {
+      return apiRequest(config, {
+        method: "GET",
+        path: `/api/reports/customers/growth${toCustomerGrowthQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      });
+    },
+
+    getTopCustomers(
+      params: TopCustomersParams,
+    ): Promise<GetTopCustomersResponse> {
+      return apiRequest(config, {
+        method: "GET",
+        path: `/api/reports/customers/top${toTopCustomersQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      });
+    },
+
+    listCustomerOrders(
+      params: CustomerOrdersParams,
+    ): Promise<GetCustomerOrdersResponse> {
+      return apiRequest(config, {
+        method: "GET",
+        path: `/api/reports/customers/orders${toCustomerOrdersQueryString(params)}`,
         accessToken: config.getAccessToken?.(),
       });
     },
