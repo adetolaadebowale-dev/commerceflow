@@ -261,6 +261,12 @@ export {
   type WarehouseAnalytics,
   type WarehouseAnalyticsRow,
   type WarehouseAnalyticsSummary,
+  type DashboardKPI,
+  type DashboardKPIReport,
+  type DashboardSection,
+  type DashboardSectionKey,
+  type ExecutiveDashboard,
+  type ExecutiveSummary,
 } from "./reports";
 export {
   type AppliedCartPromotion,
@@ -412,4 +418,6 @@ export {
   type FinancialReportKind,
   type ProcurementReportKind,
   type ProcurementReportGeneratedPayload,
+  type DashboardReportKind,
+  type DashboardReportGeneratedPayload,
 } from "./domain-events";

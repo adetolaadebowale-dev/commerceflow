@@ -137,6 +137,10 @@ import type {
   ReplenishmentAnalytics,
   SupplierAnalytics,
   WarehouseAnalytics,
+  DashboardKPIReport,
+  DashboardReportGeneratedPayload,
+  DashboardReportKind,
+  ExecutiveDashboard,
   RefundReport,
   RevenueTimelineReport,
   Shipment,
@@ -1702,6 +1706,26 @@ export function buildProcurementReportGeneratedEvent(
   return createDomainEvent({
     eventType: "reports.procurement.generated",
     aggregateType: "procurement_report",
+    aggregateId: storeId,
+    storeId,
+    payload: {
+      storeId,
+      reportKind,
+      rowCount,
+      report,
+    },
+  });
+}
+
+export function buildDashboardReportGeneratedEvent(
+  storeId: string,
+  reportKind: DashboardReportKind,
+  rowCount: number,
+  report: ExecutiveDashboard | DashboardKPIReport,
+): DomainEvent<DashboardReportGeneratedPayload> {
+  return createDomainEvent({
+    eventType: "reports.dashboard.generated",
+    aggregateType: "dashboard_report",
     aggregateId: storeId,
     storeId,
     payload: {

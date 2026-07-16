@@ -90,3 +90,11 @@ export type {
   WarehouseAnalyticsRow,
   WarehouseAnalyticsSummary,
 } from "./procurement";
+export type {
+  DashboardKPI,
+  DashboardKPIReport,
+  DashboardSection,
+  DashboardSectionKey,
+  ExecutiveDashboard,
+  ExecutiveSummary,
+} from "./dashboard";

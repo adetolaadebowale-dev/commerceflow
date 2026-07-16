@@ -53,3 +53,4 @@ Validation in `packages/validation/src/reports/` for date range, pagination, sor
 - Dashboard and report endpoints share validation, pagination, and aggregation utilities
 - Placeholder dashboard proves end-to-end wiring without premature business logic
 - Future reports inherit timezone and currency-safe total handling from `report-utils`
+- **Updated Sprint 9.6:** Executive dashboard endpoints (`/dashboard/executive`, `/dashboard/kpis`) now provide consolidated KPIs; the original `/dashboard` placeholder remains for foundation compatibility. See [Phase 4 Reporting & Analytics](../architecture/phase4-reporting-analytics.md) and [ADR 0041](0041-executive-dashboard-architecture.md).

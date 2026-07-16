@@ -70,3 +70,9 @@ export {
   type WarehouseAnalyticsQuery,
   type ReplenishmentAnalyticsQuery,
 } from "./procurement";
+export {
+  dashboardKPIQuerySchema,
+  executiveDashboardQuerySchema,
+  type DashboardKPIQuery,
+  type ExecutiveDashboardQuery,
+} from "./dashboard";

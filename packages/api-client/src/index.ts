@@ -372,6 +372,10 @@ export type {
   GetSupplierAnalyticsResponse,
   GetWarehouseAnalyticsResponse,
   GetReplenishmentAnalyticsResponse,
+  ExecutiveDashboardParams,
+  DashboardKPIParams,
+  GetExecutiveDashboardResponse,
+  GetDashboardKPIsResponse,
 } from "./reports/contracts";
 export {
   createReportsClient,

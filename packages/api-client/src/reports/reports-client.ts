@@ -36,6 +36,10 @@ import type {
   GetSupplierAnalyticsResponse,
   GetWarehouseAnalyticsResponse,
   GetReplenishmentAnalyticsResponse,
+  ExecutiveDashboardParams,
+  DashboardKPIParams,
+  GetExecutiveDashboardResponse,
+  GetDashboardKPIsResponse,
   ReportDashboardParams,
   ReportHealthParams,
   SalesOrderReportParams,
@@ -442,6 +446,42 @@ function toReplenishmentAnalyticsQueryString(
   return query ? `?${query}` : "";
 }
 
+function toExecutiveDashboardQueryString(
+  params: ExecutiveDashboardParams,
+): string {
+  const searchParams = new URLSearchParams();
+  searchParams.set("storeId", params.storeId);
+  appendQueryParam(searchParams, "fromDate", params.fromDate);
+  appendQueryParam(searchParams, "toDate", params.toDate);
+  appendQueryParam(searchParams, "timezone", params.timezone);
+  appendQueryParam(searchParams, "currency", params.currency);
+
+  for (const warehouseId of params.warehouseIds ?? []) {
+    searchParams.append("warehouseIds", warehouseId);
+  }
+
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
+}
+
+function toDashboardKPIQueryString(params: DashboardKPIParams): string {
+  const searchParams = new URLSearchParams();
+  searchParams.set("storeId", params.storeId);
+  appendQueryParam(searchParams, "fromDate", params.fromDate);
+  appendQueryParam(searchParams, "toDate", params.toDate);
+  appendQueryParam(searchParams, "timezone", params.timezone);
+  appendQueryParam(searchParams, "currency", params.currency);
+  appendQueryParam(searchParams, "page", params.page);
+  appendQueryParam(searchParams, "limit", params.limit);
+
+  for (const warehouseId of params.warehouseIds ?? []) {
+    searchParams.append("warehouseIds", warehouseId);
+  }
+
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
+}
+
 export function createReportsClient(config: ApiClientConfig) {
   return {
     getHealth(params: ReportHealthParams): Promise<GetReportHealthResponse> {
@@ -668,6 +708,26 @@ export function createReportsClient(config: ApiClientConfig) {
       return apiRequest(config, {
         method: "GET",
         path: `/api/reports/procurement/replenishment${toReplenishmentAnalyticsQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      });
+    },
+
+    getExecutiveDashboard(
+      params: ExecutiveDashboardParams,
+    ): Promise<GetExecutiveDashboardResponse> {
+      return apiRequest(config, {
+        method: "GET",
+        path: `/api/reports/dashboard/executive${toExecutiveDashboardQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      });
+    },
+
+    getDashboardKPIs(
+      params: DashboardKPIParams,
+    ): Promise<GetDashboardKPIsResponse> {
+      return apiRequest(config, {
+        method: "GET",
+        path: `/api/reports/dashboard/kpis${toDashboardKPIQueryString(params)}`,
         accessToken: config.getAccessToken?.(),
       });
     },

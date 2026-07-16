@@ -112,6 +112,8 @@ export type {
   FinancialReportKind,
   ProcurementReportGeneratedPayload,
   ProcurementReportKind,
+  DashboardReportGeneratedPayload,
+  DashboardReportKind,
   ShippingZoneCreatedPayload,
   ShippingZoneUpdatedPayload,
   ShippingZoneDeletedPayload,

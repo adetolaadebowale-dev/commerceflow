@@ -98,6 +98,21 @@ export type GetWarehouseAnalyticsResponse = ApiSuccessResponse<WarehouseAnalytic
 export type GetReplenishmentAnalyticsResponse =
   ApiSuccessResponse<ReplenishmentAnalytics>;
 
+import type {
+  DashboardKPIReport,
+  ExecutiveDashboard,
+} from "@commerceflow/types";
+import type {
+  DashboardKPIQuery,
+  ExecutiveDashboardQuery,
+} from "@commerceflow/validation";
+
+export type ExecutiveDashboardParams = ExecutiveDashboardQuery;
+export type DashboardKPIParams = DashboardKPIQuery;
+
+export type GetExecutiveDashboardResponse = ApiSuccessResponse<ExecutiveDashboard>;
+export type GetDashboardKPIsResponse = ApiSuccessResponse<DashboardKPIReport>;
+
 export type ReportHealthParams = import("@commerceflow/validation").ReportHealthQuery;
 export type ReportDashboardParams =
   import("@commerceflow/validation").ReportDashboardQuery;

@@ -75,6 +75,7 @@ import {
   buildCustomerReportGeneratedEvent,
   buildFinancialReportGeneratedEvent,
   buildProcurementReportGeneratedEvent,
+  buildDashboardReportGeneratedEvent,
   buildWarehouseIntegrityCheckedEvent,
   buildInventoryIntegrityCheckedEvent,
   buildShipmentCreatedEvent,
@@ -188,6 +189,9 @@ import type {
   SupplierAnalytics,
   WarehouseAnalytics,
   ProcurementReportKind,
+  DashboardKPIReport,
+  DashboardReportKind,
+  ExecutiveDashboard,
   ShippingZone,
   ShippingMethod,
 } from "@commerceflow/types";
@@ -841,6 +845,17 @@ export class DomainEventPublisher {
   ): void {
     this.dispatch(
       buildProcurementReportGeneratedEvent(storeId, reportKind, rowCount, report),
+    );
+  }
+
+  publishDashboardReportGenerated(
+    storeId: string,
+    reportKind: DashboardReportKind,
+    rowCount: number,
+    report: ExecutiveDashboard | DashboardKPIReport,
+  ): void {
+    this.dispatch(
+      buildDashboardReportGeneratedEvent(storeId, reportKind, rowCount, report),
     );
   }
 

@@ -378,6 +378,10 @@ export {
   type SupplierAnalyticsQuery,
   type WarehouseAnalyticsQuery,
   type ReplenishmentAnalyticsQuery,
+  dashboardKPIQuerySchema,
+  executiveDashboardQuerySchema,
+  type DashboardKPIQuery,
+  type ExecutiveDashboardQuery,
 } from "./reports";
 export {
   createShippingMethodSchema,

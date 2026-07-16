@@ -91,6 +91,10 @@ import type {
   SupplierAnalytics,
   WarehouseAnalytics,
 } from "../reports/procurement";
+import type {
+  DashboardKPIReport,
+  ExecutiveDashboard,
+} from "../reports/dashboard";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -1068,6 +1072,15 @@ export interface ProcurementReportGeneratedPayload {
     | SupplierAnalytics
     | WarehouseAnalytics
     | ReplenishmentAnalytics;
+}
+
+export type DashboardReportKind = "executive" | "kpis";
+
+export interface DashboardReportGeneratedPayload {
+  readonly storeId: string;
+  readonly reportKind: DashboardReportKind;
+  readonly rowCount: number;
+  readonly report: ExecutiveDashboard | DashboardKPIReport;
 }
 
 export interface ShippingZoneCreatedPayload {
