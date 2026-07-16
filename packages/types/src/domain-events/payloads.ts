@@ -77,6 +77,13 @@ import type {
   CustomerSummary,
   TopCustomersReport,
 } from "../reports/customers";
+import type {
+  FinancialSummary,
+  InvoiceReport,
+  PaymentReport,
+  RefundReport,
+  RevenueTimelineReport,
+} from "../reports/financial";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -1016,6 +1023,25 @@ export interface CustomerReportGeneratedPayload {
     | CustomerGrowthReport
     | TopCustomersReport
     | CustomerOrdersReport;
+}
+
+export type FinancialReportKind =
+  | "summary"
+  | "revenue"
+  | "payments"
+  | "invoices"
+  | "refunds";
+
+export interface FinancialReportGeneratedPayload {
+  readonly storeId: string;
+  readonly reportKind: FinancialReportKind;
+  readonly rowCount: number;
+  readonly report:
+    | FinancialSummary
+    | RevenueTimelineReport
+    | PaymentReport
+    | InvoiceReport
+    | RefundReport;
 }
 
 export interface ShippingZoneCreatedPayload {

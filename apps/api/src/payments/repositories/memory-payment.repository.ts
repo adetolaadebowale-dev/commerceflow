@@ -90,4 +90,8 @@ export class MemoryPaymentRepository implements PaymentRepository {
     this.paymentsById.set(id, updated);
     return updated;
   }
+
+  seedPayment(payment: Payment): void {
+    this.paymentsById.set(payment.id, payment);
+  }
 }

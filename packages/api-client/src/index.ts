@@ -352,6 +352,16 @@ export type {
   GetCustomerGrowthResponse,
   GetTopCustomersResponse,
   GetCustomerOrdersResponse,
+  FinancialSummaryParams,
+  RevenueTimelineParams,
+  PaymentReportParams,
+  InvoiceReportParams,
+  RefundReportParams,
+  GetFinancialSummaryResponse,
+  GetRevenueTimelineResponse,
+  GetPaymentReportResponse,
+  GetInvoiceReportResponse,
+  GetRefundReportResponse,
 } from "./reports/contracts";
 export {
   createReportsClient,

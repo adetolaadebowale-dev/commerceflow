@@ -42,6 +42,33 @@ export type GetCustomerGrowthResponse = ApiSuccessResponse<CustomerGrowthReport>
 export type GetTopCustomersResponse = ApiSuccessResponse<TopCustomersReport>;
 export type GetCustomerOrdersResponse = ApiSuccessResponse<CustomerOrdersReport>;
 
+import type {
+  FinancialSummary,
+  InvoiceReport,
+  PaymentReport,
+  RefundReport,
+  RevenueTimelineReport,
+} from "@commerceflow/types";
+import type {
+  FinancialSummaryQuery,
+  InvoiceReportQuery,
+  PaymentReportQuery,
+  RefundReportQuery,
+  RevenueTimelineQuery,
+} from "@commerceflow/validation";
+
+export type FinancialSummaryParams = FinancialSummaryQuery;
+export type RevenueTimelineParams = RevenueTimelineQuery;
+export type PaymentReportParams = PaymentReportQuery;
+export type InvoiceReportParams = InvoiceReportQuery;
+export type RefundReportParams = RefundReportQuery;
+
+export type GetFinancialSummaryResponse = ApiSuccessResponse<FinancialSummary>;
+export type GetRevenueTimelineResponse = ApiSuccessResponse<RevenueTimelineReport>;
+export type GetPaymentReportResponse = ApiSuccessResponse<PaymentReport>;
+export type GetInvoiceReportResponse = ApiSuccessResponse<InvoiceReport>;
+export type GetRefundReportResponse = ApiSuccessResponse<RefundReport>;
+
 export type ReportHealthParams = import("@commerceflow/validation").ReportHealthQuery;
 export type ReportDashboardParams =
   import("@commerceflow/validation").ReportDashboardQuery;

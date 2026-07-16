@@ -140,4 +140,12 @@ export class MemoryInvoiceRepository implements InvoiceRepository {
     this.invoicesById.set(id, updated);
     return updated;
   }
+
+  seedInvoice(invoice: Invoice): void {
+    const numbers =
+      this.invoiceNumbersByStore.get(invoice.storeId) ?? new Set<string>();
+    numbers.add(invoice.invoiceNumber);
+    this.invoiceNumbersByStore.set(invoice.storeId, numbers);
+    this.invoicesById.set(invoice.id, invoice);
+  }
 }

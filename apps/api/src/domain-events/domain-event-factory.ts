@@ -125,6 +125,13 @@ import type {
   CustomerReportKind,
   CustomerSummary,
   TopCustomersReport,
+  FinancialReportGeneratedPayload,
+  FinancialReportKind,
+  FinancialSummary,
+  InvoiceReport,
+  PaymentReport,
+  RefundReport,
+  RevenueTimelineReport,
   Shipment,
   ShipmentStatus,
   ShipmentCreatedPayload,
@@ -1638,6 +1645,31 @@ export function buildCustomerReportGeneratedEvent(
   return createDomainEvent({
     eventType: "reports.customers.generated",
     aggregateType: "customer_report",
+    aggregateId: storeId,
+    storeId,
+    payload: {
+      storeId,
+      reportKind,
+      rowCount,
+      report,
+    },
+  });
+}
+
+export function buildFinancialReportGeneratedEvent(
+  storeId: string,
+  reportKind: FinancialReportKind,
+  rowCount: number,
+  report:
+    | FinancialSummary
+    | RevenueTimelineReport
+    | PaymentReport
+    | InvoiceReport
+    | RefundReport,
+): DomainEvent<FinancialReportGeneratedPayload> {
+  return createDomainEvent({
+    eventType: "reports.financial.generated",
+    aggregateType: "financial_report",
     aggregateId: storeId,
     storeId,
     payload: {

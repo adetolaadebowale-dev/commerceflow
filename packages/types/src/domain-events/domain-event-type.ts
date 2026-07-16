@@ -105,6 +105,7 @@ export const DOMAIN_EVENT_TYPES = [
   "reports.sales.generated",
   "reports.inventory.generated",
   "reports.customers.generated",
+  "reports.financial.generated",
   "dashboard.viewed",
 ] as const;
 

@@ -51,3 +51,22 @@ export type {
   TopCustomerReport,
   TopCustomersReport,
 } from "./customers";
+export type {
+  DiscountSummary,
+  FinancialMetrics,
+  FinancialSummary,
+  InvoiceReport,
+  InvoiceReportRow,
+  InvoiceSummary,
+  PaymentReport,
+  PaymentReportRow,
+  PaymentSummary,
+  RefundReport,
+  RefundReportRow,
+  RefundSummary,
+  RevenueTimelineGranularity,
+  RevenueTimelinePoint,
+  RevenueTimelineReport,
+  ShippingRevenueSummary,
+  TaxSummary,
+} from "./financial";

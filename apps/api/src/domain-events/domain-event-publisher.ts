@@ -73,6 +73,7 @@ import {
   buildSalesReportGeneratedEvent,
   buildInventoryReportGeneratedEvent,
   buildCustomerReportGeneratedEvent,
+  buildFinancialReportGeneratedEvent,
   buildWarehouseIntegrityCheckedEvent,
   buildInventoryIntegrityCheckedEvent,
   buildShipmentCreatedEvent,
@@ -174,6 +175,12 @@ import type {
   CustomerReportKind,
   CustomerSummary,
   TopCustomersReport,
+  FinancialSummary,
+  InvoiceReport,
+  PaymentReport,
+  RefundReport,
+  RevenueTimelineReport,
+  FinancialReportKind,
   ShippingZone,
   ShippingMethod,
 } from "@commerceflow/types";
@@ -795,6 +802,22 @@ export class DomainEventPublisher {
   ): void {
     this.dispatch(
       buildCustomerReportGeneratedEvent(storeId, reportKind, rowCount, report),
+    );
+  }
+
+  publishFinancialReportGenerated(
+    storeId: string,
+    reportKind: FinancialReportKind,
+    rowCount: number,
+    report:
+      | FinancialSummary
+      | RevenueTimelineReport
+      | PaymentReport
+      | InvoiceReport
+      | RefundReport,
+  ): void {
+    this.dispatch(
+      buildFinancialReportGeneratedEvent(storeId, reportKind, rowCount, report),
     );
   }
 

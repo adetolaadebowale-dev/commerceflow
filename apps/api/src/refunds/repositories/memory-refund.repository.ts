@@ -105,4 +105,8 @@ export class MemoryRefundRepository implements RefundRepository {
     this.refundsById.set(id, updated);
     return updated;
   }
+
+  seedRefund(refund: Refund): void {
+    this.refundsById.set(refund.id, refund);
+  }
 }

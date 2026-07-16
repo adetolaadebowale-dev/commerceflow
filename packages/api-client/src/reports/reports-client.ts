@@ -16,6 +16,16 @@ import type {
   GetCustomerGrowthResponse,
   GetTopCustomersResponse,
   GetCustomerOrdersResponse,
+  FinancialSummaryParams,
+  RevenueTimelineParams,
+  PaymentReportParams,
+  InvoiceReportParams,
+  RefundReportParams,
+  GetFinancialSummaryResponse,
+  GetRevenueTimelineResponse,
+  GetPaymentReportResponse,
+  GetInvoiceReportResponse,
+  GetRefundReportResponse,
   ReportDashboardParams,
   ReportHealthParams,
   SalesOrderReportParams,
@@ -258,6 +268,82 @@ function toCustomerOrdersQueryString(params: CustomerOrdersParams): string {
   return query ? `?${query}` : "";
 }
 
+function appendFinancialFilterParams(
+  searchParams: URLSearchParams,
+  params: {
+    storeId: string;
+    fromDate?: string;
+    toDate?: string;
+    timezone?: string;
+    currency?: string;
+    orderStatus?: string;
+    paymentStatus?: string;
+    invoiceStatus?: string;
+    warehouseIds?: readonly string[];
+  },
+): void {
+  searchParams.set("storeId", params.storeId);
+  appendQueryParam(searchParams, "fromDate", params.fromDate);
+  appendQueryParam(searchParams, "toDate", params.toDate);
+  appendQueryParam(searchParams, "timezone", params.timezone);
+  appendQueryParam(searchParams, "currency", params.currency);
+  appendQueryParam(searchParams, "orderStatus", params.orderStatus);
+  appendQueryParam(searchParams, "paymentStatus", params.paymentStatus);
+  appendQueryParam(searchParams, "invoiceStatus", params.invoiceStatus);
+
+  for (const warehouseId of params.warehouseIds ?? []) {
+    searchParams.append("warehouseIds", warehouseId);
+  }
+}
+
+function toFinancialSummaryQueryString(params: FinancialSummaryParams): string {
+  const searchParams = new URLSearchParams();
+  appendFinancialFilterParams(searchParams, params);
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
+}
+
+function toRevenueTimelineQueryString(params: RevenueTimelineParams): string {
+  const searchParams = new URLSearchParams();
+  appendFinancialFilterParams(searchParams, params);
+  appendQueryParam(searchParams, "granularity", params.granularity);
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
+}
+
+function toPaymentReportQueryString(params: PaymentReportParams): string {
+  const searchParams = new URLSearchParams();
+  appendFinancialFilterParams(searchParams, params);
+  appendQueryParam(searchParams, "page", params.page);
+  appendQueryParam(searchParams, "limit", params.limit);
+  appendQueryParam(searchParams, "sortBy", params.sortBy);
+  appendQueryParam(searchParams, "sortDirection", params.sortDirection);
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
+}
+
+function toInvoiceReportQueryString(params: InvoiceReportParams): string {
+  const searchParams = new URLSearchParams();
+  appendFinancialFilterParams(searchParams, params);
+  appendQueryParam(searchParams, "page", params.page);
+  appendQueryParam(searchParams, "limit", params.limit);
+  appendQueryParam(searchParams, "sortBy", params.sortBy);
+  appendQueryParam(searchParams, "sortDirection", params.sortDirection);
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
+}
+
+function toRefundReportQueryString(params: RefundReportParams): string {
+  const searchParams = new URLSearchParams();
+  appendFinancialFilterParams(searchParams, params);
+  appendQueryParam(searchParams, "page", params.page);
+  appendQueryParam(searchParams, "limit", params.limit);
+  appendQueryParam(searchParams, "sortBy", params.sortBy);
+  appendQueryParam(searchParams, "sortDirection", params.sortDirection);
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
+}
+
 export function createReportsClient(config: ApiClientConfig) {
   return {
     getHealth(params: ReportHealthParams): Promise<GetReportHealthResponse> {
@@ -384,6 +470,56 @@ export function createReportsClient(config: ApiClientConfig) {
       return apiRequest(config, {
         method: "GET",
         path: `/api/reports/customers/orders${toCustomerOrdersQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      });
+    },
+
+    getFinancialSummary(
+      params: FinancialSummaryParams,
+    ): Promise<GetFinancialSummaryResponse> {
+      return apiRequest(config, {
+        method: "GET",
+        path: `/api/reports/financial/summary${toFinancialSummaryQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      });
+    },
+
+    getRevenueTimeline(
+      params: RevenueTimelineParams,
+    ): Promise<GetRevenueTimelineResponse> {
+      return apiRequest(config, {
+        method: "GET",
+        path: `/api/reports/financial/revenue${toRevenueTimelineQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      });
+    },
+
+    getPaymentReport(
+      params: PaymentReportParams,
+    ): Promise<GetPaymentReportResponse> {
+      return apiRequest(config, {
+        method: "GET",
+        path: `/api/reports/financial/payments${toPaymentReportQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      });
+    },
+
+    getInvoiceReport(
+      params: InvoiceReportParams,
+    ): Promise<GetInvoiceReportResponse> {
+      return apiRequest(config, {
+        method: "GET",
+        path: `/api/reports/financial/invoices${toInvoiceReportQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      });
+    },
+
+    getRefundReport(
+      params: RefundReportParams,
+    ): Promise<GetRefundReportResponse> {
+      return apiRequest(config, {
+        method: "GET",
+        path: `/api/reports/financial/refunds${toRefundReportQueryString(params)}`,
         accessToken: config.getAccessToken?.(),
       });
     },
