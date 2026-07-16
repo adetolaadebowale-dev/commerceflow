@@ -1,9 +1,17 @@
 import type {
+  InventoryMovementReport,
+  InventorySummary,
+  InventoryValuationReport,
+  LowStockReport,
   SalesOrdersReport,
   SalesSummary,
   SalesTimelineReport,
 } from "@commerceflow/types";
 import type {
+  InventoryLowStockQuery,
+  InventoryMovementQuery,
+  InventorySummaryQuery,
+  InventoryValuationQuery,
   SalesOrderReportQuery,
   SalesSummaryQuery,
   SalesTimelineQuery,
@@ -28,3 +36,14 @@ export type GetReportDashboardResponse =
 export type GetSalesSummaryResponse = ApiSuccessResponse<SalesSummary>;
 export type GetSalesTimelineResponse = ApiSuccessResponse<SalesTimelineReport>;
 export type GetSalesOrdersReportResponse = ApiSuccessResponse<SalesOrdersReport>;
+
+export type InventorySummaryParams = InventorySummaryQuery;
+export type InventoryMovementParams = InventoryMovementQuery;
+export type InventoryLowStockParams = InventoryLowStockQuery;
+export type InventoryValuationParams = InventoryValuationQuery;
+
+export type GetInventorySummaryResponse = ApiSuccessResponse<InventorySummary>;
+export type GetInventoryMovementResponse = ApiSuccessResponse<InventoryMovementReport>;
+export type GetLowStockReportResponse = ApiSuccessResponse<LowStockReport>;
+export type GetInventoryValuationResponse =
+  ApiSuccessResponse<InventoryValuationReport>;

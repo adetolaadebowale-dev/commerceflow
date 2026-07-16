@@ -46,6 +46,11 @@ export class MemoryInventoryReservationRepository
       .sort((left, right) => left.createdAt.localeCompare(right.createdAt));
   }
 
+  /** Test helper: insert a fully-formed reservation record. */
+  seedReservation(reservation: InventoryReservation): void {
+    this.reservationsById.set(reservation.id, reservation);
+  }
+
   async hasActiveReservationsForOrder(storeId: string, orderId: string) {
     return [...this.reservationsById.values()].some(
       (reservation) =>

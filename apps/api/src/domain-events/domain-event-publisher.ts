@@ -71,6 +71,7 @@ import {
   buildReportsGeneratedEvent,
   buildDashboardViewedEvent,
   buildSalesReportGeneratedEvent,
+  buildInventoryReportGeneratedEvent,
   buildWarehouseIntegrityCheckedEvent,
   buildInventoryIntegrityCheckedEvent,
   buildShipmentCreatedEvent,
@@ -162,6 +163,11 @@ import type {
   SalesReportKind,
   SalesSummary,
   SalesTimelineReport,
+  InventoryMovementReport,
+  InventoryReportKind,
+  InventorySummary,
+  InventoryValuationReport,
+  LowStockReport,
   ShippingZone,
   ShippingMethod,
 } from "@commerceflow/types";
@@ -753,6 +759,21 @@ export class DomainEventPublisher {
   ): void {
     this.dispatch(
       buildSalesReportGeneratedEvent(storeId, reportKind, orderCount, report),
+    );
+  }
+
+  publishInventoryReportGenerated(
+    storeId: string,
+    reportKind: InventoryReportKind,
+    rowCount: number,
+    report:
+      | InventorySummary
+      | InventoryMovementReport
+      | LowStockReport
+      | InventoryValuationReport,
+  ): void {
+    this.dispatch(
+      buildInventoryReportGeneratedEvent(storeId, reportKind, rowCount, report),
     );
   }
 

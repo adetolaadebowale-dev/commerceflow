@@ -25,6 +25,12 @@ export class MemoryInventoryItemRepository implements InventoryItemRepository {
     this.variantsByStore.set(storeId, variants);
   }
 
+  /** Test helper: insert a fully-formed inventory item record. */
+  seedInventoryItem(item: InventoryItem): void {
+    this.itemsById.set(item.id, item);
+    this.seedProductVariant(item.storeId, item.productVariantId);
+  }
+
   /** Simulates a mid-transaction failure for rollback tests. */
   setTransactionFailure(error: Error | null): void {
     this.transactionFailure = error;

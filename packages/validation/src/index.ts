@@ -342,6 +342,14 @@ export {
   type SalesOrderReportQuery,
   type SalesSummaryQuery,
   type SalesTimelineQuery,
+  inventoryLowStockQuerySchema,
+  inventoryMovementQuerySchema,
+  inventorySummaryQuerySchema,
+  inventoryValuationQuerySchema,
+  type InventoryLowStockQuery,
+  type InventoryMovementQuery,
+  type InventorySummaryQuery,
+  type InventoryValuationQuery,
 } from "./reports";
 export {
   createShippingMethodSchema,

@@ -9,6 +9,22 @@ export type {
   StoreReportingContext,
 } from "./report-foundation";
 export type {
+  InventoryAdjustmentSummary,
+  InventoryLowStockItem,
+  InventoryMetrics,
+  InventoryMovementReport,
+  InventoryMovementReportRow,
+  InventoryMovementTotals,
+  InventoryOutOfStockItem,
+  InventorySummary,
+  InventoryValuationReport,
+  InventoryValuationReportItem,
+  InventoryVariantReport,
+  InventoryWarehouseReport,
+  LowStockReport,
+  LowStockReportItem,
+} from "./inventory";
+export type {
   SalesFinancialMetrics,
   SalesOrderReport,
   SalesOrdersReport,

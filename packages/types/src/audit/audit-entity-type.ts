@@ -38,6 +38,7 @@ export const AUDIT_ENTITY_TYPES = [
   "operations",
   "report",
   "sales_report",
+  "inventory_report",
 ] as const;
 
 export type AuditEntityType = (typeof AUDIT_ENTITY_TYPES)[number];

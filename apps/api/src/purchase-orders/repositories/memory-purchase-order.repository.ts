@@ -396,4 +396,12 @@ export class MemoryPurchaseOrderRepository implements PurchaseOrderRepository {
 
     return toPurchaseOrder(existing);
   }
+
+  /** Test helper: insert a fully-formed purchase order record. */
+  seedPurchaseOrder(purchaseOrder: PurchaseOrder): void {
+    this.purchaseOrdersById.set(purchaseOrder.id, {
+      ...purchaseOrder,
+      items: purchaseOrder.items.map((item) => ({ ...item })),
+    });
+  }
 }

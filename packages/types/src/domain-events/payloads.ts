@@ -61,6 +61,12 @@ import type {
 } from "../operations/readiness";
 import type { ReportDashboardResponse } from "../reports/report-foundation";
 import type {
+  InventoryMovementReport,
+  InventorySummary,
+  InventoryValuationReport,
+  LowStockReport,
+} from "../reports/inventory";
+import type {
   SalesOrdersReport,
   SalesSummary,
   SalesTimelineReport,
@@ -970,6 +976,23 @@ export interface SalesReportGeneratedPayload {
   readonly reportKind: SalesReportKind;
   readonly orderCount: number;
   readonly report: SalesSummary | SalesTimelineReport | SalesOrdersReport;
+}
+
+export type InventoryReportKind =
+  | "summary"
+  | "movements"
+  | "low_stock"
+  | "valuation";
+
+export interface InventoryReportGeneratedPayload {
+  readonly storeId: string;
+  readonly reportKind: InventoryReportKind;
+  readonly rowCount: number;
+  readonly report:
+    | InventorySummary
+    | InventoryMovementReport
+    | LowStockReport
+    | InventoryValuationReport;
 }
 
 export interface ShippingZoneCreatedPayload {

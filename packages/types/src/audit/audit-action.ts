@@ -41,6 +41,9 @@ export const AUDIT_ACTIONS = [
   "generate_summary",
   "generate_timeline",
   "generate_orders",
+  "generate_movements",
+  "generate_low_stock",
+  "generate_valuation",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];

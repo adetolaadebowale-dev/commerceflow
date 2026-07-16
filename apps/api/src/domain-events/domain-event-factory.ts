@@ -108,11 +108,17 @@ import type {
   Phase3ReadinessReport,
   Phase3ValidationResult,
   ReportDashboardResponse,
+  InventoryReportGeneratedPayload,
+  InventoryReportKind,
   SalesOrdersReport,
   SalesReportGeneratedPayload,
   SalesReportKind,
   SalesSummary,
   SalesTimelineReport,
+  InventoryMovementReport,
+  InventorySummary,
+  InventoryValuationReport,
+  LowStockReport,
   Shipment,
   ShipmentStatus,
   ShipmentCreatedPayload,
@@ -1584,6 +1590,30 @@ export function buildSalesReportGeneratedEvent(
       storeId,
       reportKind,
       orderCount,
+      report,
+    },
+  });
+}
+
+export function buildInventoryReportGeneratedEvent(
+  storeId: string,
+  reportKind: InventoryReportKind,
+  rowCount: number,
+  report:
+    | InventorySummary
+    | InventoryMovementReport
+    | LowStockReport
+    | InventoryValuationReport,
+): DomainEvent<InventoryReportGeneratedPayload> {
+  return createDomainEvent({
+    eventType: "reports.inventory.generated",
+    aggregateType: "inventory_report",
+    aggregateId: storeId,
+    storeId,
+    payload: {
+      storeId,
+      reportKind,
+      rowCount,
       report,
     },
   });

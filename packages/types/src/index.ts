@@ -199,6 +199,20 @@ export {
   type SalesTimelinePoint,
   type SalesTimelineReport,
   type SalesWarehouseBreakdown,
+  type InventoryAdjustmentSummary,
+  type InventoryLowStockItem,
+  type InventoryMetrics,
+  type InventoryMovementReport,
+  type InventoryMovementReportRow,
+  type InventoryMovementTotals,
+  type InventoryOutOfStockItem,
+  type InventorySummary,
+  type InventoryValuationReport,
+  type InventoryValuationReportItem,
+  type InventoryVariantReport,
+  type InventoryWarehouseReport,
+  type LowStockReport,
+  type LowStockReportItem,
 } from "./reports";
 export {
   type AppliedCartPromotion,
@@ -342,4 +356,6 @@ export {
   type DashboardViewedPayload,
   type SalesReportGeneratedPayload,
   type SalesReportKind,
+  type InventoryReportGeneratedPayload,
+  type InventoryReportKind,
 } from "./domain-events";
