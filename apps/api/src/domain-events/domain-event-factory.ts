@@ -108,6 +108,11 @@ import type {
   Phase3ReadinessReport,
   Phase3ValidationResult,
   ReportDashboardResponse,
+  SalesOrdersReport,
+  SalesReportGeneratedPayload,
+  SalesReportKind,
+  SalesSummary,
+  SalesTimelineReport,
   Shipment,
   ShipmentStatus,
   ShipmentCreatedPayload,
@@ -1559,6 +1564,26 @@ export function buildDashboardViewedEvent(
       storeId,
       timezone: report.timezone,
       currency: report.currency,
+      report,
+    },
+  });
+}
+
+export function buildSalesReportGeneratedEvent(
+  storeId: string,
+  reportKind: SalesReportKind,
+  orderCount: number,
+  report: SalesSummary | SalesTimelineReport | SalesOrdersReport,
+): DomainEvent<SalesReportGeneratedPayload> {
+  return createDomainEvent({
+    eventType: "reports.sales.generated",
+    aggregateType: "sales_report",
+    aggregateId: storeId,
+    storeId,
+    payload: {
+      storeId,
+      reportKind,
+      orderCount,
       report,
     },
   });

@@ -328,8 +328,14 @@ export {
 export type {
   GetReportDashboardResponse,
   GetReportHealthResponse,
+  GetSalesOrdersReportResponse,
+  GetSalesSummaryResponse,
+  GetSalesTimelineResponse,
   ReportDashboardParams,
   ReportHealthParams,
+  SalesOrderReportParams,
+  SalesSummaryParams,
+  SalesTimelineParams,
 } from "./reports/contracts";
 export {
   createReportsClient,

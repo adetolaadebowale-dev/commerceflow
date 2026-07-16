@@ -189,6 +189,16 @@ export {
   type ReportPagination,
   type ReportSummary,
   type StoreReportingContext,
+  type SalesFinancialMetrics,
+  type SalesOrderReport,
+  type SalesOrdersReport,
+  type SalesPeriodBreakdown,
+  type SalesStatusBreakdown,
+  type SalesSummary,
+  type SalesTimelineGranularity,
+  type SalesTimelinePoint,
+  type SalesTimelineReport,
+  type SalesWarehouseBreakdown,
 } from "./reports";
 export {
   type AppliedCartPromotion,
@@ -330,4 +340,6 @@ export {
   type OperationsReadinessGeneratedPayload,
   type ReportsGeneratedPayload,
   type DashboardViewedPayload,
+  type SalesReportGeneratedPayload,
+  type SalesReportKind,
 } from "./domain-events";

@@ -149,4 +149,13 @@ export class MemoryShipmentRepository implements ShipmentRepository {
     this.shipmentsById.set(id, updated);
     return updated;
   }
+
+  /** Test helper: insert a fully-formed shipment record. */
+  seedShipment(shipment: Shipment): void {
+    this.shipmentsById.set(shipment.id, shipment);
+    const numbers =
+      this.shipmentNumbersByStore.get(shipment.storeId) ?? new Set<string>();
+    numbers.add(shipment.shipmentNumber);
+    this.shipmentNumbersByStore.set(shipment.storeId, numbers);
+  }
 }

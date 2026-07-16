@@ -70,6 +70,7 @@ import {
   buildOperationsReadinessGeneratedEvent,
   buildReportsGeneratedEvent,
   buildDashboardViewedEvent,
+  buildSalesReportGeneratedEvent,
   buildWarehouseIntegrityCheckedEvent,
   buildInventoryIntegrityCheckedEvent,
   buildShipmentCreatedEvent,
@@ -157,6 +158,10 @@ import type {
   Phase3ReadinessReport,
   Phase3ValidationResult,
   ReportDashboardResponse,
+  SalesOrdersReport,
+  SalesReportKind,
+  SalesSummary,
+  SalesTimelineReport,
   ShippingZone,
   ShippingMethod,
 } from "@commerceflow/types";
@@ -738,6 +743,17 @@ export class DomainEventPublisher {
     report: ReportDashboardResponse,
   ): void {
     this.dispatch(buildDashboardViewedEvent(storeId, report));
+  }
+
+  publishSalesReportGenerated(
+    storeId: string,
+    reportKind: SalesReportKind,
+    orderCount: number,
+    report: SalesSummary | SalesTimelineReport | SalesOrdersReport,
+  ): void {
+    this.dispatch(
+      buildSalesReportGeneratedEvent(storeId, reportKind, orderCount, report),
+    );
   }
 
   publishShippingZoneCreated(shippingZone: ShippingZone): void {

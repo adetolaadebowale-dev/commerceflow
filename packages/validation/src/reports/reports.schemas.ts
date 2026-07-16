@@ -42,7 +42,7 @@ export const reportWarehouseFilterSchema = z.object({
     .optional(),
 });
 
-const reportFilterBaseSchema = z.object({
+export const reportFilterBaseSchema = z.object({
   storeId: storeIdSchema,
   warehouseIds: z.array(z.string().uuid()).optional(),
   fromDate: z
@@ -57,7 +57,7 @@ const reportFilterBaseSchema = z.object({
   currency: currencySchema.optional(),
 });
 
-function validateReportDateOrder(value: {
+export function validateReportDateOrder(value: {
   fromDate?: string;
   toDate?: string;
 }) {

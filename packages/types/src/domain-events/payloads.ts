@@ -60,6 +60,11 @@ import type {
   ReadinessStatus,
 } from "../operations/readiness";
 import type { ReportDashboardResponse } from "../reports/report-foundation";
+import type {
+  SalesOrdersReport,
+  SalesSummary,
+  SalesTimelineReport,
+} from "../reports/sales";
 import type { Payment } from "../payments/payment";
 import type { PaymentStatus } from "../payments/payment-status";
 
@@ -956,6 +961,15 @@ export interface DashboardViewedPayload {
   readonly timezone: string;
   readonly currency: string;
   readonly report: ReportDashboardResponse;
+}
+
+export type SalesReportKind = "summary" | "timeline" | "orders";
+
+export interface SalesReportGeneratedPayload {
+  readonly storeId: string;
+  readonly reportKind: SalesReportKind;
+  readonly orderCount: number;
+  readonly report: SalesSummary | SalesTimelineReport | SalesOrdersReport;
 }
 
 export interface ShippingZoneCreatedPayload {

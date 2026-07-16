@@ -102,6 +102,8 @@ export type {
   OperationsReadinessGeneratedPayload,
   ReportsGeneratedPayload,
   DashboardViewedPayload,
+  SalesReportGeneratedPayload,
+  SalesReportKind,
   ShippingZoneCreatedPayload,
   ShippingZoneUpdatedPayload,
   ShippingZoneDeletedPayload,
