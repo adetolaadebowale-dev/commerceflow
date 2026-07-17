@@ -187,6 +187,15 @@ export {
   type InAppNotificationQuery,
 } from "./notifications/in-app";
 export {
+  listNotificationPreferencesQuerySchema,
+  notificationPreferenceRouteParamsSchema,
+  notificationPreferenceTypeParamSchema,
+  updateNotificationPreferenceSchema,
+  type ListNotificationPreferencesQuery,
+  type NotificationPreferenceTypeParam,
+  type UpdateNotificationPreferenceInput,
+} from "./notification-preferences";
+export {
   createJobSchema,
   listJobsQuerySchema,
   jobIdQuerySchema,

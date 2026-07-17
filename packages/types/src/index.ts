@@ -105,6 +105,14 @@ export {
   type SupplierContactInfo,
 } from "./notifications";
 export {
+  DEFAULT_NOTIFICATION_PREFERENCE_CHANNELS,
+  DOMAIN_EVENT_TO_NOTIFICATION_PREFERENCE_TYPE,
+  NOTIFICATION_PREFERENCE_TYPES,
+  type NotificationPreference,
+  type NotificationPreferenceType,
+  type NotificationPreferenceView,
+} from "./notification-preferences";
+export {
   JOB_STATUSES,
   JOB_TYPES,
   type Job,
@@ -423,6 +431,7 @@ export {
   type SmsFailedPayload,
   type InAppNotificationReadPayload,
   type InAppNotificationUnreadPayload,
+  type NotificationPreferenceUpdatedPayload,
   type JobCreatedPayload,
   type JobStartedPayload,
   type JobCompletedPayload,

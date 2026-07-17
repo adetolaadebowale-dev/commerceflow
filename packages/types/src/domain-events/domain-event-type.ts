@@ -118,6 +118,7 @@ export const DOMAIN_EVENT_TYPES = [
   "sms.failed",
   "in-app-notification.read",
   "in-app-notification.unread",
+  "notification-preference.updated",
   "job.created",
   "job.started",
   "job.completed",

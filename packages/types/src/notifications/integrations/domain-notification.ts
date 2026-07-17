@@ -44,6 +44,7 @@ export interface DomainNotificationDispatchResult {
 
 export interface OrderCustomerContact {
   readonly customerId?: string;
+  readonly userId?: string;
   readonly email?: string;
   readonly phone?: string;
   readonly name?: string;

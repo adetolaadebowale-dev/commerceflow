@@ -53,14 +53,17 @@ export class DefaultDomainNotificationContactResolver
       return null;
     }
 
-    if (order.customerId) {
+    const userId = order.customerId;
+
+    if (order.customerProfileId) {
       const customer = await this.customerRepository.findById(
         storeId,
-        order.customerId,
+        order.customerProfileId,
       );
 
       if (customer) {
         return {
+          userId,
           customerId: customer.id,
           email: customer.email,
           phone: customer.phone ?? order.shippingAddress?.phone,
@@ -71,9 +74,14 @@ export class DefaultDomainNotificationContactResolver
 
     if (order.shippingAddress?.phone) {
       return {
+        userId,
         name: order.shippingAddress.recipientName,
         phone: order.shippingAddress.phone,
       };
+    }
+
+    if (userId) {
+      return { userId };
     }
 
     return null;

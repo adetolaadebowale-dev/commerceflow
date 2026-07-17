@@ -16,6 +16,7 @@ import type { Promotion } from "../promotions/promotion";
 import type { TaxRate } from "../tax-rates/tax-rate";
 import type { Notification } from "../notifications/notification";
 import type { Job } from "../jobs/job";
+import type { NotificationPreference } from "../notification-preferences/notification-preference";
 import type { EmailMessage } from "../notifications/email";
 import type { SmsMessage } from "../notifications/sms";
 import type { Shipment } from "../shipments/shipment";
@@ -1235,4 +1236,12 @@ export interface JobFailedPayload {
   readonly completedAt: string;
   readonly failureReason?: string;
   readonly job: Job;
+}
+
+export interface NotificationPreferenceUpdatedPayload {
+  readonly preferenceId: string;
+  readonly storeId: string;
+  readonly userId: string;
+  readonly notificationType: NotificationPreference["notificationType"];
+  readonly preference: NotificationPreference;
 }

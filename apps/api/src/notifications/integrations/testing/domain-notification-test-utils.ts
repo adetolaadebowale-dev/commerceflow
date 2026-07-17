@@ -20,6 +20,7 @@ import {
   TEST_STORE_A_ID,
   TEST_STORE_B_ID,
 } from "@/jobs/testing/job-test-utils";
+import { createMemoryNotificationPreferenceModule } from "@/notification-preferences/testing/notification-preference-test-utils";
 import {
   createMemoryNotificationModule,
   TEST_USER_A_ID,
@@ -44,6 +45,7 @@ export function sampleOrderCustomer(
   overrides: Partial<OrderCustomerContact> = {},
 ): OrderCustomerContact {
   return {
+    userId: TEST_USER_A_ID,
     customerId: "customer-id",
     email: "customer@example.com",
     phone: "+15551234567",
@@ -310,16 +312,19 @@ export function createDomainNotificationTestModule(options: {
 } = {}) {
   const notificationModule = createMemoryNotificationModule();
   const jobModule = createMemoryJobModule();
+  const preferenceModule = createMemoryNotificationPreferenceModule();
 
   const domainNotificationService = new DomainNotificationService({
     notificationService: notificationModule.notificationService,
     jobService: jobModule.jobService,
+    preferenceService: preferenceModule.notificationPreferenceService,
     config: getDomainNotificationConfig(options.config),
   });
 
   return {
     ...notificationModule,
     ...jobModule,
+    ...preferenceModule,
     domainNotificationService,
   };
 }

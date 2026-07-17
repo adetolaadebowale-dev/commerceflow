@@ -247,6 +247,18 @@ export type {
 } from "./jobs/contracts";
 export { createJobsClient, type JobsClient } from "./jobs/jobs-client";
 export type {
+  ListNotificationPreferencesParams,
+  ListNotificationPreferencesResponse,
+  NotificationPreferenceType,
+  NotificationPreferenceView,
+  UpdateNotificationPreferenceRequest,
+  UpdateNotificationPreferenceResponse,
+} from "./notification-preferences/contracts";
+export {
+  createNotificationPreferenceClient,
+  type NotificationPreferenceClient,
+} from "./notification-preferences/notification-preference-client";
+export type {
   ActivateWarehouseResponse,
   CreateWarehouseRequest,
   CreateWarehouseResponse,

@@ -129,6 +129,7 @@ export type {
   SmsFailedPayload,
   InAppNotificationReadPayload,
   InAppNotificationUnreadPayload,
+  NotificationPreferenceUpdatedPayload,
   JobCreatedPayload,
   JobStartedPayload,
   JobCompletedPayload,

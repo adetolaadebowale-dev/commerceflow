@@ -29,16 +29,19 @@ export interface DomainNotificationServiceDependencies {
   readonly notificationService?: NotificationService;
   readonly jobService?: JobService;
   readonly config?: DomainNotificationConfig;
+  readonly preferenceService?: import("@/notification-preferences/services").NotificationPreferenceService;
 }
 
 export class DomainNotificationService {
   private readonly notificationService?: NotificationService;
   private readonly jobService?: JobService;
+  private readonly preferenceService?: import("@/notification-preferences/services").NotificationPreferenceService;
   private readonly config: DomainNotificationConfig;
 
   constructor(dependencies: DomainNotificationServiceDependencies = {}) {
     this.notificationService = dependencies.notificationService;
     this.jobService = dependencies.jobService;
+    this.preferenceService = dependencies.preferenceService;
     this.config =
       dependencies.config ?? getDomainNotificationConfig();
   }
@@ -61,6 +64,17 @@ export class DomainNotificationService {
     return jobService;
   }
 
+  private async resolvePreferenceService() {
+    if (this.preferenceService) {
+      return this.preferenceService;
+    }
+
+    const { notificationPreferenceService } = await import(
+      "@/notification-preferences/services"
+    );
+    return notificationPreferenceService;
+  }
+
   getConfig(): DomainNotificationConfig {
     return this.config;
   }
@@ -69,9 +83,15 @@ export class DomainNotificationService {
     request: DomainNotificationDispatchRequest,
   ): Promise<DomainNotificationDispatchResult> {
     const channelConfig = this.config[request.sourceEventType];
+    const preferenceService = await this.resolvePreferenceService();
+    const notifications = await preferenceService.filterNotificationsForDispatch(
+      request.storeId,
+      request.sourceEventType,
+      request.notifications,
+    );
     const dispatches: DomainNotificationDispatchItem[] = [];
 
-    for (const notificationInput of request.notifications) {
+    for (const notificationInput of notifications) {
       if (channelConfig.defer) {
         const job = await (await this.resolveJobService()).createJob({
           storeId: request.storeId,

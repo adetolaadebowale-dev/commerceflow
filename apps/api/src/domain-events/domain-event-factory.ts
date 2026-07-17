@@ -77,6 +77,8 @@ import type {
   JobStartedPayload,
   JobCompletedPayload,
   JobFailedPayload,
+  NotificationPreference,
+  NotificationPreferenceUpdatedPayload,
   Warehouse,
   WarehouseStatus,
   WarehouseCreatedPayload,
@@ -2621,6 +2623,24 @@ export function buildJobFailedEvent(job: Job): DomainEvent<JobFailedPayload> {
       completedAt: job.completedAt ?? new Date().toISOString(),
       failureReason: job.failureReason,
       job,
+    },
+  });
+}
+
+export function buildNotificationPreferenceUpdatedEvent(
+  preference: NotificationPreference,
+): DomainEvent<NotificationPreferenceUpdatedPayload> {
+  return createDomainEvent({
+    eventType: "notification-preference.updated",
+    aggregateType: "notification_preference",
+    aggregateId: preference.id,
+    storeId: preference.storeId,
+    payload: {
+      preferenceId: preference.id,
+      storeId: preference.storeId,
+      userId: preference.userId,
+      notificationType: preference.notificationType,
+      preference,
     },
   });
 }

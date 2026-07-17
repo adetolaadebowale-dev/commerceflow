@@ -124,6 +124,7 @@ import {
   buildJobStartedEvent,
   buildJobCompletedEvent,
   buildJobFailedEvent,
+  buildNotificationPreferenceUpdatedEvent,
 } from "./domain-event-factory";
 import type {
   Cart,
@@ -147,6 +148,7 @@ import type {
   TaxRate,
   TaxRateStatus,
   Notification,
+  NotificationPreference,
   Job,
   EmailMessage,
   EmailSendResult,
@@ -484,6 +486,12 @@ export class DomainEventPublisher {
 
   publishJobFailed(job: Job): void {
     this.dispatch(buildJobFailedEvent(job));
+  }
+
+  publishNotificationPreferenceUpdated(
+    preference: NotificationPreference,
+  ): void {
+    this.dispatch(buildNotificationPreferenceUpdatedEvent(preference));
   }
 
   publishWarehouseCreated(warehouse: Warehouse): void {

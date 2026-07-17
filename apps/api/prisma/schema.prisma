@@ -308,6 +308,7 @@ model User {
   auditLogs       AuditLog[]
   inventoryAdjustments InventoryAdjustment[]
   notifications   Notification[]
+  notificationPreferences NotificationPreference[]
 
   @@index([deletedAt])
   @@map("users")
@@ -396,6 +397,7 @@ model Store {
   replenishmentRules     ReplenishmentRule[]
   replenishmentRecommendations ReplenishmentRecommendation[]
   notifications                Notification[]
+  notificationPreferences      NotificationPreference[]
   jobs                         Job[]
 
   @@unique([organizationId, slug])
@@ -1655,6 +1657,33 @@ model Notification {
   @@index([createdAt])
   @@index([storeId, userId, channel, readAt])
   @@map("notifications")
+}
+
+enum NotificationPreferenceType {
+  order_updates
+  payment_updates
+  shipment_updates
+  return_updates
+  procurement_updates
+}
+
+/// Store-scoped per-user notification channel preferences by category.
+model NotificationPreference {
+  id               String                     @id @default(uuid()) @db.Uuid
+  storeId          String                     @map("store_id") @db.Uuid
+  store            Store                      @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  userId           String                     @map("user_id") @db.Uuid
+  user             User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notificationType NotificationPreferenceType @map("notification_type")
+  emailEnabled     Boolean                    @default(true) @map("email_enabled")
+  smsEnabled       Boolean                    @default(true) @map("sms_enabled")
+  inAppEnabled     Boolean                    @default(true) @map("in_app_enabled")
+  createdAt        DateTime                   @default(now()) @map("created_at")
+  updatedAt        DateTime                   @updatedAt @map("updated_at")
+
+  @@unique([storeId, userId, notificationType])
+  @@index([storeId, userId])
+  @@map("notification_preferences")
 }
 
 /// Store-scoped background job record for deferred manual execution.

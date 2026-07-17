@@ -6,6 +6,7 @@ import {
   TEST_ORDER_ID,
   TEST_STORE_A_ID,
   TEST_STORE_B_ID,
+  TEST_USER_A_ID,
 } from "../testing/domain-notification-test-utils";
 import {
   createMemoryNotificationModule,
@@ -13,6 +14,10 @@ import {
 } from "../../testing/notification-test-utils";
 import { DomainNotificationService } from "./domain-notification.service";
 import { getDomainNotificationConfig } from "../domain-notification-config";
+import {
+  createMemoryNotificationPreferenceModule,
+  validUpdateNotificationPreferenceInput,
+} from "@/notification-preferences/testing/notification-preference-test-utils";
 
 describe("DomainNotificationService", () => {
   it("creates notifications immediately when defer is disabled", async () => {
@@ -161,5 +166,53 @@ describe("DomainNotificationService", () => {
       code: NOTIFICATION_ERROR_CODES.NOT_FOUND,
       status: 404,
     });
+  });
+
+  it("skips disabled channels based on notification preferences", async () => {
+    const module = createDomainNotificationTestModule({
+      config: { "order.confirmed": { email: true, defer: false } },
+    });
+    const preferenceModule = createMemoryNotificationPreferenceModule();
+    await preferenceModule.notificationPreferenceService.updatePreference(
+      TEST_STORE_A_ID,
+      TEST_USER_A_ID,
+      "order_updates",
+      validUpdateNotificationPreferenceInput({
+        emailEnabled: false,
+        smsEnabled: true,
+        inAppEnabled: true,
+      }),
+    );
+
+    const service = new DomainNotificationService({
+      notificationService: module.notificationService,
+      jobService: module.jobService,
+      preferenceService: preferenceModule.notificationPreferenceService,
+      config: getDomainNotificationConfig({
+        "order.confirmed": { email: true, defer: false },
+      }),
+    });
+
+    const result = await service.dispatch({
+      storeId: TEST_STORE_A_ID,
+      sourceEventType: "order.confirmed",
+      sourceAggregateId: TEST_ORDER_ID,
+      notifications: [
+        validNotificationInput({
+          userId: TEST_USER_A_ID,
+          subject: "Order confirmed",
+          body: "Your order is confirmed.",
+        }),
+      ],
+    });
+
+    expect(result.dispatches).toHaveLength(0);
+
+    const notifications = await module.notificationService.listNotifications({
+      storeId: TEST_STORE_A_ID,
+      page: 1,
+      limit: 10,
+    });
+    expect(notifications.total).toBe(0);
   });
 });
