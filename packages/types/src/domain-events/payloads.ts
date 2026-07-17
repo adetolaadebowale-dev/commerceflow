@@ -27,6 +27,7 @@ import type { MaintenanceMode } from "../platform-operations/platform-operations
 import type { CachePolicy } from "../platform-hardening/platform-hardening";
 import type { RecoveryObjectives } from "../disaster-readiness/disaster-readiness";
 import type { LoadTestingConfiguration } from "../load-testing/load-testing";
+import type { DeploymentConfiguration } from "../deployment-readiness/deployment-readiness";
 import type { EmailMessage } from "../notifications/email";
 import type { SmsMessage } from "../notifications/sms";
 import type { Shipment } from "../shipments/shipment";
@@ -1399,4 +1400,13 @@ export interface PlatformLoadTestingUpdatedPayload {
   readonly durationSeconds: number;
   readonly rampUpSeconds: number;
   readonly configuration: LoadTestingConfiguration;
+}
+
+export interface PlatformDeploymentConfigurationUpdatedPayload {
+  readonly target: DeploymentConfiguration["target"];
+  readonly requireHttps: boolean;
+  readonly requireMigrationsApplied: boolean;
+  readonly minimumNodeVersion: string;
+  readonly releaseChannel: string;
+  readonly configuration: DeploymentConfiguration;
 }

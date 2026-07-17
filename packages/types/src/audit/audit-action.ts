@@ -71,6 +71,7 @@ export const AUDIT_ACTIONS = [
   "logging_diagnostics",
   "recovery_objectives_update",
   "load_testing_configuration_update",
+  "deployment_configuration_update",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];

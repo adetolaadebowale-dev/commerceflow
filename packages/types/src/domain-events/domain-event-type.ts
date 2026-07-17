@@ -143,6 +143,7 @@ export const DOMAIN_EVENT_TYPES = [
   "platform.cache-policy.updated",
   "platform.recovery-objectives.updated",
   "platform.load-testing.updated",
+  "platform.deployment-configuration.updated",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

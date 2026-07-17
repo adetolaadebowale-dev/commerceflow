@@ -1873,6 +1873,7 @@ model PlatformConfiguration {
   backupConfiguration Json    @default("{}") @map("backup_configuration")
   recoveryObjectives  Json    @default("{}") @map("recovery_objectives")
   loadTestingConfiguration Json @default("{}") @map("load_testing_configuration")
+  deploymentConfiguration Json @default("{}") @map("deployment_configuration")
   updatedAt          DateTime @updatedAt @map("updated_at")
 
   @@map("platform_configurations")

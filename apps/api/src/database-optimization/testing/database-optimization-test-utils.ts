@@ -11,6 +11,7 @@ export const TEST_MIGRATIONS = [
   "20250717170000_platform_hardening_cache_policies",
   "20250717180000_disaster_readiness_foundation",
   "20250717190000_load_testing_foundation",
+  "20250717200000_deployment_readiness_foundation",
 ] as const;
 
 export function createMemoryDatabaseOptimizationModule(options: {

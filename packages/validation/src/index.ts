@@ -283,6 +283,12 @@ export {
   type UpdateLoadTestingConfigurationInput,
 } from "./load-testing";
 export {
+  deploymentReadinessStoreQuerySchema,
+  updateDeploymentConfigurationSchema,
+  type DeploymentReadinessStoreQuery,
+  type UpdateDeploymentConfigurationInput,
+} from "./deployment-readiness";
+export {
   createJobSchema,
   listJobsQuerySchema,
   jobIdQuerySchema,

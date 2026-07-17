@@ -110,6 +110,8 @@ import type {
   PlatformRecoveryObjectivesUpdatedPayload,
   LoadTestingConfiguration,
   PlatformLoadTestingUpdatedPayload,
+  DeploymentConfiguration,
+  PlatformDeploymentConfigurationUpdatedPayload,
   Warehouse,
   WarehouseStatus,
   WarehouseCreatedPayload,
@@ -3035,6 +3037,26 @@ export function buildPlatformLoadTestingUpdatedEvent(
       targetVirtualUsers: configuration.targetVirtualUsers,
       durationSeconds: configuration.durationSeconds,
       rampUpSeconds: configuration.rampUpSeconds,
+      configuration,
+    },
+  });
+}
+
+export function buildPlatformDeploymentConfigurationUpdatedEvent(
+  configuration: DeploymentConfiguration,
+  contextStoreId: string,
+): DomainEvent<PlatformDeploymentConfigurationUpdatedPayload> {
+  return createDomainEvent({
+    eventType: "platform.deployment-configuration.updated",
+    aggregateType: "platform",
+    aggregateId: "deployment-configuration",
+    storeId: contextStoreId,
+    payload: {
+      target: configuration.target,
+      requireHttps: configuration.requireHttps,
+      requireMigrationsApplied: configuration.requireMigrationsApplied,
+      minimumNodeVersion: configuration.minimumNodeVersion,
+      releaseChannel: configuration.releaseChannel,
       configuration,
     },
   });

@@ -411,6 +411,19 @@ export {
   type LoadTestingClient,
 } from "./load-testing/load-testing-client";
 export type {
+  DeploymentReadinessStoreParams,
+  GetPlatformDeploymentChecklistResponse,
+  GetPlatformDeploymentResponse,
+  GetPlatformEnvironmentResponse,
+  GetPlatformReleaseResponse,
+  UpdateDeploymentConfigurationRequest,
+  UpdatePlatformDeploymentResponse,
+} from "./deployment-readiness/contracts";
+export {
+  createDeploymentReadinessClient,
+  type DeploymentReadinessClient,
+} from "./deployment-readiness/deployment-readiness-client";
+export type {
   ActivateWarehouseResponse,
   CreateWarehouseRequest,
   CreateWarehouseResponse,

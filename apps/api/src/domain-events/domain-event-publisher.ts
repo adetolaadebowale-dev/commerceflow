@@ -145,6 +145,7 @@ import {
   buildPlatformCachePolicyUpdatedEvent,
   buildPlatformRecoveryObjectivesUpdatedEvent,
   buildPlatformLoadTestingUpdatedEvent,
+  buildPlatformDeploymentConfigurationUpdatedEvent,
 } from "./domain-event-factory";
 import type {
   Cart,
@@ -179,6 +180,7 @@ import type {
   CachePolicy,
   RecoveryObjectives,
   LoadTestingConfiguration,
+  DeploymentConfiguration,
   WebhookEndpoint,
   WebhookDelivery,
   Job,
@@ -656,6 +658,18 @@ export class DomainEventPublisher {
   ): void {
     this.dispatch(
       buildPlatformLoadTestingUpdatedEvent(configuration, contextStoreId),
+    );
+  }
+
+  publishPlatformDeploymentConfigurationUpdated(
+    configuration: DeploymentConfiguration,
+    contextStoreId: string,
+  ): void {
+    this.dispatch(
+      buildPlatformDeploymentConfigurationUpdatedEvent(
+        configuration,
+        contextStoreId,
+      ),
     );
   }
 

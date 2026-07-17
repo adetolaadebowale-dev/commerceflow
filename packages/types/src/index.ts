@@ -250,6 +250,23 @@ export {
   type ScalabilityAssessmentStatus,
 } from "./load-testing";
 export {
+  DEPLOYMENT_CHECKLIST_CATEGORIES,
+  DEPLOYMENT_READINESS_STATUSES,
+  DEPLOYMENT_TARGETS,
+  ENVIRONMENT_CHECK_STATUSES,
+  type DeploymentChecklistCategory,
+  type DeploymentChecklistItem,
+  type DeploymentConfiguration,
+  type DeploymentReadiness,
+  type DeploymentReadinessStatus,
+  type DeploymentTarget,
+  type EnvironmentCheck,
+  type EnvironmentCheckStatus,
+  type EnvironmentDiagnostics,
+  type ReleaseMetadata,
+  type VersionCompatibilityDiagnostics,
+} from "./deployment-readiness";
+export {
   JOB_STATUSES,
   JOB_TYPES,
   type Job,
@@ -595,6 +612,7 @@ export {
   type PlatformCachePolicyUpdatedPayload,
   type PlatformRecoveryObjectivesUpdatedPayload,
   type PlatformLoadTestingUpdatedPayload,
+  type PlatformDeploymentConfigurationUpdatedPayload,
   type WarehouseCreatedPayload,
   type WarehouseUpdatedPayload,
   type WarehouseActivatedPayload,
