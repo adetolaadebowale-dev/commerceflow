@@ -68,6 +68,7 @@ export const AUDIT_ACTIONS = [
   "maintenance_disable",
   "cache_policy_update",
   "database_diagnostics",
+  "logging_diagnostics",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];

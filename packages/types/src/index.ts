@@ -206,6 +206,16 @@ export {
   type SlowQuerySample,
 } from "./database-optimization";
 export {
+  LOG_LEVELS,
+  LOGGING_DIAGNOSTIC_STATUSES,
+  type CorrelationContext,
+  type LogLevel,
+  type LoggingDiagnosticStatus,
+  type LoggingDiagnostics,
+  type LoggingSummary,
+  type StructuredLogEntry,
+} from "./observability";
+export {
   JOB_STATUSES,
   JOB_TYPES,
   type Job,

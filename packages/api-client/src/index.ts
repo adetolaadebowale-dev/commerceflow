@@ -377,6 +377,15 @@ export {
   type DatabaseOptimizationClient,
 } from "./database-optimization/database-optimization-client";
 export type {
+  GetPlatformLoggingDiagnosticsResponse,
+  GetPlatformLoggingResponse,
+  ObservabilityStoreParams,
+} from "./observability/contracts";
+export {
+  createObservabilityClient,
+  type ObservabilityClient,
+} from "./observability/observability-client";
+export type {
   ActivateWarehouseResponse,
   CreateWarehouseRequest,
   CreateWarehouseResponse,

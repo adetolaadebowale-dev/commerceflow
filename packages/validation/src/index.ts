@@ -265,6 +265,10 @@ export {
   type DatabaseOptimizationStoreQuery,
 } from "./database-optimization";
 export {
+  observabilityStoreQuerySchema,
+  type ObservabilityStoreQuery,
+} from "./observability";
+export {
   createJobSchema,
   listJobsQuerySchema,
   jobIdQuerySchema,

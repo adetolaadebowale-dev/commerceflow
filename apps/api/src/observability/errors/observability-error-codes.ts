@@ -1,0 +1,6 @@
+export const OBSERVABILITY_ERROR_CODES = {
+  VALIDATION_ERROR: "OBSERVABILITY_VALIDATION_ERROR",
+} as const;
+
+export type ObservabilityErrorCode =
+  (typeof OBSERVABILITY_ERROR_CODES)[keyof typeof OBSERVABILITY_ERROR_CODES];
