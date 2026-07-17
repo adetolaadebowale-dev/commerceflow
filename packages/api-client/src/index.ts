@@ -296,6 +296,20 @@ export {
   type DataTransferClient,
 } from "./data-transfer/data-transfer-client";
 export type {
+  CreateApiKeyRequest,
+  CreateApiKeyResponse,
+  GetApiKeyParams,
+  GetApiKeyResponse,
+  ListApiKeysParams,
+  ListApiKeysResponse,
+  RevokeApiKeyParams,
+  RevokeApiKeyResponse,
+} from "./api-keys/contracts";
+export {
+  createApiKeysClient,
+  type ApiKeysClient,
+} from "./api-keys/api-keys-client";
+export type {
   ActivateWarehouseResponse,
   CreateWarehouseRequest,
   CreateWarehouseResponse,

@@ -47,6 +47,7 @@ export const DOMAIN_AGGREGATE_TYPES = [
   "store",
   "import",
   "export",
+  "api_key",
 ] as const;
 
 export type DomainAggregateType = (typeof DOMAIN_AGGREGATE_TYPES)[number];

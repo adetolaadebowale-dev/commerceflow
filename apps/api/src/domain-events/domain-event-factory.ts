@@ -91,6 +91,9 @@ import type {
   ExportCreatedPayload,
   ExportCompletedPayload,
   ExportFailedPayload,
+  ApiKey,
+  ApiKeyCreatedPayload,
+  ApiKeyRevokedPayload,
   Warehouse,
   WarehouseStatus,
   WarehouseCreatedPayload,
@@ -2795,6 +2798,41 @@ export function buildExportFailedEvent(
       type: exportJob.type,
       failureReason: exportJob.failureReason ?? "Export failed",
       exportJob,
+    },
+  });
+}
+
+export function buildApiKeyCreatedEvent(
+  apiKey: ApiKey,
+): DomainEvent<ApiKeyCreatedPayload> {
+  return createDomainEvent({
+    eventType: "api-key.created",
+    aggregateType: "api_key",
+    aggregateId: apiKey.id,
+    storeId: apiKey.storeId,
+    payload: {
+      apiKeyId: apiKey.id,
+      storeId: apiKey.storeId,
+      name: apiKey.name,
+      keyPrefix: apiKey.keyPrefix,
+      apiKey,
+    },
+  });
+}
+
+export function buildApiKeyRevokedEvent(
+  apiKey: ApiKey,
+): DomainEvent<ApiKeyRevokedPayload> {
+  return createDomainEvent({
+    eventType: "api-key.revoked",
+    aggregateType: "api_key",
+    aggregateId: apiKey.id,
+    storeId: apiKey.storeId,
+    payload: {
+      apiKeyId: apiKey.id,
+      storeId: apiKey.storeId,
+      name: apiKey.name,
+      apiKey,
     },
   });
 }

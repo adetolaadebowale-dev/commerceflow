@@ -20,6 +20,7 @@ import type { NotificationPreference } from "../notification-preferences/notific
 import type { Organization } from "../organizations/organization";
 import type { StoreConfiguration } from "../stores/store-settings";
 import type { ImportJob, ExportJob } from "../data-transfer/data-transfer-job";
+import type { ApiKey } from "../api-keys/api-key";
 import type { EmailMessage } from "../notifications/email";
 import type { SmsMessage } from "../notifications/sms";
 import type { Shipment } from "../shipments/shipment";
@@ -1307,4 +1308,19 @@ export interface ExportFailedPayload {
   readonly type: ExportJob["type"];
   readonly failureReason: string;
   readonly exportJob: ExportJob;
+}
+
+export interface ApiKeyCreatedPayload {
+  readonly apiKeyId: string;
+  readonly storeId: string;
+  readonly name: string;
+  readonly keyPrefix: string;
+  readonly apiKey: ApiKey;
+}
+
+export interface ApiKeyRevokedPayload {
+  readonly apiKeyId: string;
+  readonly storeId: string;
+  readonly name: string;
+  readonly apiKey: ApiKey;
 }

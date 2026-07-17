@@ -57,6 +57,8 @@ export const STORE_PERMISSIONS = [
   "imports:write",
   "exports:read",
   "exports:write",
+  "api-keys:read",
+  "api-keys:write",
 ] as const;
 
 export type StorePermissionCode = (typeof STORE_PERMISSIONS)[number];

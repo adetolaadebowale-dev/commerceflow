@@ -305,4 +305,50 @@ describe("AuthorizationService", () => {
       ),
     ).resolves.toMatchObject({ storeRole: "manager" });
   });
+
+  it("allows owners to manage API keys but not managers", async () => {
+    const { authService, authorizationService, storeMemberRepository } =
+      createMemoryAuthorizationService();
+    const { user, tokens } = await registerStaffUser(authService);
+
+    storeMemberRepository.seedMember({
+      storeId: TEST_STORE_A_ID,
+      userId: user.id,
+      role: "owner",
+    });
+
+    await expect(
+      authorizationService.authorizeStoreRequest(
+        createAuthorizedRequest({
+          accessToken: tokens.accessToken,
+          storeId: TEST_STORE_A_ID,
+        }),
+        TEST_STORE_A_ID,
+        "api-keys:write",
+      ),
+    ).resolves.toMatchObject({ storeRole: "owner" });
+
+    const { user: managerUser, tokens: managerTokens } =
+      await registerStaffUser(authService);
+
+    storeMemberRepository.seedMember({
+      storeId: TEST_STORE_A_ID,
+      userId: managerUser.id,
+      role: "manager",
+    });
+
+    await expect(
+      authorizationService.authorizeStoreRequest(
+        createAuthorizedRequest({
+          accessToken: managerTokens.accessToken,
+          storeId: TEST_STORE_A_ID,
+        }),
+        TEST_STORE_A_ID,
+        "api-keys:write",
+      ),
+    ).rejects.toMatchObject({
+      code: AUTHORIZATION_ERROR_CODES.INSUFFICIENT_PERMISSION,
+      status: 403,
+    });
+  });
 });

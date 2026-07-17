@@ -403,6 +403,7 @@ model Store {
   jobs                         Job[]
   importJobs                   ImportJob[]
   exportJobs                   ExportJob[]
+  apiKeys                      ApiKey[]
 
   @@unique([organizationId, slug])
   @@index([organizationId])
@@ -1769,4 +1770,25 @@ model ExportJob {
   @@index([storeId, type])
   @@index([createdAt])
   @@map("export_jobs")
+}
+
+/// Store-scoped API key for server-to-server integrations.
+model ApiKey {
+  id          String    @id @default(uuid()) @db.Uuid
+  storeId     String    @map("store_id") @db.Uuid
+  store       Store     @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  name        String
+  hashedKey   String    @map("hashed_key")
+  keyPrefix   String    @map("key_prefix")
+  permissions Json      @default("[]")
+  lastUsedAt  DateTime? @map("last_used_at")
+  expiresAt   DateTime? @map("expires_at")
+  revokedAt   DateTime? @map("revoked_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@unique([keyPrefix])
+  @@index([storeId])
+  @@index([storeId, revokedAt])
+  @@map("api_keys")
 }

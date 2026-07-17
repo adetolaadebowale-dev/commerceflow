@@ -54,6 +54,7 @@ export const AUDIT_ENTITY_TYPES = [
   "store",
   "import",
   "export",
+  "api_key",
 ] as const;
 
 export type AuditEntityType = (typeof AUDIT_ENTITY_TYPES)[number];

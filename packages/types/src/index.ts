@@ -133,6 +133,15 @@ export {
   type ImportJob,
 } from "./data-transfer";
 export {
+  API_KEY_LOOKUP_PREFIX_LENGTH,
+  API_KEY_PREFIX,
+  ASSIGNABLE_API_KEY_PERMISSIONS,
+  type ApiKey,
+  type ApiKeyWithSecret,
+  type AssignableApiKeyPermission,
+  type AuthorizedApiKeyContext,
+} from "./api-keys";
+export {
   JOB_STATUSES,
   JOB_TYPES,
   type Job,
@@ -467,6 +476,8 @@ export {
   type ExportCreatedPayload,
   type ExportCompletedPayload,
   type ExportFailedPayload,
+  type ApiKeyCreatedPayload,
+  type ApiKeyRevokedPayload,
   type WarehouseCreatedPayload,
   type WarehouseUpdatedPayload,
   type WarehouseActivatedPayload,

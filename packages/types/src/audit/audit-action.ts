@@ -3,6 +3,7 @@ export const AUDIT_ACTIONS = [
   "create",
   "update",
   "delete",
+  "revoke",
   "adjust",
   "confirm",
   "cancel",

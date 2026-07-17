@@ -133,6 +133,8 @@ import {
   buildExportCreatedEvent,
   buildExportCompletedEvent,
   buildExportFailedEvent,
+  buildApiKeyCreatedEvent,
+  buildApiKeyRevokedEvent,
 } from "./domain-event-factory";
 import type {
   Cart,
@@ -161,6 +163,7 @@ import type {
   StoreConfiguration,
   ImportJob,
   ExportJob,
+  ApiKey,
   Job,
   EmailMessage,
   EmailSendResult,
@@ -542,6 +545,14 @@ export class DomainEventPublisher {
 
   publishExportFailed(exportJob: ExportJob): void {
     this.dispatch(buildExportFailedEvent(exportJob));
+  }
+
+  publishApiKeyCreated(apiKey: ApiKey): void {
+    this.dispatch(buildApiKeyCreatedEvent(apiKey));
+  }
+
+  publishApiKeyRevoked(apiKey: ApiKey): void {
+    this.dispatch(buildApiKeyRevokedEvent(apiKey));
   }
 
   publishWarehouseCreated(warehouse: Warehouse): void {

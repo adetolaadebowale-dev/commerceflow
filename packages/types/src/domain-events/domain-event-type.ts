@@ -131,6 +131,8 @@ export const DOMAIN_EVENT_TYPES = [
   "export.created",
   "export.completed",
   "export.failed",
+  "api-key.created",
+  "api-key.revoked",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

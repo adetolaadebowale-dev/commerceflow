@@ -142,4 +142,6 @@ export type {
   ExportCreatedPayload,
   ExportCompletedPayload,
   ExportFailedPayload,
+  ApiKeyCreatedPayload,
+  ApiKeyRevokedPayload,
 } from "./payloads";

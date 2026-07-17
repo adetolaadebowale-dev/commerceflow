@@ -184,4 +184,25 @@ describe("StorePermissionPolicy", () => {
       true,
     );
   });
+
+  it("restricts API key management to owner and admin", () => {
+    expect(StorePermissionPolicy.hasPermission("owner", "api-keys:write")).toBe(
+      true,
+    );
+    expect(StorePermissionPolicy.hasPermission("admin", "api-keys:write")).toBe(
+      true,
+    );
+    expect(
+      StorePermissionPolicy.hasPermission("manager", "api-keys:write"),
+    ).toBe(false);
+    expect(StorePermissionPolicy.hasPermission("staff", "api-keys:write")).toBe(
+      false,
+    );
+    expect(StorePermissionPolicy.hasPermission("manager", "api-keys:read")).toBe(
+      true,
+    );
+    expect(StorePermissionPolicy.hasPermission("staff", "api-keys:read")).toBe(
+      true,
+    );
+  });
 });

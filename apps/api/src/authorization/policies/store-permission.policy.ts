@@ -58,6 +58,8 @@ const ALL_STORE_PERMISSIONS: readonly StorePermissionCode[] = [
     "imports:write",
     "exports:read",
     "exports:write",
+    "api-keys:read",
+    "api-keys:write",
 ];
 
 const PERMISSIONS_BY_STORE_ROLE: Readonly<
@@ -123,6 +125,7 @@ const PERMISSIONS_BY_STORE_ROLE: Readonly<
     "imports:write",
     "exports:read",
     "exports:write",
+    "api-keys:read",
   ],
   staff: [
     "catalogue:read",
@@ -151,6 +154,7 @@ const PERMISSIONS_BY_STORE_ROLE: Readonly<
     "stores:read",
     "imports:read",
     "exports:read",
+    "api-keys:read",
   ],
 };
 

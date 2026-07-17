@@ -219,6 +219,15 @@ export {
   type ListImportJobsQuery,
 } from "./data-transfer";
 export {
+  apiKeyIdQuerySchema,
+  authenticateApiKeySchema,
+  createApiKeySchema,
+  listApiKeysQuerySchema,
+  type AuthenticateApiKeyInput,
+  type CreateApiKeyInput,
+  type ListApiKeysQuery,
+} from "./api-keys";
+export {
   createJobSchema,
   listJobsQuerySchema,
   jobIdQuerySchema,
