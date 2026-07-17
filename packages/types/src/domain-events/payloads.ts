@@ -26,6 +26,7 @@ import type { FeatureFlag, FeatureFlagScope } from "../feature-flags/feature-fla
 import type { MaintenanceMode } from "../platform-operations/platform-operations";
 import type { CachePolicy } from "../platform-hardening/platform-hardening";
 import type { RecoveryObjectives } from "../disaster-readiness/disaster-readiness";
+import type { LoadTestingConfiguration } from "../load-testing/load-testing";
 import type { EmailMessage } from "../notifications/email";
 import type { SmsMessage } from "../notifications/sms";
 import type { Shipment } from "../shipments/shipment";
@@ -1389,4 +1390,13 @@ export interface PlatformRecoveryObjectivesUpdatedPayload {
   readonly rpoMinutes: number;
   readonly rtoMinutes: number;
   readonly recoveryObjectives: RecoveryObjectives;
+}
+
+export interface PlatformLoadTestingUpdatedPayload {
+  readonly enabled: boolean;
+  readonly preferredTool: LoadTestingConfiguration["preferredTool"];
+  readonly targetVirtualUsers: number;
+  readonly durationSeconds: number;
+  readonly rampUpSeconds: number;
+  readonly configuration: LoadTestingConfiguration;
 }

@@ -399,6 +399,18 @@ export {
   type DisasterReadinessClient,
 } from "./disaster-readiness/disaster-readiness-client";
 export type {
+  GetPlatformLoadTestingBaselinesResponse,
+  GetPlatformLoadTestingResponse,
+  GetPlatformScalabilityResponse,
+  LoadTestingStoreParams,
+  UpdateLoadTestingConfigurationRequest,
+  UpdatePlatformLoadTestingResponse,
+} from "./load-testing/contracts";
+export {
+  createLoadTestingClient,
+  type LoadTestingClient,
+} from "./load-testing/load-testing-client";
+export type {
   ActivateWarehouseResponse,
   CreateWarehouseRequest,
   CreateWarehouseResponse,

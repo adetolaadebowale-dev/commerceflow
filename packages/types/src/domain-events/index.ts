@@ -152,4 +152,5 @@ export type {
   PlatformMaintenanceChangedPayload,
   PlatformCachePolicyUpdatedPayload,
   PlatformRecoveryObjectivesUpdatedPayload,
+  PlatformLoadTestingUpdatedPayload,
 } from "./payloads";

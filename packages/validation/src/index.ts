@@ -277,6 +277,12 @@ export {
   type UpdateRecoveryObjectivesInput,
 } from "./disaster-readiness";
 export {
+  loadTestingStoreQuerySchema,
+  updateLoadTestingConfigurationSchema,
+  type LoadTestingStoreQuery,
+  type UpdateLoadTestingConfigurationInput,
+} from "./load-testing";
+export {
   createJobSchema,
   listJobsQuerySchema,
   jobIdQuerySchema,

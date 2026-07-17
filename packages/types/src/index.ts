@@ -236,6 +236,20 @@ export {
   type RecoveryPlan,
 } from "./disaster-readiness";
 export {
+  CAPACITY_RECOMMENDATION_SEVERITIES,
+  LOAD_TEST_TOOLS,
+  SCALABILITY_ASSESSMENT_STATUSES,
+  type CapacityPlanningRecommendation,
+  type CapacityRecommendationSeverity,
+  type EndpointPerformanceBaseline,
+  type LoadTestTool,
+  type LoadTestingConfiguration,
+  type LoadTestingSummary,
+  type PerformanceBaseline,
+  type ScalabilityAssessment,
+  type ScalabilityAssessmentStatus,
+} from "./load-testing";
+export {
   JOB_STATUSES,
   JOB_TYPES,
   type Job,
@@ -580,6 +594,7 @@ export {
   type PlatformMaintenanceChangedPayload,
   type PlatformCachePolicyUpdatedPayload,
   type PlatformRecoveryObjectivesUpdatedPayload,
+  type PlatformLoadTestingUpdatedPayload,
   type WarehouseCreatedPayload,
   type WarehouseUpdatedPayload,
   type WarehouseActivatedPayload,

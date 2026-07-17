@@ -108,6 +108,8 @@ import type {
   PlatformCachePolicyUpdatedPayload,
   RecoveryObjectives,
   PlatformRecoveryObjectivesUpdatedPayload,
+  LoadTestingConfiguration,
+  PlatformLoadTestingUpdatedPayload,
   Warehouse,
   WarehouseStatus,
   WarehouseCreatedPayload,
@@ -3014,6 +3016,26 @@ export function buildPlatformRecoveryObjectivesUpdatedEvent(
       rpoMinutes: recoveryObjectives.rpoMinutes,
       rtoMinutes: recoveryObjectives.rtoMinutes,
       recoveryObjectives,
+    },
+  });
+}
+
+export function buildPlatformLoadTestingUpdatedEvent(
+  configuration: LoadTestingConfiguration,
+  contextStoreId: string,
+): DomainEvent<PlatformLoadTestingUpdatedPayload> {
+  return createDomainEvent({
+    eventType: "platform.load-testing.updated",
+    aggregateType: "platform",
+    aggregateId: "load-testing",
+    storeId: contextStoreId,
+    payload: {
+      enabled: configuration.enabled,
+      preferredTool: configuration.preferredTool,
+      targetVirtualUsers: configuration.targetVirtualUsers,
+      durationSeconds: configuration.durationSeconds,
+      rampUpSeconds: configuration.rampUpSeconds,
+      configuration,
     },
   });
 }

@@ -112,6 +112,7 @@ export class DatabaseDiagnosticsService {
       "platform_operations_foundation",
       "platform_hardening_cache_policies",
       "disaster_readiness_foundation",
+      "load_testing_foundation",
     ];
 
     for (const suffix of requiredSuffixes) {

@@ -1872,6 +1872,7 @@ model PlatformConfiguration {
   cachePolicies      Json     @default("[]") @map("cache_policies")
   backupConfiguration Json    @default("{}") @map("backup_configuration")
   recoveryObjectives  Json    @default("{}") @map("recovery_objectives")
+  loadTestingConfiguration Json @default("{}") @map("load_testing_configuration")
   updatedAt          DateTime @updatedAt @map("updated_at")
 
   @@map("platform_configurations")
