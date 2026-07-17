@@ -51,6 +51,40 @@ export class MemoryJobRepository implements JobRepository {
     });
   }
 
+  async summarizeForStore(storeId: string) {
+    const items = [...this.jobsById.values()].filter(
+      (job) => job.storeId === storeId,
+    );
+
+    const byStatus = {
+      pending: 0,
+      running: 0,
+      completed: 0,
+      failed: 0,
+    };
+
+    let oldestPendingScheduledFor: string | undefined;
+
+    for (const job of items) {
+      byStatus[job.status] += 1;
+
+      if (job.status === "pending") {
+        if (
+          !oldestPendingScheduledFor ||
+          job.scheduledFor < oldestPendingScheduledFor
+        ) {
+          oldestPendingScheduledFor = job.scheduledFor;
+        }
+      }
+    }
+
+    return {
+      total: items.length,
+      byStatus,
+      oldestPendingScheduledFor,
+    };
+  }
+
   async create(input: CreateJobInput, scheduledFor: string): Promise<Job> {
     if (this.transactionFailure) {
       throw this.transactionFailure;

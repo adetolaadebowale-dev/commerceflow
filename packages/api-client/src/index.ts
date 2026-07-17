@@ -339,6 +339,21 @@ export {
   type FeatureFlagsClient,
 } from "./feature-flags/feature-flags-client";
 export type {
+  GetPlatformDiagnosticsResponse,
+  GetPlatformHealthResponse,
+  GetPlatformJobsSummaryResponse,
+  GetPlatformLivenessResponse,
+  GetPlatformReadinessResponse,
+  GetPlatformVersionResponse,
+  PlatformStoreParams,
+  UpdateMaintenanceModeRequest,
+  UpdatePlatformMaintenanceResponse,
+} from "./platform-operations/contracts";
+export {
+  createPlatformOperationsClient,
+  type PlatformOperationsClient,
+} from "./platform-operations/platform-operations-client";
+export type {
   ActivateWarehouseResponse,
   CreateWarehouseRequest,
   CreateWarehouseResponse,

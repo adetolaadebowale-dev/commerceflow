@@ -140,6 +140,8 @@ import {
   buildWebhookDeliveryCompletedEvent,
   buildWebhookDeliveryFailedEvent,
   buildFeatureFlagUpdatedEvent,
+  buildPlatformMaintenanceEnabledEvent,
+  buildPlatformMaintenanceDisabledEvent,
 } from "./domain-event-factory";
 import type {
   Cart,
@@ -170,6 +172,7 @@ import type {
   ExportJob,
   ApiKey,
   FeatureFlag,
+  MaintenanceMode,
   WebhookEndpoint,
   WebhookDelivery,
   Job,
@@ -590,6 +593,34 @@ export class DomainEventPublisher {
     contextStoreId: string,
   ): void {
     this.dispatch(buildFeatureFlagUpdatedEvent(featureFlag, contextStoreId));
+  }
+
+  publishPlatformMaintenanceEnabled(
+    maintenance: MaintenanceMode,
+    configurationId: string,
+    contextStoreId: string,
+  ): void {
+    this.dispatch(
+      buildPlatformMaintenanceEnabledEvent(
+        maintenance,
+        configurationId,
+        contextStoreId,
+      ),
+    );
+  }
+
+  publishPlatformMaintenanceDisabled(
+    maintenance: MaintenanceMode,
+    configurationId: string,
+    contextStoreId: string,
+  ): void {
+    this.dispatch(
+      buildPlatformMaintenanceDisabledEvent(
+        maintenance,
+        configurationId,
+        contextStoreId,
+      ),
+    );
   }
 
   publishWarehouseCreated(warehouse: Warehouse): void {

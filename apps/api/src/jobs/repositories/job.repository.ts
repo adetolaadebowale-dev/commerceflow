@@ -1,5 +1,11 @@
-import type { Job } from "@commerceflow/types";
+import type { Job, JobStatus } from "@commerceflow/types";
 import type { CreateJobInput, ListJobsQuery } from "@commerceflow/validation";
+
+export interface JobStatusSummary {
+  readonly total: number;
+  readonly byStatus: Record<JobStatus, number>;
+  readonly oldestPendingScheduledFor?: string;
+}
 
 export interface JobRepository {
   findById(storeId: string, id: string): Promise<Job | null>;
@@ -9,6 +15,7 @@ export interface JobRepository {
     page: number;
     limit: number;
   }>;
+  summarizeForStore(storeId: string): Promise<JobStatusSummary>;
   create(input: CreateJobInput, scheduledFor: string): Promise<Job>;
   markRunning(
     storeId: string,

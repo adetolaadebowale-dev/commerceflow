@@ -64,6 +64,8 @@ export const AUDIT_ACTIONS = [
   "run",
   "dispatch",
   "update_settings",
+  "maintenance_enable",
+  "maintenance_disable",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];

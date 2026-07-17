@@ -249,6 +249,12 @@ export {
   type UpsertFeatureFlagInput,
 } from "./feature-flags";
 export {
+  platformStoreQuerySchema,
+  updateMaintenanceModeSchema,
+  type PlatformStoreQuery,
+  type UpdateMaintenanceModeInput,
+} from "./platform-operations";
+export {
   createJobSchema,
   listJobsQuerySchema,
   jobIdQuerySchema,

@@ -63,6 +63,8 @@ export const STORE_PERMISSIONS = [
   "webhooks:write",
   "feature-flags:read",
   "feature-flags:write",
+  "platform:read",
+  "platform:write",
 ] as const;
 
 export type StorePermissionCode = (typeof STORE_PERMISSIONS)[number];

@@ -1863,3 +1863,13 @@ model FeatureFlag {
   @@index([key])
   @@map("feature_flags")
 }
+
+/// Singleton platform operational configuration (maintenance mode and related settings).
+model PlatformConfiguration {
+  id                 String   @id @default(uuid()) @db.Uuid
+  maintenanceMode    Boolean  @default(false) @map("maintenance_mode")
+  maintenanceMessage String?  @map("maintenance_message")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  @@map("platform_configurations")
+}

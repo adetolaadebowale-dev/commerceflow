@@ -138,6 +138,8 @@ export const DOMAIN_EVENT_TYPES = [
   "webhook.delivery.completed",
   "webhook.delivery.failed",
   "feature-flag.updated",
+  "platform.maintenance.enabled",
+  "platform.maintenance.disabled",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

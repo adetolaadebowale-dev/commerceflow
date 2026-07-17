@@ -64,13 +64,17 @@ const ALL_STORE_PERMISSIONS: readonly StorePermissionCode[] = [
     "webhooks:write",
     "feature-flags:read",
     "feature-flags:write",
+    "platform:read",
+    "platform:write",
 ];
 
 const PERMISSIONS_BY_STORE_ROLE: Readonly<
   Record<StoreRole, readonly StorePermissionCode[]>
 > = {
   owner: ALL_STORE_PERMISSIONS,
-  admin: ALL_STORE_PERMISSIONS,
+  admin: ALL_STORE_PERMISSIONS.filter(
+    (permission) => permission !== "platform:write",
+  ),
   manager: [
     "catalogue:read",
     "catalogue:write",

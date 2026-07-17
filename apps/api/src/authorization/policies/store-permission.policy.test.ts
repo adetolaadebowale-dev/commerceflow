@@ -238,4 +238,28 @@ describe("StorePermissionPolicy", () => {
       StorePermissionPolicy.hasPermission("staff", "feature-flags:read"),
     ).toBe(true);
   });
+
+  it("restricts platform ops read to owner/admin and write to owner", () => {
+    expect(StorePermissionPolicy.hasPermission("owner", "platform:read")).toBe(
+      true,
+    );
+    expect(StorePermissionPolicy.hasPermission("admin", "platform:read")).toBe(
+      true,
+    );
+    expect(
+      StorePermissionPolicy.hasPermission("manager", "platform:read"),
+    ).toBe(false);
+    expect(StorePermissionPolicy.hasPermission("staff", "platform:read")).toBe(
+      false,
+    );
+    expect(StorePermissionPolicy.hasPermission("owner", "platform:write")).toBe(
+      true,
+    );
+    expect(StorePermissionPolicy.hasPermission("admin", "platform:write")).toBe(
+      false,
+    );
+    expect(
+      StorePermissionPolicy.hasPermission("manager", "platform:write"),
+    ).toBe(false);
+  });
 });

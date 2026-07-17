@@ -23,6 +23,7 @@ import type { ImportJob, ExportJob } from "../data-transfer/data-transfer-job";
 import type { ApiKey } from "../api-keys/api-key";
 import type { WebhookDelivery, WebhookEndpoint } from "../webhooks/webhook";
 import type { FeatureFlag, FeatureFlagScope } from "../feature-flags/feature-flag";
+import type { MaintenanceMode } from "../platform-operations/platform-operations";
 import type { EmailMessage } from "../notifications/email";
 import type { SmsMessage } from "../notifications/sms";
 import type { Shipment } from "../shipments/shipment";
@@ -1366,4 +1367,11 @@ export interface FeatureFlagUpdatedPayload {
   readonly organizationId?: string;
   readonly storeId?: string;
   readonly featureFlag: FeatureFlag;
+}
+
+export interface PlatformMaintenanceChangedPayload {
+  readonly configurationId: string;
+  readonly maintenanceMode: boolean;
+  readonly maintenanceMessage?: string;
+  readonly maintenance: MaintenanceMode;
 }

@@ -73,6 +73,42 @@ export class PrismaJobRepository implements JobRepository {
     });
   }
 
+  async summarizeForStore(storeId: string) {
+    const [grouped, oldestPending] = await Promise.all([
+      this.db.job.groupBy({
+        by: ["status"],
+        where: { storeId },
+        _count: { _all: true },
+      }),
+      this.db.job.findFirst({
+        where: { storeId, status: "pending" },
+        orderBy: { scheduledFor: "asc" },
+        select: { scheduledFor: true },
+      }),
+    ]);
+
+    const byStatus = {
+      pending: 0,
+      running: 0,
+      completed: 0,
+      failed: 0,
+    };
+
+    for (const row of grouped) {
+      byStatus[row.status] = row._count._all;
+    }
+
+    return {
+      total:
+        byStatus.pending +
+        byStatus.running +
+        byStatus.completed +
+        byStatus.failed,
+      byStatus,
+      oldestPendingScheduledFor: oldestPending?.scheduledFor.toISOString(),
+    };
+  }
+
   async create(input: CreateJobInput, scheduledFor: string): Promise<Job> {
     const record = await this.db.job.create({
       data: {

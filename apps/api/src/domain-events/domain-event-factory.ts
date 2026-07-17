@@ -102,6 +102,8 @@ import type {
   WebhookDeliveryFailedPayload,
   FeatureFlag,
   FeatureFlagUpdatedPayload,
+  MaintenanceMode,
+  PlatformMaintenanceChangedPayload,
   Warehouse,
   WarehouseStatus,
   WarehouseCreatedPayload,
@@ -2935,6 +2937,44 @@ export function buildFeatureFlagUpdatedEvent(
       organizationId: featureFlag.organizationId,
       storeId: featureFlag.storeId,
       featureFlag,
+    },
+  });
+}
+
+export function buildPlatformMaintenanceEnabledEvent(
+  maintenance: MaintenanceMode,
+  configurationId: string,
+  contextStoreId: string,
+): DomainEvent<PlatformMaintenanceChangedPayload> {
+  return createDomainEvent({
+    eventType: "platform.maintenance.enabled",
+    aggregateType: "platform",
+    aggregateId: configurationId,
+    storeId: contextStoreId,
+    payload: {
+      configurationId,
+      maintenanceMode: maintenance.maintenanceMode,
+      maintenanceMessage: maintenance.maintenanceMessage,
+      maintenance,
+    },
+  });
+}
+
+export function buildPlatformMaintenanceDisabledEvent(
+  maintenance: MaintenanceMode,
+  configurationId: string,
+  contextStoreId: string,
+): DomainEvent<PlatformMaintenanceChangedPayload> {
+  return createDomainEvent({
+    eventType: "platform.maintenance.disabled",
+    aggregateType: "platform",
+    aggregateId: configurationId,
+    storeId: contextStoreId,
+    payload: {
+      configurationId,
+      maintenanceMode: maintenance.maintenanceMode,
+      maintenanceMessage: maintenance.maintenanceMessage,
+      maintenance,
     },
   });
 }
