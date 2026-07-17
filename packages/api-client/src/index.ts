@@ -367,6 +367,16 @@ export {
   type PlatformHardeningClient,
 } from "./platform-hardening/platform-hardening-client";
 export type {
+  DatabaseOptimizationStoreParams,
+  GetPlatformDatabaseDiagnosticsResponse,
+  GetPlatformDatabaseIndexesResponse,
+  GetPlatformDatabaseResponse,
+} from "./database-optimization/contracts";
+export {
+  createDatabaseOptimizationClient,
+  type DatabaseOptimizationClient,
+} from "./database-optimization/database-optimization-client";
+export type {
   ActivateWarehouseResponse,
   CreateWarehouseRequest,
   CreateWarehouseResponse,

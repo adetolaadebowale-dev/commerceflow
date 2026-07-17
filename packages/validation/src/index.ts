@@ -261,6 +261,10 @@ export {
   type UpdateCachePolicyInput,
 } from "./platform-hardening";
 export {
+  databaseOptimizationStoreQuerySchema,
+  type DatabaseOptimizationStoreQuery,
+} from "./database-optimization";
+export {
   createJobSchema,
   listJobsQuerySchema,
   jobIdQuerySchema,
