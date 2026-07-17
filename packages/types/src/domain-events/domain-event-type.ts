@@ -125,6 +125,12 @@ export const DOMAIN_EVENT_TYPES = [
   "job.started",
   "job.completed",
   "job.failed",
+  "import.created",
+  "import.completed",
+  "import.failed",
+  "export.created",
+  "export.completed",
+  "export.failed",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

@@ -127,6 +127,12 @@ import {
   buildNotificationPreferenceUpdatedEvent,
   buildOrganizationUpdatedEvent,
   buildStoreSettingsUpdatedEvent,
+  buildImportCreatedEvent,
+  buildImportCompletedEvent,
+  buildImportFailedEvent,
+  buildExportCreatedEvent,
+  buildExportCompletedEvent,
+  buildExportFailedEvent,
 } from "./domain-event-factory";
 import type {
   Cart,
@@ -153,6 +159,8 @@ import type {
   NotificationPreference,
   Organization,
   StoreConfiguration,
+  ImportJob,
+  ExportJob,
   Job,
   EmailMessage,
   EmailSendResult,
@@ -510,6 +518,30 @@ export class DomainEventPublisher {
     store: StoreConfiguration,
   ): void {
     this.dispatch(buildStoreSettingsUpdatedEvent(previous, store));
+  }
+
+  publishImportCreated(importJob: ImportJob): void {
+    this.dispatch(buildImportCreatedEvent(importJob));
+  }
+
+  publishImportCompleted(importJob: ImportJob): void {
+    this.dispatch(buildImportCompletedEvent(importJob));
+  }
+
+  publishImportFailed(importJob: ImportJob): void {
+    this.dispatch(buildImportFailedEvent(importJob));
+  }
+
+  publishExportCreated(exportJob: ExportJob): void {
+    this.dispatch(buildExportCreatedEvent(exportJob));
+  }
+
+  publishExportCompleted(exportJob: ExportJob): void {
+    this.dispatch(buildExportCompletedEvent(exportJob));
+  }
+
+  publishExportFailed(exportJob: ExportJob): void {
+    this.dispatch(buildExportFailedEvent(exportJob));
   }
 
   publishWarehouseCreated(warehouse: Warehouse): void {

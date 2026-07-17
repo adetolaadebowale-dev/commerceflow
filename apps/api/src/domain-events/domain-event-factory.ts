@@ -83,6 +83,14 @@ import type {
   OrganizationUpdatedPayload,
   StoreConfiguration,
   StoreSettingsUpdatedPayload,
+  ImportJob,
+  ImportCreatedPayload,
+  ImportCompletedPayload,
+  ImportFailedPayload,
+  ExportJob,
+  ExportCreatedPayload,
+  ExportCompletedPayload,
+  ExportFailedPayload,
   Warehouse,
   WarehouseStatus,
   WarehouseCreatedPayload,
@@ -2681,6 +2689,112 @@ export function buildStoreSettingsUpdatedEvent(
       organizationId: store.organizationId,
       previousSettings: previous.settings,
       store,
+    },
+  });
+}
+
+export function buildImportCreatedEvent(
+  importJob: ImportJob,
+): DomainEvent<ImportCreatedPayload> {
+  return createDomainEvent({
+    eventType: "import.created",
+    aggregateType: "import",
+    aggregateId: importJob.id,
+    storeId: importJob.storeId,
+    payload: {
+      importJobId: importJob.id,
+      storeId: importJob.storeId,
+      type: importJob.type,
+      format: importJob.format,
+      importJob,
+    },
+  });
+}
+
+export function buildImportCompletedEvent(
+  importJob: ImportJob,
+): DomainEvent<ImportCompletedPayload> {
+  return createDomainEvent({
+    eventType: "import.completed",
+    aggregateType: "import",
+    aggregateId: importJob.id,
+    storeId: importJob.storeId,
+    payload: {
+      importJobId: importJob.id,
+      storeId: importJob.storeId,
+      type: importJob.type,
+      importJob,
+    },
+  });
+}
+
+export function buildImportFailedEvent(
+  importJob: ImportJob,
+): DomainEvent<ImportFailedPayload> {
+  return createDomainEvent({
+    eventType: "import.failed",
+    aggregateType: "import",
+    aggregateId: importJob.id,
+    storeId: importJob.storeId,
+    payload: {
+      importJobId: importJob.id,
+      storeId: importJob.storeId,
+      type: importJob.type,
+      failureReason: importJob.failureReason ?? "Import failed",
+      importJob,
+    },
+  });
+}
+
+export function buildExportCreatedEvent(
+  exportJob: ExportJob,
+): DomainEvent<ExportCreatedPayload> {
+  return createDomainEvent({
+    eventType: "export.created",
+    aggregateType: "export",
+    aggregateId: exportJob.id,
+    storeId: exportJob.storeId,
+    payload: {
+      exportJobId: exportJob.id,
+      storeId: exportJob.storeId,
+      type: exportJob.type,
+      format: exportJob.format,
+      exportJob,
+    },
+  });
+}
+
+export function buildExportCompletedEvent(
+  exportJob: ExportJob,
+): DomainEvent<ExportCompletedPayload> {
+  return createDomainEvent({
+    eventType: "export.completed",
+    aggregateType: "export",
+    aggregateId: exportJob.id,
+    storeId: exportJob.storeId,
+    payload: {
+      exportJobId: exportJob.id,
+      storeId: exportJob.storeId,
+      type: exportJob.type,
+      exportJob,
+    },
+  });
+}
+
+export function buildExportFailedEvent(
+  exportJob: ExportJob,
+): DomainEvent<ExportFailedPayload> {
+  return createDomainEvent({
+    eventType: "export.failed",
+    aggregateType: "export",
+    aggregateId: exportJob.id,
+    storeId: exportJob.storeId,
+    payload: {
+      exportJobId: exportJob.id,
+      storeId: exportJob.storeId,
+      type: exportJob.type,
+      failureReason: exportJob.failureReason ?? "Export failed",
+      exportJob,
     },
   });
 }

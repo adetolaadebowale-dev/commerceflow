@@ -19,6 +19,7 @@ import type { Job } from "../jobs/job";
 import type { NotificationPreference } from "../notification-preferences/notification-preference";
 import type { Organization } from "../organizations/organization";
 import type { StoreConfiguration } from "../stores/store-settings";
+import type { ImportJob, ExportJob } from "../data-transfer/data-transfer-job";
 import type { EmailMessage } from "../notifications/email";
 import type { SmsMessage } from "../notifications/sms";
 import type { Shipment } from "../shipments/shipment";
@@ -1260,4 +1261,50 @@ export interface StoreSettingsUpdatedPayload {
   readonly organizationId: string;
   readonly previousSettings: StoreConfiguration["settings"];
   readonly store: StoreConfiguration;
+}
+
+export interface ImportCreatedPayload {
+  readonly importJobId: string;
+  readonly storeId: string;
+  readonly type: ImportJob["type"];
+  readonly format: ImportJob["format"];
+  readonly importJob: ImportJob;
+}
+
+export interface ImportCompletedPayload {
+  readonly importJobId: string;
+  readonly storeId: string;
+  readonly type: ImportJob["type"];
+  readonly importJob: ImportJob;
+}
+
+export interface ImportFailedPayload {
+  readonly importJobId: string;
+  readonly storeId: string;
+  readonly type: ImportJob["type"];
+  readonly failureReason: string;
+  readonly importJob: ImportJob;
+}
+
+export interface ExportCreatedPayload {
+  readonly exportJobId: string;
+  readonly storeId: string;
+  readonly type: ExportJob["type"];
+  readonly format: ExportJob["format"];
+  readonly exportJob: ExportJob;
+}
+
+export interface ExportCompletedPayload {
+  readonly exportJobId: string;
+  readonly storeId: string;
+  readonly type: ExportJob["type"];
+  readonly exportJob: ExportJob;
+}
+
+export interface ExportFailedPayload {
+  readonly exportJobId: string;
+  readonly storeId: string;
+  readonly type: ExportJob["type"];
+  readonly failureReason: string;
+  readonly exportJob: ExportJob;
 }

@@ -45,6 +45,8 @@ export const DOMAIN_AGGREGATE_TYPES = [
   "notification_preference",
   "organization",
   "store",
+  "import",
+  "export",
 ] as const;
 
 export type DomainAggregateType = (typeof DOMAIN_AGGREGATE_TYPES)[number];

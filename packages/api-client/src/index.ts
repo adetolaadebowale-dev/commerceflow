@@ -278,6 +278,24 @@ export {
   type StoreAdministrationClient,
 } from "./stores/store-administration-client";
 export type {
+  CreateExportJobRequest,
+  CreateExportJobResponse,
+  CreateImportJobRequest,
+  CreateImportJobResponse,
+  GetExportJobParams,
+  GetExportJobResponse,
+  GetImportJobParams,
+  GetImportJobResponse,
+  ListExportJobsParams,
+  ListExportJobsResponse,
+  ListImportJobsParams,
+  ListImportJobsResponse,
+} from "./data-transfer/contracts";
+export {
+  createDataTransferClient,
+  type DataTransferClient,
+} from "./data-transfer/data-transfer-client";
+export type {
   ActivateWarehouseResponse,
   CreateWarehouseRequest,
   CreateWarehouseResponse,

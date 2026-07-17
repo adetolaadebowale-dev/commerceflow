@@ -163,4 +163,25 @@ describe("StorePermissionPolicy", () => {
       true,
     );
   });
+
+  it("grants data transfer read to staff and write to managers", () => {
+    expect(StorePermissionPolicy.hasPermission("staff", "imports:read")).toBe(
+      true,
+    );
+    expect(StorePermissionPolicy.hasPermission("staff", "imports:write")).toBe(
+      false,
+    );
+    expect(StorePermissionPolicy.hasPermission("manager", "imports:write")).toBe(
+      true,
+    );
+    expect(StorePermissionPolicy.hasPermission("staff", "exports:read")).toBe(
+      true,
+    );
+    expect(StorePermissionPolicy.hasPermission("staff", "exports:write")).toBe(
+      false,
+    );
+    expect(StorePermissionPolicy.hasPermission("manager", "exports:write")).toBe(
+      true,
+    );
+  });
 });

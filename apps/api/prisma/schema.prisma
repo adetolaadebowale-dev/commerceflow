@@ -401,6 +401,8 @@ model Store {
   notifications                Notification[]
   notificationPreferences      NotificationPreference[]
   jobs                         Job[]
+  importJobs                   ImportJob[]
+  exportJobs                   ExportJob[]
 
   @@unique([organizationId, slug])
   @@index([organizationId])
@@ -1708,4 +1710,63 @@ model Job {
   @@index([storeId, scheduledFor])
   @@index([createdAt])
   @@map("jobs")
+}
+
+enum DataTransferType {
+  customers
+  products
+  inventory
+}
+
+enum DataTransferStatus {
+  pending
+  processing
+  completed
+  failed
+}
+
+enum DataTransferFormat {
+  csv
+}
+
+/// Store-scoped import job for bulk data ingestion.
+model ImportJob {
+  id            String             @id @default(uuid()) @db.Uuid
+  storeId       String             @map("store_id") @db.Uuid
+  store         Store              @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  type          DataTransferType
+  status        DataTransferStatus @default(pending)
+  format        DataTransferFormat @default(csv)
+  metadata      Json               @default("{}")
+  completedAt   DateTime?          @map("completed_at")
+  failureReason String?            @map("failure_reason")
+  createdAt     DateTime           @default(now()) @map("created_at")
+  updatedAt     DateTime           @updatedAt @map("updated_at")
+
+  @@index([storeId])
+  @@index([storeId, status])
+  @@index([storeId, type])
+  @@index([createdAt])
+  @@map("import_jobs")
+}
+
+/// Store-scoped export job for bulk data extraction.
+model ExportJob {
+  id            String             @id @default(uuid()) @db.Uuid
+  storeId       String             @map("store_id") @db.Uuid
+  store         Store              @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  type          DataTransferType
+  status        DataTransferStatus @default(pending)
+  format        DataTransferFormat @default(csv)
+  metadata      Json               @default("{}")
+  completedAt   DateTime?          @map("completed_at")
+  failureReason String?            @map("failure_reason")
+  createdAt     DateTime           @default(now()) @map("created_at")
+  updatedAt     DateTime           @updatedAt @map("updated_at")
+
+  @@index([storeId])
+  @@index([storeId, status])
+  @@index([storeId, type])
+  @@index([createdAt])
+  @@map("export_jobs")
 }

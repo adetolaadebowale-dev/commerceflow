@@ -245,4 +245,64 @@ describe("AuthorizationService", () => {
       ),
     ).resolves.toMatchObject({ storeRole: "manager" });
   });
+
+  it("allows staff to read imports but not create them", async () => {
+    const { authService, authorizationService, storeMemberRepository } =
+      createMemoryAuthorizationService();
+    const { user, tokens } = await registerStaffUser(authService);
+
+    storeMemberRepository.seedMember({
+      storeId: TEST_STORE_A_ID,
+      userId: user.id,
+      role: "staff",
+    });
+
+    await expect(
+      authorizationService.authorizeStoreRequest(
+        createAuthorizedRequest({
+          accessToken: tokens.accessToken,
+          storeId: TEST_STORE_A_ID,
+        }),
+        TEST_STORE_A_ID,
+        "imports:read",
+      ),
+    ).resolves.toMatchObject({ storeRole: "staff" });
+
+    await expect(
+      authorizationService.authorizeStoreRequest(
+        createAuthorizedRequest({
+          accessToken: tokens.accessToken,
+          storeId: TEST_STORE_A_ID,
+        }),
+        TEST_STORE_A_ID,
+        "imports:write",
+      ),
+    ).rejects.toMatchObject({
+      code: AUTHORIZATION_ERROR_CODES.INSUFFICIENT_PERMISSION,
+      status: 403,
+    });
+  });
+
+  it("allows managers to create exports", async () => {
+    const { authService, authorizationService, storeMemberRepository } =
+      createMemoryAuthorizationService();
+    const { user, tokens } = await registerStaffUser(authService);
+
+    storeMemberRepository.seedMember({
+      storeId: TEST_STORE_A_ID,
+      userId: user.id,
+      role: "manager",
+    });
+
+    await expect(
+      authorizationService.authorizeStoreRequest(
+        createAuthorizedRequest({
+          accessToken: tokens.accessToken,
+          storeId: TEST_STORE_A_ID,
+        }),
+        TEST_STORE_A_ID,
+        "exports:write",
+      ),
+    ).resolves.toMatchObject({ storeRole: "manager" });
+  });
 });
