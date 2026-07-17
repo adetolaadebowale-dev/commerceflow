@@ -1,8 +1,11 @@
 import { InMemoryDomainEventDispatcher } from "./dispatcher";
 import { DomainEventPublisher } from "./domain-event-publisher";
+import { registerDomainNotificationHandlers } from "@/notifications/integrations/handlers/domain-notification.handlers";
 
 const dispatcher = new InMemoryDomainEventDispatcher();
 const domainEventPublisher = new DomainEventPublisher({ dispatcher });
+
+registerDomainNotificationHandlers(dispatcher);
 
 export function getDomainEventDispatcher(): InMemoryDomainEventDispatcher {
   return dispatcher;

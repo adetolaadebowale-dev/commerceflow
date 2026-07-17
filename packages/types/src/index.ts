@@ -95,6 +95,14 @@ export {
   type SmsProviderType,
   type SmsProvider,
   type InAppNotification,
+  DOMAIN_NOTIFICATION_EVENT_TYPES,
+  type DomainNotificationChannelConfig,
+  type DomainNotificationConfig,
+  type DomainNotificationDispatchItem,
+  type DomainNotificationDispatchResult,
+  type DomainNotificationEventType,
+  type OrderCustomerContact,
+  type SupplierContactInfo,
 } from "./notifications";
 export {
   JOB_STATUSES,
