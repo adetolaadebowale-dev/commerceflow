@@ -5,4 +5,9 @@ export interface StoreMemberRepository {
     storeId: string,
     userId: string,
   ): Promise<StoreMember | null>;
+
+  findActiveMembershipsForOrganization(
+    organizationId: string,
+    userId: string,
+  ): Promise<readonly StoreMember[]>;
 }

@@ -50,6 +50,7 @@ export const AUDIT_ENTITY_TYPES = [
   "job",
   "domain_notification",
   "notification_preference",
+  "organization",
 ] as const;
 
 export type AuditEntityType = (typeof AUDIT_ENTITY_TYPES)[number];

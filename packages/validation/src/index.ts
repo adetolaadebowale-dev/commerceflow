@@ -196,6 +196,12 @@ export {
   type UpdateNotificationPreferenceInput,
 } from "./notification-preferences";
 export {
+  organizationIdParamSchema,
+  updateOrganizationSchema,
+  type OrganizationIdParam,
+  type UpdateOrganizationInput,
+} from "./organizations";
+export {
   createJobSchema,
   listJobsQuerySchema,
   jobIdQuerySchema,

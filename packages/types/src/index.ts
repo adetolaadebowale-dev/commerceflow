@@ -112,6 +112,11 @@ export {
   type NotificationPreferenceType,
   type NotificationPreferenceView,
 } from "./notification-preferences";
+export type {
+  Organization,
+  OrganizationSettings,
+  OrganizationStoreSummary,
+} from "./organizations";
 export {
   JOB_STATUSES,
   JOB_TYPES,
@@ -333,9 +338,12 @@ export {
   type CartStatus,
 } from "./shopping-cart";
 export {
+  ORGANIZATION_PERMISSIONS,
   STORE_PERMISSIONS,
   STORE_ROLES,
+  type AuthorizedOrganizationContext,
   type AuthorizedStoreContext,
+  type OrganizationPermissionCode,
   type StoreMember,
   type StorePermissionCode,
   type StoreRole,
@@ -432,6 +440,7 @@ export {
   type InAppNotificationReadPayload,
   type InAppNotificationUnreadPayload,
   type NotificationPreferenceUpdatedPayload,
+  type OrganizationUpdatedPayload,
   type JobCreatedPayload,
   type JobStartedPayload,
   type JobCompletedPayload,

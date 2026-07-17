@@ -32,4 +32,23 @@ export class PrismaStoreMemberRepository implements StoreMemberRepository {
 
     return record ? toStoreMember(record) : null;
   }
+
+  async findActiveMembershipsForOrganization(
+    organizationId: string,
+    userId: string,
+  ): Promise<readonly StoreMember[]> {
+    const records = await this.db.storeMember.findMany({
+      where: {
+        userId,
+        deletedAt: null,
+        store: {
+          organizationId,
+          deletedAt: null,
+        },
+      },
+      orderBy: [{ createdAt: "asc" }],
+    });
+
+    return records.map(toStoreMember);
+  }
 }

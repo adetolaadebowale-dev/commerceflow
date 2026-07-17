@@ -2,6 +2,7 @@ import type {
   AuditAction,
   AuditEntityType,
   AuditLog,
+  AuthorizedOrganizationContext,
   AuthorizedStoreContext,
   CatalogueListResult,
 } from "@commerceflow/types";
@@ -72,6 +73,24 @@ export class AuditService {
       userId: authContext.userId,
       sessionId: authContext.sessionId,
       ...input,
+    });
+  }
+
+  recordFromOrganizationAuthContext(
+    authContext: AuthorizedOrganizationContext,
+    input: Omit<RecordAuditInput, "storeId" | "userId" | "sessionId">,
+  ): void {
+    void this.recordBestEffort({
+      storeId: null,
+      userId: authContext.userId,
+      sessionId: authContext.sessionId,
+      entityType: input.entityType,
+      entityId: input.entityId,
+      action: input.action,
+      metadata: {
+        organizationId: authContext.organizationId,
+        ...(input.metadata ?? {}),
+      },
     });
   }
 

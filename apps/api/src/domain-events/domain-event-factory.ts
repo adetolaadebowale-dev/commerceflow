@@ -79,6 +79,8 @@ import type {
   JobFailedPayload,
   NotificationPreference,
   NotificationPreferenceUpdatedPayload,
+  Organization,
+  OrganizationUpdatedPayload,
   Warehouse,
   WarehouseStatus,
   WarehouseCreatedPayload,
@@ -2641,6 +2643,24 @@ export function buildNotificationPreferenceUpdatedEvent(
       userId: preference.userId,
       notificationType: preference.notificationType,
       preference,
+    },
+  });
+}
+
+export function buildOrganizationUpdatedEvent(
+  previous: Organization,
+  organization: Organization,
+): DomainEvent<OrganizationUpdatedPayload> {
+  return createDomainEvent({
+    eventType: "organization.updated",
+    aggregateType: "organization",
+    aggregateId: organization.id,
+    storeId: null,
+    payload: {
+      organizationId: organization.id,
+      previousName: previous.name,
+      previousSlug: previous.slug,
+      organization,
     },
   });
 }

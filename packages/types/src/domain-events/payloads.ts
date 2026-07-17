@@ -17,6 +17,7 @@ import type { TaxRate } from "../tax-rates/tax-rate";
 import type { Notification } from "../notifications/notification";
 import type { Job } from "../jobs/job";
 import type { NotificationPreference } from "../notification-preferences/notification-preference";
+import type { Organization } from "../organizations/organization";
 import type { EmailMessage } from "../notifications/email";
 import type { SmsMessage } from "../notifications/sms";
 import type { Shipment } from "../shipments/shipment";
@@ -1244,4 +1245,11 @@ export interface NotificationPreferenceUpdatedPayload {
   readonly userId: string;
   readonly notificationType: NotificationPreference["notificationType"];
   readonly preference: NotificationPreference;
+}
+
+export interface OrganizationUpdatedPayload {
+  readonly organizationId: string;
+  readonly previousName: string;
+  readonly previousSlug: string;
+  readonly organization: Organization;
 }

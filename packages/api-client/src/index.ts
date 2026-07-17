@@ -259,6 +259,16 @@ export {
   type NotificationPreferenceClient,
 } from "./notification-preferences/notification-preference-client";
 export type {
+  GetOrganizationResponse,
+  ListOrganizationStoresResponse,
+  UpdateOrganizationRequest,
+  UpdateOrganizationResponse,
+} from "./organizations/contracts";
+export {
+  createOrganizationClient,
+  type OrganizationClient,
+} from "./organizations/organization-client";
+export type {
   ActivateWarehouseResponse,
   CreateWarehouseRequest,
   CreateWarehouseResponse,
