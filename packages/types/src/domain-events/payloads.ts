@@ -24,6 +24,7 @@ import type { ApiKey } from "../api-keys/api-key";
 import type { WebhookDelivery, WebhookEndpoint } from "../webhooks/webhook";
 import type { FeatureFlag, FeatureFlagScope } from "../feature-flags/feature-flag";
 import type { MaintenanceMode } from "../platform-operations/platform-operations";
+import type { CachePolicy } from "../platform-hardening/platform-hardening";
 import type { EmailMessage } from "../notifications/email";
 import type { SmsMessage } from "../notifications/sms";
 import type { Shipment } from "../shipments/shipment";
@@ -1374,4 +1375,11 @@ export interface PlatformMaintenanceChangedPayload {
   readonly maintenanceMode: boolean;
   readonly maintenanceMessage?: string;
   readonly maintenance: MaintenanceMode;
+}
+
+export interface PlatformCachePolicyUpdatedPayload {
+  readonly resource: string;
+  readonly enabled: boolean;
+  readonly ttlSeconds: number;
+  readonly cachePolicy: CachePolicy;
 }

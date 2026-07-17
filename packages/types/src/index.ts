@@ -178,6 +178,21 @@ export {
   type PlatformVersion,
 } from "./platform-operations";
 export {
+  SECURITY_CHECK_STATUSES,
+  SECURITY_DIAGNOSTIC_STATUSES,
+  type CachePolicy,
+  type PerformanceDiagnostics,
+  type PerformanceTimingSummary,
+  type RateLimitBucketStatus,
+  type RateLimitPolicy,
+  type RateLimitSummary,
+  type SecurityCheck,
+  type SecurityCheckStatus,
+  type SecurityDiagnosticStatus,
+  type SecurityDiagnostics,
+  type SlowOperationReport,
+} from "./platform-hardening";
+export {
   JOB_STATUSES,
   JOB_TYPES,
   type Job,
@@ -520,6 +535,7 @@ export {
   type WebhookDeliveryFailedPayload,
   type FeatureFlagUpdatedPayload,
   type PlatformMaintenanceChangedPayload,
+  type PlatformCachePolicyUpdatedPayload,
   type WarehouseCreatedPayload,
   type WarehouseUpdatedPayload,
   type WarehouseActivatedPayload,

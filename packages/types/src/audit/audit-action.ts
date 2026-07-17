@@ -66,6 +66,7 @@ export const AUDIT_ACTIONS = [
   "update_settings",
   "maintenance_enable",
   "maintenance_disable",
+  "cache_policy_update",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];

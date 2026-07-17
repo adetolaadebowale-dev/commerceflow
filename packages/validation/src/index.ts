@@ -255,6 +255,12 @@ export {
   type UpdateMaintenanceModeInput,
 } from "./platform-operations";
 export {
+  platformHardeningStoreQuerySchema,
+  updateCachePolicySchema,
+  type PlatformHardeningStoreQuery,
+  type UpdateCachePolicyInput,
+} from "./platform-hardening";
+export {
   createJobSchema,
   listJobsQuerySchema,
   jobIdQuerySchema,

@@ -354,6 +354,19 @@ export {
   type PlatformOperationsClient,
 } from "./platform-operations/platform-operations-client";
 export type {
+  GetPlatformCachePoliciesResponse,
+  GetPlatformPerformanceResponse,
+  GetPlatformRateLimitsResponse,
+  GetPlatformSecurityResponse,
+  PlatformHardeningStoreParams,
+  UpdateCachePolicyRequest,
+  UpdatePlatformCachePolicyResponse,
+} from "./platform-hardening/contracts";
+export {
+  createPlatformHardeningClient,
+  type PlatformHardeningClient,
+} from "./platform-hardening/platform-hardening-client";
+export type {
   ActivateWarehouseResponse,
   CreateWarehouseRequest,
   CreateWarehouseResponse,

@@ -150,4 +150,5 @@ export type {
   WebhookDeliveryFailedPayload,
   FeatureFlagUpdatedPayload,
   PlatformMaintenanceChangedPayload,
+  PlatformCachePolicyUpdatedPayload,
 } from "./payloads";

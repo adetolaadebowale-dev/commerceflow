@@ -142,6 +142,7 @@ import {
   buildFeatureFlagUpdatedEvent,
   buildPlatformMaintenanceEnabledEvent,
   buildPlatformMaintenanceDisabledEvent,
+  buildPlatformCachePolicyUpdatedEvent,
 } from "./domain-event-factory";
 import type {
   Cart,
@@ -173,6 +174,7 @@ import type {
   ApiKey,
   FeatureFlag,
   MaintenanceMode,
+  CachePolicy,
   WebhookEndpoint,
   WebhookDelivery,
   Job,
@@ -620,6 +622,15 @@ export class DomainEventPublisher {
         configurationId,
         contextStoreId,
       ),
+    );
+  }
+
+  publishPlatformCachePolicyUpdated(
+    cachePolicy: CachePolicy,
+    contextStoreId: string,
+  ): void {
+    this.dispatch(
+      buildPlatformCachePolicyUpdatedEvent(cachePolicy, contextStoreId),
     );
   }
 

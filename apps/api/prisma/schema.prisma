@@ -1869,6 +1869,7 @@ model PlatformConfiguration {
   id                 String   @id @default(uuid()) @db.Uuid
   maintenanceMode    Boolean  @default(false) @map("maintenance_mode")
   maintenanceMessage String?  @map("maintenance_message")
+  cachePolicies      Json     @default("[]") @map("cache_policies")
   updatedAt          DateTime @updatedAt @map("updated_at")
 
   @@map("platform_configurations")

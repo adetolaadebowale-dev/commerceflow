@@ -140,6 +140,7 @@ export const DOMAIN_EVENT_TYPES = [
   "feature-flag.updated",
   "platform.maintenance.enabled",
   "platform.maintenance.disabled",
+  "platform.cache-policy.updated",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

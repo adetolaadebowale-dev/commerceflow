@@ -104,6 +104,8 @@ import type {
   FeatureFlagUpdatedPayload,
   MaintenanceMode,
   PlatformMaintenanceChangedPayload,
+  CachePolicy,
+  PlatformCachePolicyUpdatedPayload,
   Warehouse,
   WarehouseStatus,
   WarehouseCreatedPayload,
@@ -2975,6 +2977,24 @@ export function buildPlatformMaintenanceDisabledEvent(
       maintenanceMode: maintenance.maintenanceMode,
       maintenanceMessage: maintenance.maintenanceMessage,
       maintenance,
+    },
+  });
+}
+
+export function buildPlatformCachePolicyUpdatedEvent(
+  cachePolicy: CachePolicy,
+  contextStoreId: string,
+): DomainEvent<PlatformCachePolicyUpdatedPayload> {
+  return createDomainEvent({
+    eventType: "platform.cache-policy.updated",
+    aggregateType: "platform",
+    aggregateId: cachePolicy.resource,
+    storeId: contextStoreId,
+    payload: {
+      resource: cachePolicy.resource,
+      enabled: cachePolicy.enabled,
+      ttlSeconds: cachePolicy.ttlSeconds,
+      cachePolicy,
     },
   });
 }
