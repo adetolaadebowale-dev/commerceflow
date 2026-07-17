@@ -344,6 +344,7 @@ model Organization {
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
   stores    Store[]
+  featureFlags FeatureFlag[]
 
   @@index([deletedAt])
   @@map("organizations")
@@ -405,6 +406,7 @@ model Store {
   exportJobs                   ExportJob[]
   apiKeys                      ApiKey[]
   webhookEndpoints             WebhookEndpoint[]
+  featureFlags                 FeatureFlag[]
 
   @@unique([organizationId, slug])
   @@index([organizationId])
@@ -1833,4 +1835,31 @@ model WebhookDelivery {
   @@index([endpointId, status])
   @@index([createdAt])
   @@map("webhook_deliveries")
+}
+
+enum FeatureFlagScope {
+  platform
+  organization
+  store
+}
+
+/// Scoped feature flag configuration with platform, organization, and store levels.
+model FeatureFlag {
+  id             String           @id @default(uuid()) @db.Uuid
+  organizationId String?          @map("organization_id") @db.Uuid
+  organization   Organization?    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  storeId        String?          @map("store_id") @db.Uuid
+  store          Store?           @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  key            String
+  enabled        Boolean          @default(false)
+  scope          FeatureFlagScope
+  description    String?
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+
+  @@index([scope])
+  @@index([organizationId])
+  @@index([storeId])
+  @@index([key])
+  @@map("feature_flags")
 }

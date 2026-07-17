@@ -148,4 +148,5 @@ export type {
   WebhookUpdatedPayload,
   WebhookDeliveryCompletedPayload,
   WebhookDeliveryFailedPayload,
+  FeatureFlagUpdatedPayload,
 } from "./payloads";

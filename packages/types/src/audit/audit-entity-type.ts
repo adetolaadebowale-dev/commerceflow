@@ -56,6 +56,7 @@ export const AUDIT_ENTITY_TYPES = [
   "export",
   "api_key",
   "webhook",
+  "feature_flag",
 ] as const;
 
 export type AuditEntityType = (typeof AUDIT_ENTITY_TYPES)[number];

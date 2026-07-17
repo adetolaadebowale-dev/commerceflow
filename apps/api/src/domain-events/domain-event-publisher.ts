@@ -139,6 +139,7 @@ import {
   buildWebhookUpdatedEvent,
   buildWebhookDeliveryCompletedEvent,
   buildWebhookDeliveryFailedEvent,
+  buildFeatureFlagUpdatedEvent,
 } from "./domain-event-factory";
 import type {
   Cart,
@@ -168,6 +169,7 @@ import type {
   ImportJob,
   ExportJob,
   ApiKey,
+  FeatureFlag,
   WebhookEndpoint,
   WebhookDelivery,
   Job,
@@ -581,6 +583,13 @@ export class DomainEventPublisher {
     delivery: WebhookDelivery,
   ): void {
     this.dispatch(buildWebhookDeliveryFailedEvent(webhook, delivery));
+  }
+
+  publishFeatureFlagUpdated(
+    featureFlag: FeatureFlag,
+    contextStoreId: string,
+  ): void {
+    this.dispatch(buildFeatureFlagUpdatedEvent(featureFlag, contextStoreId));
   }
 
   publishWarehouseCreated(warehouse: Warehouse): void {

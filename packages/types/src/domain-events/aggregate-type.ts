@@ -50,6 +50,7 @@ export const DOMAIN_AGGREGATE_TYPES = [
   "api_key",
   "webhook",
   "webhook_delivery",
+  "feature_flag",
 ] as const;
 
 export type DomainAggregateType = (typeof DOMAIN_AGGREGATE_TYPES)[number];

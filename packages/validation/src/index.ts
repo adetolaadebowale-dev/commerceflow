@@ -239,6 +239,16 @@ export {
   type UpdateWebhookInput,
 } from "./webhooks";
 export {
+  effectiveFeatureFlagsQuerySchema,
+  featureFlagKeyParamSchema,
+  featureFlagKeySchema,
+  listFeatureFlagsQuerySchema,
+  upsertFeatureFlagSchema,
+  type EffectiveFeatureFlagsQuery,
+  type ListFeatureFlagsQuery,
+  type UpsertFeatureFlagInput,
+} from "./feature-flags";
+export {
   createJobSchema,
   listJobsQuerySchema,
   jobIdQuerySchema,

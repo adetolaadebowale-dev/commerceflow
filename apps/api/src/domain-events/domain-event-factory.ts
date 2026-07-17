@@ -100,6 +100,8 @@ import type {
   WebhookUpdatedPayload,
   WebhookDeliveryCompletedPayload,
   WebhookDeliveryFailedPayload,
+  FeatureFlag,
+  FeatureFlagUpdatedPayload,
   Warehouse,
   WarehouseStatus,
   WarehouseCreatedPayload,
@@ -2912,6 +2914,27 @@ export function buildWebhookDeliveryFailedEvent(
       eventType: delivery.eventType,
       responseStatus: delivery.responseStatus,
       delivery,
+    },
+  });
+}
+
+export function buildFeatureFlagUpdatedEvent(
+  featureFlag: FeatureFlag,
+  contextStoreId: string,
+): DomainEvent<FeatureFlagUpdatedPayload> {
+  return createDomainEvent({
+    eventType: "feature-flag.updated",
+    aggregateType: "feature_flag",
+    aggregateId: featureFlag.id,
+    storeId: featureFlag.storeId ?? contextStoreId,
+    payload: {
+      featureFlagId: featureFlag.id,
+      key: featureFlag.key,
+      scope: featureFlag.scope,
+      enabled: featureFlag.enabled,
+      organizationId: featureFlag.organizationId,
+      storeId: featureFlag.storeId,
+      featureFlag,
     },
   });
 }

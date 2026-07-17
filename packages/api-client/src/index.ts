@@ -326,6 +326,19 @@ export {
   type WebhooksClient,
 } from "./webhooks/webhooks-client";
 export type {
+  EffectiveFeatureFlagsParams,
+  EffectiveFeatureFlagsResponse,
+  ListFeatureFlagsParams,
+  ListFeatureFlagsResponse,
+  UpsertFeatureFlagParams,
+  UpsertFeatureFlagRequest,
+  UpsertFeatureFlagResponse,
+} from "./feature-flags/contracts";
+export {
+  createFeatureFlagsClient,
+  type FeatureFlagsClient,
+} from "./feature-flags/feature-flags-client";
+export type {
   ActivateWarehouseResponse,
   CreateWarehouseRequest,
   CreateWarehouseResponse,

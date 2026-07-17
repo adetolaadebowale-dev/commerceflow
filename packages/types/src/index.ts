@@ -152,6 +152,14 @@ export {
   type WebhookSubscribableEventType,
 } from "./webhooks";
 export {
+  EFFECTIVE_FEATURE_FLAG_SOURCES,
+  FEATURE_FLAG_SCOPES,
+  type EffectiveFeatureFlag,
+  type EffectiveFeatureFlagSource,
+  type FeatureFlag,
+  type FeatureFlagScope,
+} from "./feature-flags";
+export {
   JOB_STATUSES,
   JOB_TYPES,
   type Job,
@@ -492,6 +500,7 @@ export {
   type WebhookUpdatedPayload,
   type WebhookDeliveryCompletedPayload,
   type WebhookDeliveryFailedPayload,
+  type FeatureFlagUpdatedPayload,
   type WarehouseCreatedPayload,
   type WarehouseUpdatedPayload,
   type WarehouseActivatedPayload,

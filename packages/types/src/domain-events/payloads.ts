@@ -22,6 +22,7 @@ import type { StoreConfiguration } from "../stores/store-settings";
 import type { ImportJob, ExportJob } from "../data-transfer/data-transfer-job";
 import type { ApiKey } from "../api-keys/api-key";
 import type { WebhookDelivery, WebhookEndpoint } from "../webhooks/webhook";
+import type { FeatureFlag, FeatureFlagScope } from "../feature-flags/feature-flag";
 import type { EmailMessage } from "../notifications/email";
 import type { SmsMessage } from "../notifications/sms";
 import type { Shipment } from "../shipments/shipment";
@@ -1355,4 +1356,14 @@ export interface WebhookDeliveryFailedPayload {
   readonly eventType: string;
   readonly responseStatus?: number;
   readonly delivery: WebhookDelivery;
+}
+
+export interface FeatureFlagUpdatedPayload {
+  readonly featureFlagId: string;
+  readonly key: string;
+  readonly scope: FeatureFlagScope;
+  readonly enabled: boolean;
+  readonly organizationId?: string;
+  readonly storeId?: string;
+  readonly featureFlag: FeatureFlag;
 }

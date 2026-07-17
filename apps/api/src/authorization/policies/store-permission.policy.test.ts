@@ -217,4 +217,25 @@ describe("StorePermissionPolicy", () => {
       StorePermissionPolicy.hasPermission("manager", "webhooks:write"),
     ).toBe(true);
   });
+
+  it("restricts feature flag writes to owner and admin", () => {
+    expect(
+      StorePermissionPolicy.hasPermission("owner", "feature-flags:write"),
+    ).toBe(true);
+    expect(
+      StorePermissionPolicy.hasPermission("admin", "feature-flags:write"),
+    ).toBe(true);
+    expect(
+      StorePermissionPolicy.hasPermission("manager", "feature-flags:write"),
+    ).toBe(false);
+    expect(
+      StorePermissionPolicy.hasPermission("staff", "feature-flags:write"),
+    ).toBe(false);
+    expect(
+      StorePermissionPolicy.hasPermission("manager", "feature-flags:read"),
+    ).toBe(true);
+    expect(
+      StorePermissionPolicy.hasPermission("staff", "feature-flags:read"),
+    ).toBe(true);
+  });
 });
