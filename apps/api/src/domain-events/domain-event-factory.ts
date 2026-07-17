@@ -106,6 +106,8 @@ import type {
   PlatformMaintenanceChangedPayload,
   CachePolicy,
   PlatformCachePolicyUpdatedPayload,
+  RecoveryObjectives,
+  PlatformRecoveryObjectivesUpdatedPayload,
   Warehouse,
   WarehouseStatus,
   WarehouseCreatedPayload,
@@ -2995,6 +2997,23 @@ export function buildPlatformCachePolicyUpdatedEvent(
       enabled: cachePolicy.enabled,
       ttlSeconds: cachePolicy.ttlSeconds,
       cachePolicy,
+    },
+  });
+}
+
+export function buildPlatformRecoveryObjectivesUpdatedEvent(
+  recoveryObjectives: RecoveryObjectives,
+  contextStoreId: string,
+): DomainEvent<PlatformRecoveryObjectivesUpdatedPayload> {
+  return createDomainEvent({
+    eventType: "platform.recovery-objectives.updated",
+    aggregateType: "platform",
+    aggregateId: "recovery-objectives",
+    storeId: contextStoreId,
+    payload: {
+      rpoMinutes: recoveryObjectives.rpoMinutes,
+      rtoMinutes: recoveryObjectives.rtoMinutes,
+      recoveryObjectives,
     },
   });
 }

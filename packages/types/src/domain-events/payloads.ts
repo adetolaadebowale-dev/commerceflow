@@ -25,6 +25,7 @@ import type { WebhookDelivery, WebhookEndpoint } from "../webhooks/webhook";
 import type { FeatureFlag, FeatureFlagScope } from "../feature-flags/feature-flag";
 import type { MaintenanceMode } from "../platform-operations/platform-operations";
 import type { CachePolicy } from "../platform-hardening/platform-hardening";
+import type { RecoveryObjectives } from "../disaster-readiness/disaster-readiness";
 import type { EmailMessage } from "../notifications/email";
 import type { SmsMessage } from "../notifications/sms";
 import type { Shipment } from "../shipments/shipment";
@@ -1382,4 +1383,10 @@ export interface PlatformCachePolicyUpdatedPayload {
   readonly enabled: boolean;
   readonly ttlSeconds: number;
   readonly cachePolicy: CachePolicy;
+}
+
+export interface PlatformRecoveryObjectivesUpdatedPayload {
+  readonly rpoMinutes: number;
+  readonly rtoMinutes: number;
+  readonly recoveryObjectives: RecoveryObjectives;
 }

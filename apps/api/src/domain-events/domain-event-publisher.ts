@@ -143,6 +143,7 @@ import {
   buildPlatformMaintenanceEnabledEvent,
   buildPlatformMaintenanceDisabledEvent,
   buildPlatformCachePolicyUpdatedEvent,
+  buildPlatformRecoveryObjectivesUpdatedEvent,
 } from "./domain-event-factory";
 import type {
   Cart,
@@ -175,6 +176,7 @@ import type {
   FeatureFlag,
   MaintenanceMode,
   CachePolicy,
+  RecoveryObjectives,
   WebhookEndpoint,
   WebhookDelivery,
   Job,
@@ -631,6 +633,18 @@ export class DomainEventPublisher {
   ): void {
     this.dispatch(
       buildPlatformCachePolicyUpdatedEvent(cachePolicy, contextStoreId),
+    );
+  }
+
+  publishPlatformRecoveryObjectivesUpdated(
+    recoveryObjectives: RecoveryObjectives,
+    contextStoreId: string,
+  ): void {
+    this.dispatch(
+      buildPlatformRecoveryObjectivesUpdatedEvent(
+        recoveryObjectives,
+        contextStoreId,
+      ),
     );
   }
 

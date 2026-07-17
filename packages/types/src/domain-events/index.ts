@@ -151,4 +151,5 @@ export type {
   FeatureFlagUpdatedPayload,
   PlatformMaintenanceChangedPayload,
   PlatformCachePolicyUpdatedPayload,
+  PlatformRecoveryObjectivesUpdatedPayload,
 } from "./payloads";

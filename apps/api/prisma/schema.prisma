@@ -1870,6 +1870,8 @@ model PlatformConfiguration {
   maintenanceMode    Boolean  @default(false) @map("maintenance_mode")
   maintenanceMessage String?  @map("maintenance_message")
   cachePolicies      Json     @default("[]") @map("cache_policies")
+  backupConfiguration Json    @default("{}") @map("backup_configuration")
+  recoveryObjectives  Json    @default("{}") @map("recovery_objectives")
   updatedAt          DateTime @updatedAt @map("updated_at")
 
   @@map("platform_configurations")

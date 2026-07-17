@@ -111,6 +111,7 @@ export class DatabaseDiagnosticsService {
       "feature_flags_foundation",
       "platform_operations_foundation",
       "platform_hardening_cache_policies",
+      "disaster_readiness_foundation",
     ];
 
     for (const suffix of requiredSuffixes) {

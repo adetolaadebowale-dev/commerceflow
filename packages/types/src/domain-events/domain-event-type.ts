@@ -141,6 +141,7 @@ export const DOMAIN_EVENT_TYPES = [
   "platform.maintenance.enabled",
   "platform.maintenance.disabled",
   "platform.cache-policy.updated",
+  "platform.recovery-objectives.updated",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

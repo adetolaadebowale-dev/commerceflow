@@ -386,6 +386,19 @@ export {
   type ObservabilityClient,
 } from "./observability/observability-client";
 export type {
+  DisasterReadinessStoreParams,
+  GetPlatformBackupVerificationResponse,
+  GetPlatformBackupsResponse,
+  GetPlatformDisasterReadinessResponse,
+  GetPlatformRecoveryResponse,
+  UpdatePlatformRecoveryResponse,
+  UpdateRecoveryObjectivesRequest,
+} from "./disaster-readiness/contracts";
+export {
+  createDisasterReadinessClient,
+  type DisasterReadinessClient,
+} from "./disaster-readiness/disaster-readiness-client";
+export type {
   ActivateWarehouseResponse,
   CreateWarehouseRequest,
   CreateWarehouseResponse,
