@@ -404,6 +404,7 @@ model Store {
   importJobs                   ImportJob[]
   exportJobs                   ExportJob[]
   apiKeys                      ApiKey[]
+  webhookEndpoints             WebhookEndpoint[]
 
   @@unique([organizationId, slug])
   @@index([organizationId])
@@ -1791,4 +1792,45 @@ model ApiKey {
   @@index([storeId])
   @@index([storeId, revokedAt])
   @@map("api_keys")
+}
+
+enum WebhookDeliveryStatus {
+  pending
+  delivered
+  failed
+}
+
+/// Store-scoped outbound webhook endpoint configuration.
+model WebhookEndpoint {
+  id               String            @id @default(uuid()) @db.Uuid
+  storeId          String            @map("store_id") @db.Uuid
+  store            Store             @relation(fields: [storeId], references: [id], onDelete: Restrict)
+  url              String
+  secret           String
+  enabled          Boolean           @default(true)
+  subscribedEvents Json              @default("[]") @map("subscribed_events")
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+  deliveries       WebhookDelivery[]
+
+  @@index([storeId])
+  @@index([storeId, enabled])
+  @@map("webhook_endpoints")
+}
+
+/// Record of a synchronous webhook delivery attempt.
+model WebhookDelivery {
+  id             String                @id @default(uuid()) @db.Uuid
+  endpointId     String                @map("endpoint_id") @db.Uuid
+  endpoint       WebhookEndpoint       @relation(fields: [endpointId], references: [id], onDelete: Cascade)
+  eventType      String                @map("event_type")
+  status         WebhookDeliveryStatus @default(pending)
+  responseStatus Int?                  @map("response_status")
+  deliveredAt    DateTime?             @map("delivered_at")
+  createdAt      DateTime              @default(now()) @map("created_at")
+
+  @@index([endpointId])
+  @@index([endpointId, status])
+  @@index([createdAt])
+  @@map("webhook_deliveries")
 }

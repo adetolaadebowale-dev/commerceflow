@@ -351,4 +351,62 @@ describe("AuthorizationService", () => {
       status: 403,
     });
   });
+
+  it("allows managers to manage webhooks but not staff", async () => {
+    const { authService, authorizationService, storeMemberRepository } =
+      createMemoryAuthorizationService();
+    const { user: managerUser, tokens: managerTokens } =
+      await registerStaffUser(authService);
+
+    storeMemberRepository.seedMember({
+      storeId: TEST_STORE_A_ID,
+      userId: managerUser.id,
+      role: "manager",
+    });
+
+    await expect(
+      authorizationService.authorizeStoreRequest(
+        createAuthorizedRequest({
+          accessToken: managerTokens.accessToken,
+          storeId: TEST_STORE_A_ID,
+        }),
+        TEST_STORE_A_ID,
+        "webhooks:write",
+      ),
+    ).resolves.toMatchObject({ storeRole: "manager" });
+
+    const { user: staffUser, tokens: staffTokens } =
+      await registerStaffUser(authService);
+
+    storeMemberRepository.seedMember({
+      storeId: TEST_STORE_A_ID,
+      userId: staffUser.id,
+      role: "staff",
+    });
+
+    await expect(
+      authorizationService.authorizeStoreRequest(
+        createAuthorizedRequest({
+          accessToken: staffTokens.accessToken,
+          storeId: TEST_STORE_A_ID,
+        }),
+        TEST_STORE_A_ID,
+        "webhooks:write",
+      ),
+    ).rejects.toMatchObject({
+      code: AUTHORIZATION_ERROR_CODES.INSUFFICIENT_PERMISSION,
+      status: 403,
+    });
+
+    await expect(
+      authorizationService.authorizeStoreRequest(
+        createAuthorizedRequest({
+          accessToken: staffTokens.accessToken,
+          storeId: TEST_STORE_A_ID,
+        }),
+        TEST_STORE_A_ID,
+        "webhooks:read",
+      ),
+    ).resolves.toMatchObject({ storeRole: "staff" });
+  });
 });

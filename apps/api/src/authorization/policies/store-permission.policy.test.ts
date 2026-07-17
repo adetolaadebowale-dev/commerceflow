@@ -205,4 +205,16 @@ describe("StorePermissionPolicy", () => {
       true,
     );
   });
+
+  it("grants webhook read to staff and write to managers", () => {
+    expect(StorePermissionPolicy.hasPermission("staff", "webhooks:read")).toBe(
+      true,
+    );
+    expect(StorePermissionPolicy.hasPermission("staff", "webhooks:write")).toBe(
+      false,
+    );
+    expect(
+      StorePermissionPolicy.hasPermission("manager", "webhooks:write"),
+    ).toBe(true);
+  });
 });

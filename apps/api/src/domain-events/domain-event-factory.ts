@@ -94,6 +94,12 @@ import type {
   ApiKey,
   ApiKeyCreatedPayload,
   ApiKeyRevokedPayload,
+  WebhookEndpoint,
+  WebhookDelivery,
+  WebhookCreatedPayload,
+  WebhookUpdatedPayload,
+  WebhookDeliveryCompletedPayload,
+  WebhookDeliveryFailedPayload,
   Warehouse,
   WarehouseStatus,
   WarehouseCreatedPayload,
@@ -2833,6 +2839,79 @@ export function buildApiKeyRevokedEvent(
       storeId: apiKey.storeId,
       name: apiKey.name,
       apiKey,
+    },
+  });
+}
+
+export function buildWebhookCreatedEvent(
+  webhook: WebhookEndpoint,
+): DomainEvent<WebhookCreatedPayload> {
+  return createDomainEvent({
+    eventType: "webhook.created",
+    aggregateType: "webhook",
+    aggregateId: webhook.id,
+    storeId: webhook.storeId,
+    payload: {
+      webhookId: webhook.id,
+      storeId: webhook.storeId,
+      url: webhook.url,
+      webhook,
+    },
+  });
+}
+
+export function buildWebhookUpdatedEvent(
+  webhook: WebhookEndpoint,
+): DomainEvent<WebhookUpdatedPayload> {
+  return createDomainEvent({
+    eventType: "webhook.updated",
+    aggregateType: "webhook",
+    aggregateId: webhook.id,
+    storeId: webhook.storeId,
+    payload: {
+      webhookId: webhook.id,
+      storeId: webhook.storeId,
+      webhook,
+    },
+  });
+}
+
+export function buildWebhookDeliveryCompletedEvent(
+  webhook: WebhookEndpoint,
+  delivery: WebhookDelivery,
+): DomainEvent<WebhookDeliveryCompletedPayload> {
+  return createDomainEvent({
+    eventType: "webhook.delivery.completed",
+    aggregateType: "webhook_delivery",
+    aggregateId: delivery.id,
+    storeId: webhook.storeId,
+    payload: {
+      deliveryId: delivery.id,
+      endpointId: webhook.id,
+      storeId: webhook.storeId,
+      eventType: delivery.eventType,
+      responseStatus: delivery.responseStatus ?? 200,
+      delivery,
+    },
+  });
+}
+
+export function buildWebhookDeliveryFailedEvent(
+  webhook: WebhookEndpoint,
+  delivery: WebhookDelivery,
+): DomainEvent<WebhookDeliveryFailedPayload> {
+  return createDomainEvent({
+    eventType: "webhook.delivery.failed",
+    aggregateType: "webhook_delivery",
+    aggregateId: delivery.id,
+    storeId: webhook.storeId,
+    payload: {
+      deliveryId: delivery.id,
+      endpointId: webhook.id,
+      storeId: webhook.storeId,
+      eventType: delivery.eventType,
+      responseStatus: delivery.responseStatus,
+      delivery,
     },
   });
 }

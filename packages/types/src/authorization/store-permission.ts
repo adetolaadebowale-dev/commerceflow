@@ -59,6 +59,8 @@ export const STORE_PERMISSIONS = [
   "exports:write",
   "api-keys:read",
   "api-keys:write",
+  "webhooks:read",
+  "webhooks:write",
 ] as const;
 
 export type StorePermissionCode = (typeof STORE_PERMISSIONS)[number];

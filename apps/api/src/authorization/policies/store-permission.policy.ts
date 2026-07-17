@@ -60,6 +60,8 @@ const ALL_STORE_PERMISSIONS: readonly StorePermissionCode[] = [
     "exports:write",
     "api-keys:read",
     "api-keys:write",
+    "webhooks:read",
+    "webhooks:write",
 ];
 
 const PERMISSIONS_BY_STORE_ROLE: Readonly<
@@ -126,6 +128,8 @@ const PERMISSIONS_BY_STORE_ROLE: Readonly<
     "exports:read",
     "exports:write",
     "api-keys:read",
+    "webhooks:read",
+    "webhooks:write",
   ],
   staff: [
     "catalogue:read",
@@ -155,6 +159,7 @@ const PERMISSIONS_BY_STORE_ROLE: Readonly<
     "imports:read",
     "exports:read",
     "api-keys:read",
+    "webhooks:read",
   ],
 };
 

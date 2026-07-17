@@ -144,4 +144,8 @@ export type {
   ExportFailedPayload,
   ApiKeyCreatedPayload,
   ApiKeyRevokedPayload,
+  WebhookCreatedPayload,
+  WebhookUpdatedPayload,
+  WebhookDeliveryCompletedPayload,
+  WebhookDeliveryFailedPayload,
 } from "./payloads";

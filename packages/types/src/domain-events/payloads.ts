@@ -21,6 +21,7 @@ import type { Organization } from "../organizations/organization";
 import type { StoreConfiguration } from "../stores/store-settings";
 import type { ImportJob, ExportJob } from "../data-transfer/data-transfer-job";
 import type { ApiKey } from "../api-keys/api-key";
+import type { WebhookDelivery, WebhookEndpoint } from "../webhooks/webhook";
 import type { EmailMessage } from "../notifications/email";
 import type { SmsMessage } from "../notifications/sms";
 import type { Shipment } from "../shipments/shipment";
@@ -1323,4 +1324,35 @@ export interface ApiKeyRevokedPayload {
   readonly storeId: string;
   readonly name: string;
   readonly apiKey: ApiKey;
+}
+
+export interface WebhookCreatedPayload {
+  readonly webhookId: string;
+  readonly storeId: string;
+  readonly url: string;
+  readonly webhook: WebhookEndpoint;
+}
+
+export interface WebhookUpdatedPayload {
+  readonly webhookId: string;
+  readonly storeId: string;
+  readonly webhook: WebhookEndpoint;
+}
+
+export interface WebhookDeliveryCompletedPayload {
+  readonly deliveryId: string;
+  readonly endpointId: string;
+  readonly storeId: string;
+  readonly eventType: string;
+  readonly responseStatus: number;
+  readonly delivery: WebhookDelivery;
+}
+
+export interface WebhookDeliveryFailedPayload {
+  readonly deliveryId: string;
+  readonly endpointId: string;
+  readonly storeId: string;
+  readonly eventType: string;
+  readonly responseStatus?: number;
+  readonly delivery: WebhookDelivery;
 }

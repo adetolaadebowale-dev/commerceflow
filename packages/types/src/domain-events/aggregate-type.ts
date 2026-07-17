@@ -48,6 +48,8 @@ export const DOMAIN_AGGREGATE_TYPES = [
   "import",
   "export",
   "api_key",
+  "webhook",
+  "webhook_delivery",
 ] as const;
 
 export type DomainAggregateType = (typeof DOMAIN_AGGREGATE_TYPES)[number];

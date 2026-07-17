@@ -310,6 +310,22 @@ export {
   type ApiKeysClient,
 } from "./api-keys/api-keys-client";
 export type {
+  CreateWebhookRequest,
+  CreateWebhookResponse,
+  GetWebhookParams,
+  GetWebhookResponse,
+  ListWebhookDeliveriesParams,
+  ListWebhookDeliveriesResponse,
+  ListWebhooksParams,
+  ListWebhooksResponse,
+  UpdateWebhookRequest,
+  UpdateWebhookResponse,
+} from "./webhooks/contracts";
+export {
+  createWebhooksClient,
+  type WebhooksClient,
+} from "./webhooks/webhooks-client";
+export type {
   ActivateWarehouseResponse,
   CreateWarehouseRequest,
   CreateWarehouseResponse,

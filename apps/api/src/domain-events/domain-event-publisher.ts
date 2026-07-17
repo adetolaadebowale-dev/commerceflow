@@ -135,6 +135,10 @@ import {
   buildExportFailedEvent,
   buildApiKeyCreatedEvent,
   buildApiKeyRevokedEvent,
+  buildWebhookCreatedEvent,
+  buildWebhookUpdatedEvent,
+  buildWebhookDeliveryCompletedEvent,
+  buildWebhookDeliveryFailedEvent,
 } from "./domain-event-factory";
 import type {
   Cart,
@@ -164,6 +168,8 @@ import type {
   ImportJob,
   ExportJob,
   ApiKey,
+  WebhookEndpoint,
+  WebhookDelivery,
   Job,
   EmailMessage,
   EmailSendResult,
@@ -553,6 +559,28 @@ export class DomainEventPublisher {
 
   publishApiKeyRevoked(apiKey: ApiKey): void {
     this.dispatch(buildApiKeyRevokedEvent(apiKey));
+  }
+
+  publishWebhookCreated(webhook: WebhookEndpoint): void {
+    this.dispatch(buildWebhookCreatedEvent(webhook));
+  }
+
+  publishWebhookUpdated(webhook: WebhookEndpoint): void {
+    this.dispatch(buildWebhookUpdatedEvent(webhook));
+  }
+
+  publishWebhookDeliveryCompleted(
+    webhook: WebhookEndpoint,
+    delivery: WebhookDelivery,
+  ): void {
+    this.dispatch(buildWebhookDeliveryCompletedEvent(webhook, delivery));
+  }
+
+  publishWebhookDeliveryFailed(
+    webhook: WebhookEndpoint,
+    delivery: WebhookDelivery,
+  ): void {
+    this.dispatch(buildWebhookDeliveryFailedEvent(webhook, delivery));
   }
 
   publishWarehouseCreated(warehouse: Warehouse): void {

@@ -133,6 +133,10 @@ export const DOMAIN_EVENT_TYPES = [
   "export.failed",
   "api-key.created",
   "api-key.revoked",
+  "webhook.created",
+  "webhook.updated",
+  "webhook.delivery.completed",
+  "webhook.delivery.failed",
 ] as const;
 
 export type DomainEventType = (typeof DOMAIN_EVENT_TYPES)[number];

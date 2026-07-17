@@ -142,6 +142,16 @@ export {
   type AuthorizedApiKeyContext,
 } from "./api-keys";
 export {
+  WEBHOOK_DELIVERY_STATUSES,
+  WEBHOOK_SUBSCRIBABLE_EVENT_TYPES,
+  type WebhookDelivery,
+  type WebhookDeliveryStatus,
+  type WebhookEndpoint,
+  type WebhookEndpointWithSecret,
+  type WebhookSignatureHeaders,
+  type WebhookSubscribableEventType,
+} from "./webhooks";
+export {
   JOB_STATUSES,
   JOB_TYPES,
   type Job,
@@ -478,6 +488,10 @@ export {
   type ExportFailedPayload,
   type ApiKeyCreatedPayload,
   type ApiKeyRevokedPayload,
+  type WebhookCreatedPayload,
+  type WebhookUpdatedPayload,
+  type WebhookDeliveryCompletedPayload,
+  type WebhookDeliveryFailedPayload,
   type WarehouseCreatedPayload,
   type WarehouseUpdatedPayload,
   type WarehouseActivatedPayload,

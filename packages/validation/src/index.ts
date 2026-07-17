@@ -228,6 +228,17 @@ export {
   type ListApiKeysQuery,
 } from "./api-keys";
 export {
+  createWebhookSchema,
+  listWebhookDeliveriesQuerySchema,
+  listWebhooksQuerySchema,
+  updateWebhookSchema,
+  webhookIdQuerySchema,
+  type CreateWebhookInput,
+  type ListWebhookDeliveriesQuery,
+  type ListWebhooksQuery,
+  type UpdateWebhookInput,
+} from "./webhooks";
+export {
   createJobSchema,
   listJobsQuerySchema,
   jobIdQuerySchema,
