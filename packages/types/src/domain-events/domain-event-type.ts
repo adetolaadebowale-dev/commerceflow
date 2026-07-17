@@ -120,6 +120,7 @@ export const DOMAIN_EVENT_TYPES = [
   "in-app-notification.unread",
   "notification-preference.updated",
   "organization.updated",
+  "store.settings.updated",
   "job.created",
   "job.started",
   "job.completed",

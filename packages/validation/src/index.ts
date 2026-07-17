@@ -202,6 +202,12 @@ export {
   type UpdateOrganizationInput,
 } from "./organizations";
 export {
+  storeIdParamSchema,
+  updateStoreSettingsSchema,
+  type StoreIdParam,
+  type UpdateStoreSettingsInput,
+} from "./stores";
+export {
   createJobSchema,
   listJobsQuerySchema,
   jobIdQuerySchema,

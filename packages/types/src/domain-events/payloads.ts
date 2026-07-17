@@ -18,6 +18,7 @@ import type { Notification } from "../notifications/notification";
 import type { Job } from "../jobs/job";
 import type { NotificationPreference } from "../notification-preferences/notification-preference";
 import type { Organization } from "../organizations/organization";
+import type { StoreConfiguration } from "../stores/store-settings";
 import type { EmailMessage } from "../notifications/email";
 import type { SmsMessage } from "../notifications/sms";
 import type { Shipment } from "../shipments/shipment";
@@ -1252,4 +1253,11 @@ export interface OrganizationUpdatedPayload {
   readonly previousName: string;
   readonly previousSlug: string;
   readonly organization: Organization;
+}
+
+export interface StoreSettingsUpdatedPayload {
+  readonly storeId: string;
+  readonly organizationId: string;
+  readonly previousSettings: StoreConfiguration["settings"];
+  readonly store: StoreConfiguration;
 }

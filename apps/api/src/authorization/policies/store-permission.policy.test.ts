@@ -145,4 +145,22 @@ describe("StorePermissionPolicy", () => {
       true,
     );
   });
+
+  it("grants store administration read to staff and write to managers", () => {
+    expect(StorePermissionPolicy.hasPermission("staff", "stores:read")).toBe(
+      true,
+    );
+    expect(StorePermissionPolicy.hasPermission("staff", "stores:write")).toBe(
+      false,
+    );
+    expect(StorePermissionPolicy.hasPermission("manager", "stores:read")).toBe(
+      true,
+    );
+    expect(StorePermissionPolicy.hasPermission("manager", "stores:write")).toBe(
+      true,
+    );
+    expect(StorePermissionPolicy.hasPermission("owner", "stores:write")).toBe(
+      true,
+    );
+  });
 });

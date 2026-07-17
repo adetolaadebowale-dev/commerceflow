@@ -81,6 +81,8 @@ import type {
   NotificationPreferenceUpdatedPayload,
   Organization,
   OrganizationUpdatedPayload,
+  StoreConfiguration,
+  StoreSettingsUpdatedPayload,
   Warehouse,
   WarehouseStatus,
   WarehouseCreatedPayload,
@@ -2661,6 +2663,24 @@ export function buildOrganizationUpdatedEvent(
       previousName: previous.name,
       previousSlug: previous.slug,
       organization,
+    },
+  });
+}
+
+export function buildStoreSettingsUpdatedEvent(
+  previous: StoreConfiguration,
+  store: StoreConfiguration,
+): DomainEvent<StoreSettingsUpdatedPayload> {
+  return createDomainEvent({
+    eventType: "store.settings.updated",
+    aggregateType: "store",
+    aggregateId: store.id,
+    storeId: store.id,
+    payload: {
+      storeId: store.id,
+      organizationId: store.organizationId,
+      previousSettings: previous.settings,
+      store,
     },
   });
 }

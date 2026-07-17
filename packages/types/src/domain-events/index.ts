@@ -131,6 +131,7 @@ export type {
   InAppNotificationUnreadPayload,
   NotificationPreferenceUpdatedPayload,
   OrganizationUpdatedPayload,
+  StoreSettingsUpdatedPayload,
   JobCreatedPayload,
   JobStartedPayload,
   JobCompletedPayload,

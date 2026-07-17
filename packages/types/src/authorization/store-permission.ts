@@ -51,6 +51,8 @@ export const STORE_PERMISSIONS = [
   "notifications:write",
   "jobs:read",
   "jobs:write",
+  "stores:read",
+  "stores:write",
 ] as const;
 
 export type StorePermissionCode = (typeof STORE_PERMISSIONS)[number];

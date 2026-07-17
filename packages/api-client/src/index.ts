@@ -269,6 +269,15 @@ export {
   type OrganizationClient,
 } from "./organizations/organization-client";
 export type {
+  GetStoreSettingsResponse,
+  UpdateStoreSettingsRequest,
+  UpdateStoreSettingsResponse,
+} from "./stores/contracts";
+export {
+  createStoreAdministrationClient,
+  type StoreAdministrationClient,
+} from "./stores/store-administration-client";
+export type {
   ActivateWarehouseResponse,
   CreateWarehouseRequest,
   CreateWarehouseResponse,

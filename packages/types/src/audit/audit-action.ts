@@ -62,6 +62,7 @@ export const AUDIT_ACTIONS = [
   "unread",
   "run",
   "dispatch",
+  "update_settings",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
