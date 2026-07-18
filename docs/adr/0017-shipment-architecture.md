@@ -1,4 +1,4 @@
-# ADR-0017: Shipment Architecture
+# ADR 0017: Shipment Architecture
 
 ## Status
 

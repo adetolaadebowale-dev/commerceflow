@@ -1,4 +1,4 @@
-# ADR-0018: Shipment Carrier Gateway Architecture
+# ADR 0018: Shipment Carrier Gateway Architecture
 
 ## Status
 

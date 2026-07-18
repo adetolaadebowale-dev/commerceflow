@@ -20,7 +20,6 @@
   "dependencies": {
     "@commerceflow/api-client": "workspace:*",
     "@commerceflow/types": "workspace:*",
-    "@commerceflow/utils": "workspace:*",
     "@commerceflow/validation": "workspace:*",
     "@prisma/client": "^6.19.0",
     "jose": "^6.2.3",

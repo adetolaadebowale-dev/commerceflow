@@ -1,4 +1,4 @@
-# ADR-0019: Shipment Tracking Timeline Architecture
+# ADR 0019: Shipment Tracking Timeline Architecture
 
 ## Status
 

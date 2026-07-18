@@ -26,9 +26,6 @@ importers:
       '@commerceflow/types':
         specifier: workspace:*
         version: link:../../packages/types
-      '@commerceflow/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       '@commerceflow/validation':
         specifier: workspace:*
         version: link:../../packages/validation
@@ -72,9 +69,6 @@ importers:
       '@commerceflow/types':
         specifier: workspace:*
         version: link:../../packages/types
-      '@commerceflow/utils':
-        specifier: workspace:*
-        version: link:../../packages/utils
       '@commerceflow/validation':
         specifier: workspace:*
         version: link:../../packages/validation
@@ -130,9 +124,6 @@ importers:
       '@commerceflow/types':
         specifier: workspace:*
         version: link:../../packages/types
-      '@commerceflow/utils':
-        specifier: workspace:*
-        version: link:../../packages/utils
       '@commerceflow/validation':
         specifier: workspace:*
         version: link:../../packages/validation

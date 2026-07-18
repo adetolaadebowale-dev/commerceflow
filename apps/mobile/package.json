@@ -14,7 +14,6 @@
   "dependencies": {
     "@commerceflow/api-client": "workspace:*",
     "@commerceflow/types": "workspace:*",
-    "@commerceflow/utils": "workspace:*",
     "@commerceflow/validation": "workspace:*",
     "@expo/log-box": "^57.0.0",
     "@expo/metro-runtime": "~57.0.3",
