@@ -53,7 +53,7 @@ Primary deliverable for v1.0 is the **backend API** (`apps/api`). Admin and mobi
 | Area | Stack |
 |------|--------|
 | API | Next.js 16, TypeScript, Prisma, PostgreSQL |
-| Admin | React, Vite, TypeScript |
+| Admin | Next.js 15, React, TypeScript, Tailwind |
 | Mobile | React Native, Expo, TypeScript |
 | Tooling | pnpm workspaces, Turborepo, Vitest, ESLint, Prettier |
 
@@ -133,7 +133,7 @@ Or start apps individually:
 
 ```bash
 pnpm --filter api dev      # http://localhost:3000
-pnpm --filter admin dev    # http://localhost:5173
+pnpm --filter admin dev    # http://localhost:3001
 pnpm --filter mobile dev   # Expo (port 8081)
 ```
 
