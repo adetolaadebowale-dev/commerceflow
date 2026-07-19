@@ -24,7 +24,12 @@ export const NAV_ITEMS: readonly NavItem[] = [
     enabled: true,
     icon: LayoutDashboard,
   },
-  { label: "Products", href: "/products", enabled: true, icon: Package },
+  {
+    label: "Products",
+    href: "/dashboard/products",
+    enabled: true,
+    icon: Package,
+  },
   { label: "Categories", href: "/categories", enabled: false, icon: Tags },
   { label: "Inventory", href: "/inventory", enabled: true, icon: Warehouse },
   { label: "Orders", href: "/orders", enabled: true, icon: ShoppingCart },

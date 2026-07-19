@@ -12,7 +12,7 @@ import {
 const QUICK_ACTIONS = [
   {
     label: "Add Product",
-    href: "/products",
+    href: "/dashboard/products",
     description: "Create a catalogue product",
     icon: Package,
   },

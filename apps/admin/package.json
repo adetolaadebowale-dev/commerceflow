@@ -12,6 +12,7 @@
     "clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\""
   },
   "dependencies": {
+    "@commerceflow/api-client": "workspace:*",
     "@commerceflow/types": "workspace:*",
     "@commerceflow/validation": "workspace:*",
     "@hookform/resolvers": "^5.0.1",

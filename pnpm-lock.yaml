@@ -20,6 +20,9 @@ importers:
 
   apps/admin:
     dependencies:
+      '@commerceflow/api-client':
+        specifier: workspace:*
+        version: link:../../packages/api-client
       '@commerceflow/types':
         specifier: workspace:*
         version: link:../../packages/types
