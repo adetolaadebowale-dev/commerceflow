@@ -6,9 +6,10 @@ import { DashboardShell } from "@/components/layout/dashboard-shell";
 import type { AuthContextValue } from "@/providers/auth-provider";
 
 const replace = vi.fn();
+const pathnameMock = vi.fn(() => "/dashboard");
 
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/dashboard",
+  usePathname: () => pathnameMock(),
   useRouter: () => ({ replace, push: vi.fn() }),
 }));
 
@@ -45,6 +46,7 @@ vi.mock("@/providers/auth-provider", () => ({
 describe("Dashboard layout", () => {
   afterEach(() => {
     cleanup();
+    pathnameMock.mockReturnValue("/dashboard");
   });
 
   it("renders navigation with dashboard and commerce areas enabled", () => {
@@ -60,6 +62,21 @@ describe("Dashboard layout", () => {
       "true",
     );
   });
+
+  it("does not mark Dashboard active on nested product routes", () => {
+    pathnameMock.mockReturnValue("/dashboard/products");
+    render(<Sidebar open />);
+
+    const dashboardLink = screen.getByRole("link", { name: /Dashboard/i });
+    const productsLink = screen.getByRole("link", { name: /Products/i });
+
+    expect(dashboardLink.className).toContain(
+      "text-[var(--color-muted-foreground)]",
+    );
+    expect(productsLink.className).toContain("bg-[var(--color-muted)]");
+    expect(productsLink.className).not.toContain(
+      "text-[var(--color-muted-foreground)]",
+    );  });
 
   it("renders shell chrome with brand and store name", () => {
     render(

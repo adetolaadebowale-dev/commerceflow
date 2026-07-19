@@ -2,7 +2,11 @@ import type {
   Brand,
   Category,
   Product,
+  ProductMedia,
+  ProductMediaListResponse,
   CatalogueListResult,
+  CreateProductMediaRequest,
+  ReorderProductMediaRequest,
 } from "@commerceflow/types";
 import type {
   CreateBrandInput,
@@ -65,6 +69,29 @@ export type GetProductResponse = ApiSuccessResponse<{ product: Product }>;
 export type ListProductsResponse = ApiSuccessResponse<
   CatalogueListResult<Product>
 >;
+
+/** POST /products/:id/media */
+export type UploadProductMediaRequest = CreateProductMediaRequest & {
+  readonly file: Blob;
+  readonly filename?: string;
+};
+export type UploadProductMediaResponse = ApiSuccessResponse<{
+  media: ProductMedia;
+}>;
+
+/** GET /products/:id/media */
+export type ListProductMediaResponse =
+  ApiSuccessResponse<ProductMediaListResponse>;
+
+/** DELETE /products/:id/media/:mediaId */
+export type DeleteProductMediaResponse = ApiSuccessResponse<{
+  media: ProductMedia;
+}>;
+
+/** PATCH /products/:id/media/order */
+export type ReorderProductMediaClientRequest = ReorderProductMediaRequest;
+export type ReorderProductMediaResponse =
+  ApiSuccessResponse<ProductMediaListResponse>;
 
 export interface StoreScopedParams {
   readonly storeId: string;

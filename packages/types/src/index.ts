@@ -8,11 +8,21 @@ export type {
   Brand,
   CatalogueListResult,
   Category,
+  CreateProductMediaRequest,
   Product,
+  ProductMedia,
+  ProductMediaListResponse,
+  ProductMediaMimeType,
   ProductVariant,
   ProductStatus,
+  ReorderProductMediaRequest,
 } from "./catalogue";
-export { buildCatalogueListResult, PRODUCT_STATUSES } from "./catalogue";
+export {
+  buildCatalogueListResult,
+  PRODUCT_MEDIA_MAX_BYTES,
+  PRODUCT_MEDIA_MIME_TYPES,
+  PRODUCT_STATUSES,
+} from "./catalogue";
 export type {
   AdjustmentStockMovementReason,
   InventoryItem,
@@ -518,6 +528,9 @@ export {
   type CheckoutShippingSelectedPayload,
   type CustomerAddressCreatedPayload,
   type CustomerAddressUpdatedPayload,
+  type ProductMediaUploadedPayload,
+  type ProductMediaDeletedPayload,
+  type ProductMediaReorderedPayload,
   type CustomerCreatedPayload,
   type CustomerUpdatedPayload,
   type InventoryReleasedPayload,

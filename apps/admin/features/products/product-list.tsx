@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -47,8 +49,8 @@ export function ProductList() {
               : `${formatNumber(list.total)} product${list.total === 1 ? "" : "s"}`}
           </p>
         </div>
-        <Button type="button" disabled title="Product creation arrives in a later sprint">
-          Add Product
+        <Button asChild>
+          <Link href="/dashboard/products/new">Add Product</Link>
         </Button>
       </div>
 
@@ -78,7 +80,7 @@ export function ProductList() {
           ) : list.rows.length === 0 ? (
             <EmptyState
               title="No products found"
-              description="Try adjusting search or filters, or add a product in a later sprint."
+              description="Try adjusting search or filters, or add a new product."
             />
           ) : (
             <>

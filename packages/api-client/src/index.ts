@@ -8,6 +8,7 @@ export type {
   CreateProductRequest,
   CreateProductResponse,
   DeleteBrandResponse,
+  DeleteProductMediaResponse,
   GetBrandResponse,
   GetCategoryResponse,
   GetProductResponse,
@@ -15,14 +16,19 @@ export type {
   ListBrandsResponse,
   ListCategoriesParams,
   ListCategoriesResponse,
+  ListProductMediaResponse,
   ListProductsParams,
   ListProductsResponse,
+  ReorderProductMediaClientRequest,
+  ReorderProductMediaResponse,
   UpdateBrandRequest,
   UpdateBrandResponse,
   UpdateCategoryRequest,
   UpdateCategoryResponse,
   UpdateProductRequest,
   UpdateProductResponse,
+  UploadProductMediaRequest,
+  UploadProductMediaResponse,
 } from "./catalogue/contracts";
 
 export { createCatalogueClient, type CatalogueClient } from "./catalogue/catalogue-client";

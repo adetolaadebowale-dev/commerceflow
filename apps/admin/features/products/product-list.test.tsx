@@ -134,7 +134,9 @@ describe("ProductList", () => {
     expect(screen.getByText("1 product")).toBeInTheDocument();
     expect(screen.getByText("Northwind Apparel")).toBeInTheDocument();
     expect(screen.getByText("T-Shirts")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Add Product" })).toBeDisabled();
+    expect(
+      screen.getByRole("link", { name: "Add Product" }),
+    ).toHaveAttribute("href", "/dashboard/products/new");
   });
 
   it("shows an error state with retry", async () => {

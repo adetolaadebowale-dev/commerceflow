@@ -5,6 +5,7 @@ import type { InventoryReservation } from "../reservations/inventory-reservation
 
 import type { Customer } from "../customers/customer";
 import type { CustomerAddress } from "../customers/customer-address";
+import type { ProductMedia } from "../catalogue/product-media";
 import type { Cart } from "../shopping-cart/cart";
 import type { CartItem } from "../shopping-cart/cart-item";
 import type { CheckoutResult } from "../checkout/checkout-result";
@@ -199,6 +200,28 @@ export interface CustomerAddressUpdatedPayload {
   readonly label: string;
   readonly isDefault: boolean;
   readonly customerAddress: CustomerAddress;
+}
+
+export interface ProductMediaUploadedPayload {
+  readonly mediaId: string;
+  readonly productId: string;
+  readonly mimeType: string;
+  readonly sizeBytes: number;
+  readonly sortOrder: number;
+  readonly media: ProductMedia;
+}
+
+export interface ProductMediaDeletedPayload {
+  readonly mediaId: string;
+  readonly productId: string;
+  readonly storageKey: string;
+  readonly media: ProductMedia;
+}
+
+export interface ProductMediaReorderedPayload {
+  readonly productId: string;
+  readonly orderedMediaIds: readonly string[];
+  readonly items: readonly ProductMedia[];
 }
 
 export interface CartCreatedPayload {

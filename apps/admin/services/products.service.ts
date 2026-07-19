@@ -1,4 +1,5 @@
 import type {
+  CreateProductRequest,
   ListBrandsParams,
   ListCategoriesParams,
   ListProductsParams,
@@ -42,6 +43,17 @@ export async function listCategories(
 ): Promise<CatalogueListResult<Category>> {
   try {
     return await catalogueClient.listCategories(params);
+  } catch (error) {
+    throw toAdminApiError(error);
+  }
+}
+
+export async function createProduct(
+  input: CreateProductRequest,
+): Promise<Product> {
+  try {
+    const result = await catalogueClient.createProduct(input);
+    return result.product;
   } catch (error) {
     throw toAdminApiError(error);
   }

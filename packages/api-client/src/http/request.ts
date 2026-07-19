@@ -10,6 +10,8 @@ interface RequestOptions {
   readonly method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   readonly path: string;
   readonly body?: unknown;
+  /** When true, body is sent as FormData and Content-Type is left unset. */
+  readonly formData?: boolean;
   readonly accessToken?: string | null;
 }
 
@@ -33,14 +35,23 @@ export async function apiRequest<T>(
     headers.Authorization = `Bearer ${accessToken}`;
   }
 
+  let body: BodyInit | undefined;
   if (options.body !== undefined) {
-    headers["Content-Type"] = "application/json";
+    if (options.formData) {
+      if (!(options.body instanceof FormData)) {
+        throw new Error("formData requests require a FormData body");
+      }
+      body = options.body;
+    } else {
+      headers["Content-Type"] = "application/json";
+      body = JSON.stringify(options.body);
+    }
   }
 
   const response = await fetch(`${config.baseUrl}${options.path}`, {
     method: options.method,
     headers,
-    body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
+    body,
   });
 
   const payload = (await response.json()) as

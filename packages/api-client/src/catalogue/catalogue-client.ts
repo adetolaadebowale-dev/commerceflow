@@ -3,6 +3,7 @@ import type {
   CreateCategoryRequest,
   CreateProductRequest,
   DeleteBrandResponse,
+  DeleteProductMediaResponse,
   GetBrandResponse,
   GetCategoryResponse,
   GetProductResponse,
@@ -10,12 +11,17 @@ import type {
   ListBrandsResponse,
   ListCategoriesParams,
   ListCategoriesResponse,
+  ListProductMediaResponse,
   ListProductsParams,
   ListProductsResponse,
+  ReorderProductMediaClientRequest,
+  ReorderProductMediaResponse,
   StoreScopedParams,
   UpdateBrandRequest,
   UpdateCategoryRequest,
   UpdateProductRequest,
+  UploadProductMediaRequest,
+  UploadProductMediaResponse,
 } from "./contracts";
 import type { ApiClientConfig } from "../http/request";
 import { apiRequest } from "../http/request";
@@ -79,6 +85,25 @@ export interface CatalogueClient {
     params: StoreScopedParams,
   ): Promise<GetProductResponse["data"]>;
   listProducts(params: ListProductsParams): Promise<ListProductsResponse["data"]>;
+  uploadProductMedia(
+    productId: string,
+    input: UploadProductMediaRequest,
+    params: StoreScopedParams,
+  ): Promise<UploadProductMediaResponse["data"]>;
+  listProductMedia(
+    productId: string,
+    params: StoreScopedParams,
+  ): Promise<ListProductMediaResponse["data"]>;
+  deleteProductMedia(
+    productId: string,
+    mediaId: string,
+    params: StoreScopedParams,
+  ): Promise<DeleteProductMediaResponse["data"]>;
+  reorderProductMedia(
+    productId: string,
+    input: ReorderProductMediaClientRequest,
+    params: StoreScopedParams,
+  ): Promise<ReorderProductMediaResponse["data"]>;
 }
 
 export function createCatalogueClient(config: ApiClientConfig): CatalogueClient {
@@ -177,6 +202,48 @@ export function createCatalogueClient(config: ApiClientConfig): CatalogueClient 
       apiRequest<ListProductsResponse["data"]>(config, {
         method: "GET",
         path: `/api/products${toQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    uploadProductMedia: (productId, input, params) => {
+      const formData = new FormData();
+      formData.append(
+        "file",
+        input.file,
+        input.filename ?? "upload",
+      );
+      if (input.altText !== undefined) {
+        formData.append("altText", input.altText);
+      }
+
+      return apiRequest<UploadProductMediaResponse["data"]>(config, {
+        method: "POST",
+        path: `/api/products/${productId}/media${toQueryString(params)}`,
+        body: formData,
+        formData: true,
+        accessToken: config.getAccessToken?.(),
+      });
+    },
+
+    listProductMedia: (productId, params) =>
+      apiRequest<ListProductMediaResponse["data"]>(config, {
+        method: "GET",
+        path: `/api/products/${productId}/media${toQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    deleteProductMedia: (productId, mediaId, params) =>
+      apiRequest<DeleteProductMediaResponse["data"]>(config, {
+        method: "DELETE",
+        path: `/api/products/${productId}/media/${mediaId}${toQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    reorderProductMedia: (productId, input, params) =>
+      apiRequest<ReorderProductMediaResponse["data"]>(config, {
+        method: "PATCH",
+        path: `/api/products/${productId}/media/order${toQueryString(params)}`,
+        body: input,
         accessToken: config.getAccessToken?.(),
       }),
   };

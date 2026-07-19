@@ -25,3 +25,14 @@ export {
   type UpdateCategoryInput,
   type UpdateProductInput,
 } from "./catalogue.schemas";
+export {
+  assertProductMediaFileConstraints,
+  productMediaAltTextSchema,
+  productMediaIdQuerySchema,
+  productMediaMimeTypeSchema,
+  productMediaUploadMetaSchema,
+  reorderProductMediaSchema,
+  type ProductMediaIdQuery,
+  type ProductMediaUploadMeta,
+  type ReorderProductMediaInput,
+} from "./product-media.schemas";

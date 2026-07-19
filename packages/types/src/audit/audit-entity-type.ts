@@ -3,6 +3,7 @@ export const AUDIT_ENTITY_TYPES = [
   "brand",
   "category",
   "product",
+  "product_media",
   "inventory_item",
   "stock_movement",
   "order",

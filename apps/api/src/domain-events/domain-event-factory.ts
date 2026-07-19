@@ -11,6 +11,10 @@ import type {
   CustomerAddressUpdatedPayload,
   CustomerCreatedPayload,
   CustomerUpdatedPayload,
+  ProductMedia,
+  ProductMediaUploadedPayload,
+  ProductMediaDeletedPayload,
+  ProductMediaReorderedPayload,
   Cart,
   CartCreatedPayload,
   CartItem,
@@ -443,6 +447,60 @@ export function buildCustomerAddressUpdatedEvent(
       label: customerAddress.label,
       isDefault: customerAddress.isDefault,
       customerAddress,
+    },
+  });
+}
+
+export function buildProductMediaUploadedEvent(
+  media: ProductMedia,
+): DomainEvent<ProductMediaUploadedPayload> {
+  return createDomainEvent({
+    eventType: "product.media.uploaded",
+    aggregateType: "product_media",
+    aggregateId: media.id,
+    storeId: media.storeId,
+    payload: {
+      mediaId: media.id,
+      productId: media.productId,
+      mimeType: media.mimeType,
+      sizeBytes: media.sizeBytes,
+      sortOrder: media.sortOrder,
+      media,
+    },
+  });
+}
+
+export function buildProductMediaDeletedEvent(
+  media: ProductMedia,
+): DomainEvent<ProductMediaDeletedPayload> {
+  return createDomainEvent({
+    eventType: "product.media.deleted",
+    aggregateType: "product_media",
+    aggregateId: media.id,
+    storeId: media.storeId,
+    payload: {
+      mediaId: media.id,
+      productId: media.productId,
+      storageKey: media.storageKey,
+      media,
+    },
+  });
+}
+
+export function buildProductMediaReorderedEvent(
+  storeId: string,
+  productId: string,
+  items: readonly ProductMedia[],
+): DomainEvent<ProductMediaReorderedPayload> {
+  return createDomainEvent({
+    eventType: "product.media.reordered",
+    aggregateType: "product_media",
+    aggregateId: productId,
+    storeId,
+    payload: {
+      productId,
+      orderedMediaIds: items.map((item) => item.id),
+      items,
     },
   });
 }

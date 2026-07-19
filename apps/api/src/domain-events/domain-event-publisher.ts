@@ -10,6 +10,9 @@ import {
   buildCheckoutShippingSelectedEvent,
   buildCustomerAddressCreatedEvent,
   buildCustomerAddressUpdatedEvent,
+  buildProductMediaUploadedEvent,
+  buildProductMediaDeletedEvent,
+  buildProductMediaReorderedEvent,
   buildCustomerCreatedEvent,
   buildCustomerUpdatedEvent,
   buildInventoryReleasedEvent,
@@ -153,6 +156,7 @@ import type {
   CheckoutResult,
   Customer,
   CustomerAddress,
+  ProductMedia,
   InventoryReservation,
   Order,
   OrderShippingMethodSnapshot,
@@ -320,6 +324,22 @@ export class DomainEventPublisher {
 
   publishCustomerAddressUpdated(customerAddress: CustomerAddress): void {
     this.dispatch(buildCustomerAddressUpdatedEvent(customerAddress));
+  }
+
+  publishProductMediaUploaded(media: ProductMedia): void {
+    this.dispatch(buildProductMediaUploadedEvent(media));
+  }
+
+  publishProductMediaDeleted(media: ProductMedia): void {
+    this.dispatch(buildProductMediaDeletedEvent(media));
+  }
+
+  publishProductMediaReordered(
+    storeId: string,
+    productId: string,
+    items: readonly ProductMedia[],
+  ): void {
+    this.dispatch(buildProductMediaReorderedEvent(storeId, productId, items));
   }
 
   publishCartCreated(cart: Cart): void {

@@ -1,6 +1,8 @@
 /** Aggregate roots referenced by domain events. */
 export const DOMAIN_AGGREGATE_TYPES = [
   "order",
+  "product",
+  "product_media",
   "inventory_reservation",
   "customer",
   "customer_address",

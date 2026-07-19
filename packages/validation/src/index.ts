@@ -28,6 +28,12 @@ export {
   updateBrandSchema,
   updateCategorySchema,
   updateProductSchema,
+  assertProductMediaFileConstraints,
+  productMediaAltTextSchema,
+  productMediaIdQuerySchema,
+  productMediaMimeTypeSchema,
+  productMediaUploadMetaSchema,
+  reorderProductMediaSchema,
   type CreateBrandInput,
   type CreateCategoryInput,
   type CreateProductInput,
@@ -37,6 +43,9 @@ export {
   type UpdateBrandInput,
   type UpdateCategoryInput,
   type UpdateProductInput,
+  type ProductMediaIdQuery,
+  type ProductMediaUploadMeta,
+  type ReorderProductMediaInput,
 } from "./catalogue";
 export {
   createInventoryItemSchema,

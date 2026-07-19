@@ -11,6 +11,27 @@ interface SidebarProps {
   readonly onNavigate?: () => void;
 }
 
+function isNavItemActive(pathname: string, href: string): boolean {
+  if (pathname === href) {
+    return true;
+  }
+
+  if (!pathname.startsWith(`${href}/`)) {
+    return false;
+  }
+
+  // Avoid treating /dashboard as active for /dashboard/products/*
+  const hasMoreSpecificMatch = NAV_ITEMS.some(
+    (item) =>
+      item.enabled &&
+      item.href !== href &&
+      item.href.startsWith(`${href}/`) &&
+      (pathname === item.href || pathname.startsWith(`${item.href}/`)),
+  );
+
+  return !hasMoreSpecificMatch;
+}
+
 export function Sidebar({ open, onNavigate }: SidebarProps) {
   const pathname = usePathname();
 
@@ -28,9 +49,7 @@ export function Sidebar({ open, onNavigate }: SidebarProps) {
       <nav className="flex flex-col gap-1 p-3">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
-          const isActive =
-            item.enabled &&
-            (pathname === item.href || pathname.startsWith(`${item.href}/`));
+          const isActive = item.enabled && isNavItemActive(pathname, item.href);
 
           if (!item.enabled) {
             return (
