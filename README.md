@@ -27,7 +27,7 @@ Primary deliverable for v1.0 is the **backend API** (`apps/api`). Admin and mobi
 │                     CommerceFlow Monorepo                    │
 ├─────────────┬─────────────┬─────────────────────────────────┤
 │  apps/api   │ apps/admin  │         apps/mobile              │
-│  (Next.js)  │   (Vite)    │         (Expo)                   │
+│  (Next.js)  │  (Next.js)  │         (Expo)                   │
 │  Business   │  Admin UI   │       Customer UI                │
 │   Logic     │             │                                  │
 └──────┬──────┴──────┬──────┴──────────────┬──────────────────┘
@@ -111,11 +111,31 @@ pnpm --filter api db:migrate
 
 `db:migrate` runs `prisma migrate deploy` (safe for non-interactive environments).
 
-Optional seed (non-production):
+### Development database seed
+
+Seed a local development tenant (organization, store, and owner) plus identity users. The seed is **idempotent**: re-running it updates existing records and prints the same credentials instead of creating duplicates.
 
 ```bash
 pnpm --filter api db:seed
 ```
+
+**Admin Dashboard development login** (uses real `POST /api/auth/login` — not a frontend bypass):
+
+| Field | Value |
+|-------|--------|
+| Email | `admin@commerceflow.local` |
+| Password | `Password123!` |
+| Store ID | `11111111-1111-1111-1111-111111111111` |
+
+Also seeded (same password): `staff@commerceflow.local`, `customer@commerceflow.local`.
+
+Configure the Admin app before logging in:
+
+```bash
+cp apps/admin/.env.example apps/admin/.env.local
+```
+
+Ensure `NEXT_PUBLIC_API_BASE_URL` points at the API and `NEXT_PUBLIC_DEFAULT_STORE_ID` matches the seeded store ID above.
 
 Migration verification notes: [docs/migration-verification.md](docs/migration-verification.md).
 
@@ -136,6 +156,10 @@ pnpm --filter api dev      # http://localhost:3000
 pnpm --filter admin dev    # http://localhost:3001
 pnpm --filter mobile dev   # Expo (port 8081)
 ```
+
+Admin login: open http://localhost:3001/login with the development credentials above. Successful login redirects to `/dashboard`.
+
+The API allows the Admin origin (`http://localhost:3001`) in development via CORS (`apps/api/src/proxy.ts`). Override with `CORS_ALLOWED_ORIGINS` when needed.
 
 ---
 

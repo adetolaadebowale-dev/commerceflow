@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from "react";
 
+import { getConfiguredStoreId } from "@/lib/store";
 import { authService } from "@/services/auth.service";
 import {
   clearStoredTokens,
@@ -25,6 +26,7 @@ export interface AuthContextValue {
   readonly isAuthenticated: boolean;
   readonly isLoading: boolean;
   readonly error: string | null;
+  readonly storeId: string | null;
   readonly storeName: string;
   readonly login: (input: LoginPayload) => Promise<void>;
   readonly logout: () => Promise<void>;
@@ -136,6 +138,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       isAuthenticated: user !== null,
       isLoading,
       error,
+      storeId: getConfiguredStoreId(),
       storeName: DEFAULT_STORE_NAME,
       login,
       logout,

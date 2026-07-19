@@ -34,6 +34,7 @@ vi.mock("@/providers/auth-provider", () => ({
     isAuthenticated: true,
     isLoading: false,
     error: null,
+    storeId: "11111111-1111-1111-1111-111111111111",
     storeName: "CommerceFlow Store",
     login: vi.fn(),
     logout: vi.fn(),
@@ -46,17 +47,14 @@ describe("Dashboard layout", () => {
     cleanup();
   });
 
-  it("renders navigation items with only Dashboard enabled", () => {
+  it("renders navigation with dashboard and commerce areas enabled", () => {
     render(<Sidebar open />);
 
     expect(
       screen.getByRole("link", { name: /Dashboard/i }),
     ).toBeInTheDocument();
-    expect(screen.getByText("Products")).toHaveAttribute(
-      "aria-disabled",
-      "true",
-    );
-    expect(screen.getByText("Orders")).toHaveAttribute("aria-disabled", "true");
+    expect(screen.getByRole("link", { name: /Products/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Orders/i })).toBeInTheDocument();
     expect(screen.getByText("Platform")).toHaveAttribute(
       "aria-disabled",
       "true",
