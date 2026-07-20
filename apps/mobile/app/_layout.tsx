@@ -1,18 +1,40 @@
+import "../global.css";
+
 import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import * as SplashScreen from "expo-splash-screen";
 
-import { SessionProvider } from "../src/auth/session-provider";
-import { StartupErrorBoundary } from "../src/components/debug/StartupErrorBoundary";
+import { StartupErrorBoundary } from "@/components/debug/startup-error-boundary";
+import { AppProviders } from "@/providers/app-providers";
+import { useTheme } from "@/providers/theme-provider";
 
-console.log("[startup][app/_layout.tsx] module loaded");
+void SplashScreen.preventAutoHideAsync().catch(() => {
+  // Splash may already be hidden in some environments.
+});
 
-export default function RootLayout() {
-  console.log("[startup][app/_layout.tsx] RootLayout render start");
+function RootNavigator() {
+  const { resolvedScheme } = useTheme();
 
   return (
+    <>
+      <StatusBar style={resolvedScheme === "dark" ? "light" : "dark"} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="splash" />
+        <Stack.Screen name="onboarding" />
+        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="(tabs)" />
+      </Stack>
+    </>
+  );
+}
+
+export default function RootLayout() {
+  return (
     <StartupErrorBoundary>
-      <SessionProvider>
-        <Stack screenOptions={{ headerShown: false }} />
-      </SessionProvider>
+      <AppProviders>
+        <RootNavigator />
+      </AppProviders>
     </StartupErrorBoundary>
   );
 }

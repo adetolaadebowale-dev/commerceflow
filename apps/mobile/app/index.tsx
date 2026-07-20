@@ -1,29 +1,28 @@
 import { Redirect } from "expo-router";
+import { useEffect } from "react";
+import * as SplashScreen from "expo-splash-screen";
 
-import { useAuth } from "../src/auth/auth-context";
-import { SessionSplashScreen } from "../src/components/splash/SessionSplashScreen";
+import { useAuth } from "@/features/auth";
 
-console.log("[startup][app/index.tsx] module loaded");
-
+/**
+ * Entry redirect: bootstrap → splash → onboarding/auth/tabs.
+ */
 export default function Index() {
-  console.log("[startup][app/index.tsx] Index render start");
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isBootstrapping, isAuthenticated } = useAuth();
 
-  console.log("[startup][app/index.tsx] auth state", {
-    isAuthenticated,
-    isLoading,
-  });
+  useEffect(() => {
+    if (!isBootstrapping) {
+      void SplashScreen.hideAsync().catch(() => undefined);
+    }
+  }, [isBootstrapping]);
 
-  if (isLoading) {
-    console.log("[startup][app/index.tsx] rendering SessionSplashScreen");
-    return <SessionSplashScreen />;
+  if (isBootstrapping) {
+    return <Redirect href="/splash" />;
   }
 
   if (isAuthenticated) {
-    console.log("[startup][app/index.tsx] redirecting to protected home");
-    return <Redirect href="/(protected)/home" />;
+    return <Redirect href="/(tabs)" />;
   }
 
-  console.log("[startup][app/index.tsx] redirecting to guest login");
-  return <Redirect href="/(guest)/login" />;
+  return <Redirect href="/onboarding" />;
 }

@@ -2,7 +2,7 @@
 
 ADRs document significant technical decisions for CommerceFlow.
 
-Numbering is sequential from **0001** through **0061** with no gaps.
+Numbering is sequential from **0001** through **0063** with no gaps.
 
 ## Index
 
@@ -69,6 +69,8 @@ Numbering is sequential from **0001** through **0061** with no gaps.
 | [0059](0059-backup-recovery-disaster-readiness.md) | Backup, Recovery & Disaster Readiness |
 | [0060](0060-load-testing-scalability-foundation.md) | Load Testing & Scalability Foundation |
 | [0061](0061-deployment-release-readiness.md) | Deployment & Release Readiness |
+| [0062](0062-product-media-storage-foundation.md) | Product Media Storage Foundation |
+| [0063](0063-customer-mobile-foundation.md) | Customer Mobile Foundation |
 
 ## Conventions
 
