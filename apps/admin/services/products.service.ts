@@ -1,7 +1,6 @@
 import type {
   CreateProductRequest,
   CreateProductVariantRequest,
-  ListBrandsParams,
   ListCategoriesParams,
   ListProductsParams,
   ReorderProductMediaClientRequest,
@@ -10,7 +9,6 @@ import type {
   UploadProductMediaRequest,
 } from "@commerceflow/api-client";
 import type {
-  Brand,
   CatalogueListResult,
   Category,
   Product,
@@ -21,6 +19,7 @@ import type {
 } from "@commerceflow/types";
 
 import { API_BASE_URL } from "@/services/api-client";
+import { listBrands } from "@/services/brands.service";
 import {
   catalogueClient,
   toAdminApiError,
@@ -33,6 +32,8 @@ export type ListProductsQuery = ListProductsParams;
 export interface StoreScopedParams {
   readonly storeId: string;
 }
+
+export { listBrands };
 
 export async function listProducts(
   params: ListProductsQuery,
@@ -51,16 +52,6 @@ export async function getProduct(
   try {
     const result = await catalogueClient.getProduct(id, params);
     return result.product;
-  } catch (error) {
-    throw toAdminApiError(error);
-  }
-}
-
-export async function listBrands(
-  params: ListBrandsParams,
-): Promise<CatalogueListResult<Brand>> {
-  try {
-    return await catalogueClient.listBrands(params);
   } catch (error) {
     throw toAdminApiError(error);
   }

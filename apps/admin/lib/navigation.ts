@@ -4,6 +4,7 @@ import {
   LayoutDashboard,
   Package,
   ShoppingCart,
+  Tags,
   Users,
   type LucideIcon,
 } from "lucide-react";
@@ -31,6 +32,12 @@ export const NAV_ITEMS: readonly NavItem[] = [
     href: "/dashboard/products",
     enabled: true,
     icon: Package,
+  },
+  {
+    label: "Brands",
+    href: "/dashboard/brands",
+    enabled: true,
+    icon: Tags,
   },
   {
     label: "Warehouses",

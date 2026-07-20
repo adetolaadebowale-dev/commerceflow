@@ -56,6 +56,7 @@ describe("Dashboard layout", () => {
       screen.getByRole("link", { name: /Dashboard/i }),
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Products/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Brands/i })).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: /Warehouses/i }),
     ).toBeInTheDocument();
