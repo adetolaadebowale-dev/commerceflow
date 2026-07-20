@@ -1,6 +1,7 @@
 import {
   BarChart3,
   Building2,
+  FolderTree,
   LayoutDashboard,
   Package,
   ShoppingCart,
@@ -38,6 +39,12 @@ export const NAV_ITEMS: readonly NavItem[] = [
     href: "/dashboard/brands",
     enabled: true,
     icon: Tags,
+  },
+  {
+    label: "Categories",
+    href: "/dashboard/categories",
+    enabled: true,
+    icon: FolderTree,
   },
   {
     label: "Warehouses",

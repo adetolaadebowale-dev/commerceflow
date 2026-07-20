@@ -58,6 +58,9 @@ describe("Dashboard layout", () => {
     expect(screen.getByRole("link", { name: /Products/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Brands/i })).toBeInTheDocument();
     expect(
+      screen.getByRole("link", { name: /Categories/i }),
+    ).toBeInTheDocument();
+    expect(
       screen.getByRole("link", { name: /Warehouses/i }),
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Orders/i })).toBeInTheDocument();
@@ -66,7 +69,6 @@ describe("Dashboard layout", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Reports/i })).toBeInTheDocument();
     expect(screen.queryByText("Inventory")).not.toBeInTheDocument();
-    expect(screen.queryByText("Categories")).not.toBeInTheDocument();
     expect(screen.queryByText("Platform")).not.toBeInTheDocument();
   });
 
