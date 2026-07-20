@@ -22,6 +22,9 @@ import { useReorderProductMedia } from "@/features/products/media/use-reorder-pr
 import { useUploadProductMedia } from "@/features/products/media/use-upload-product-media";
 import { ProductEditForm } from "@/features/products/product-edit-form";
 import { useProduct } from "@/features/products/use-product";
+import { InventoryTable } from "@/features/inventory/inventory-table";
+import { useAdjustInventory } from "@/features/inventory/use-adjust-inventory";
+import { useInventory } from "@/features/inventory/use-inventory";
 import { VariantList } from "@/features/products/variants/variant-list";
 import { useCreateVariant } from "@/features/products/variants/use-create-variant";
 import { useDeleteVariant } from "@/features/products/variants/use-delete-variant";
@@ -49,6 +52,12 @@ export function ProductDetail({ productId }: { readonly productId: string }) {
   const createVariant = useCreateVariant(storeId, productId);
   const updateVariant = useUpdateVariant(storeId, productId);
   const deleteVariant = useDeleteVariant(storeId, productId);
+  const inventory = useInventory(
+    storeId,
+    productId,
+    variantsQuery.data?.items ?? [],
+  );
+  const adjustInventory = useAdjustInventory(storeId, productId);
 
   function confirmLeave(): boolean {
     if (!isFormDirty) {
@@ -113,6 +122,10 @@ export function ProductDetail({ productId }: { readonly productId: string }) {
     variantsQuery.error instanceof AdminApiError
       ? variantsQuery.error.message
       : "Unable to load product variants.";
+  const inventoryError =
+    inventory.error instanceof AdminApiError
+      ? inventory.error.message
+      : "Unable to load inventory.";
   const variantsSaving =
     createVariant.isPending ||
     updateVariant.isPending ||
@@ -327,6 +340,54 @@ export function ProductDetail({ productId }: { readonly productId: string }) {
                     error instanceof AdminApiError
                       ? error.message
                       : "Unable to delete variant",
+                    "error",
+                  );
+                  throw error;
+                }
+              }}
+            />
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base font-medium">Inventory</CardTitle>
+          <CardDescription>
+            Variant stock levels, adjustments, and recent movements. Available
+            quantity comes from inventory reports.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {inventory.isError ? (
+            <div className="space-y-3">
+              <ErrorState
+                title="Unable to load inventory"
+                message={inventoryError}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => inventory.refetch()}
+              >
+                Retry
+              </Button>
+            </div>
+          ) : (
+            <InventoryTable
+              storeId={storeId}
+              rows={inventory.rows}
+              isLoading={inventory.isLoading || variantsQuery.isLoading}
+              isSaving={adjustInventory.isPending}
+              onAdjust={async (input) => {
+                try {
+                  await adjustInventory.mutateAsync(input);
+                  toast("Inventory adjusted");
+                } catch (error) {
+                  toast(
+                    error instanceof AdminApiError
+                      ? error.message
+                      : "Unable to adjust inventory",
                     "error",
                   );
                   throw error;

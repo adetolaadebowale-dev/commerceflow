@@ -29,6 +29,36 @@ vi.mock("@/services/products.service", () => ({
   deleteProductVariant: vi.fn(),
 }));
 
+vi.mock("@/services/inventory.service", () => ({
+  listInventoryItems: vi.fn().mockResolvedValue({
+    items: [],
+    total: 0,
+    page: 1,
+    limit: 100,
+    totalPages: 0,
+  }),
+  getInventorySummary: vi.fn().mockResolvedValue({
+    byProductVariant: [],
+    lowStockItems: [],
+    outOfStockItems: [],
+  }),
+  createInventoryAdjustment: vi.fn(),
+  listInventoryAdjustments: vi.fn().mockResolvedValue({
+    items: [],
+    total: 0,
+    page: 1,
+    limit: 100,
+    totalPages: 0,
+  }),
+  listInventoryItemStockMovements: vi.fn().mockResolvedValue({
+    items: [],
+    total: 0,
+    page: 1,
+    limit: 10,
+    totalPages: 0,
+  }),
+}));
+
 const toastMock = vi.fn();
 const pushMock = vi.fn();
 
@@ -137,6 +167,7 @@ describe("ProductDetail", () => {
     expect(screen.getByText("Product Information")).toBeInTheDocument();
     expect(screen.getByText("Media Gallery")).toBeInTheDocument();
     expect(screen.getByText("Variants")).toBeInTheDocument();
+    expect(screen.getByText("Inventory")).toBeInTheDocument();
     expect(screen.getByLabelText("Product Name")).toHaveValue("Classic Tee");
     expect(screen.getByLabelText("Slug")).toHaveValue("classic-tee");
     expect(screen.getByRole("button", { name: "Save changes" })).toBeDisabled();
