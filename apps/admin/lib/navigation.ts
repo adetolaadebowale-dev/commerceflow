@@ -45,7 +45,12 @@ export const NAV_ITEMS: readonly NavItem[] = [
     enabled: true,
     icon: ShoppingCart,
   },
-  { label: "Customers", href: "/customers", enabled: true, icon: Users },
+  {
+    label: "Customers",
+    href: "/dashboard/customers",
+    enabled: true,
+    icon: Users,
+  },
   { label: "Reports", href: "/reports", enabled: false, icon: BarChart3 },
   { label: "Platform", href: "/platform", enabled: false, icon: Server },
 ];

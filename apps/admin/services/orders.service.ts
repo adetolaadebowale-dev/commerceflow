@@ -1,15 +1,18 @@
 import type { ListOrdersParams } from "@commerceflow/api-client";
 import type {
   CatalogueListResult,
-  Customer,
   InventoryReservation,
   Order,
   OrderFulfillmentResult,
 } from "@commerceflow/types";
 
+import {
+  formatCustomerLabel,
+  getCustomer,
+  listCustomers,
+} from "@/services/customers.service";
 import { fulfillmentClient } from "@/services/inventory-client";
 import {
-  customerClient,
   orderClient,
   reservationClient,
   toAdminApiError,
@@ -18,6 +21,8 @@ import {
 export interface StoreScopedParams {
   readonly storeId: string;
 }
+
+export { formatCustomerLabel, getCustomer, listCustomers };
 
 export async function listOrders(
   params: ListOrdersParams,
@@ -101,46 +106,4 @@ export async function reserveOrder(
   } catch (error) {
     throw toAdminApiError(error);
   }
-}
-
-export async function listCustomers(params: {
-  readonly storeId: string;
-  readonly page?: number;
-  readonly limit?: number;
-}): Promise<CatalogueListResult<Customer>> {
-  try {
-    return await customerClient.listCustomers({
-      storeId: params.storeId,
-      page: params.page ?? 1,
-      limit: params.limit ?? 100,
-    });
-  } catch (error) {
-    throw toAdminApiError(error);
-  }
-}
-
-export async function getCustomer(
-  id: string,
-  params: StoreScopedParams,
-): Promise<Customer> {
-  try {
-    const result = await customerClient.getCustomer(id, params);
-    return result.customer;
-  } catch (error) {
-    throw toAdminApiError(error);
-  }
-}
-
-export function formatCustomerLabel(
-  customer: Customer | null | undefined,
-  customerId?: string,
-): string {
-  if (customer) {
-    const name = `${customer.firstName} ${customer.lastName}`.trim();
-    return name || customer.email;
-  }
-  if (!customerId) {
-    return "Guest";
-  }
-  return `Customer ${customerId.slice(0, 8)}`;
 }

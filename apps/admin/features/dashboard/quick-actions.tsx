@@ -24,7 +24,7 @@ const QUICK_ACTIONS = [
   },
   {
     label: "Add Customer",
-    href: "/customers",
+    href: "/dashboard/customers",
     description: "Add a store customer profile",
     icon: Users,
   },
