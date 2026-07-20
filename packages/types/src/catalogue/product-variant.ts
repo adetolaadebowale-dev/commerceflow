@@ -12,3 +12,8 @@ export interface ProductVariant {
   readonly createdAt: string;
   readonly updatedAt: string;
 }
+
+/** List payload for product variants. */
+export interface ProductVariantListResponse {
+  readonly items: readonly ProductVariant[];
+}

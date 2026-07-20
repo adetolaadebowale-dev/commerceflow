@@ -1,6 +1,7 @@
+import { refreshStoredAccessToken } from "@/services/token-refresh";
+
 /**
- * Placeholder for automatic access-token refresh.
- * Sprint 13.0 restores sessions via AuthProvider; proactive refresh lands later.
+ * Access-token refresh hook. HTTP clients also refresh automatically on 401.
  */
 export function useTokenRefresh(): {
   readonly refresh: () => Promise<void>;
@@ -8,7 +9,7 @@ export function useTokenRefresh(): {
 } {
   return {
     refresh: async () => {
-      // Intentionally empty placeholder.
+      await refreshStoredAccessToken();
     },
     isRefreshing: false,
   };

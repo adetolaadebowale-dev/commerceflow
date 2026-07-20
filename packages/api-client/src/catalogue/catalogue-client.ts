@@ -2,8 +2,11 @@ import type {
   CreateBrandRequest,
   CreateCategoryRequest,
   CreateProductRequest,
+  CreateProductVariantRequest,
+  CreateProductVariantResponse,
   DeleteBrandResponse,
   DeleteProductMediaResponse,
+  DeleteProductVariantResponse,
   GetBrandResponse,
   GetCategoryResponse,
   GetProductResponse,
@@ -12,6 +15,7 @@ import type {
   ListCategoriesParams,
   ListCategoriesResponse,
   ListProductMediaResponse,
+  ListProductVariantsResponse,
   ListProductsParams,
   ListProductsResponse,
   ReorderProductMediaClientRequest,
@@ -20,6 +24,8 @@ import type {
   UpdateBrandRequest,
   UpdateCategoryRequest,
   UpdateProductRequest,
+  UpdateProductVariantRequest,
+  UpdateProductVariantResponse,
   UploadProductMediaRequest,
   UploadProductMediaResponse,
 } from "./contracts";
@@ -104,6 +110,26 @@ export interface CatalogueClient {
     input: ReorderProductMediaClientRequest,
     params: StoreScopedParams,
   ): Promise<ReorderProductMediaResponse["data"]>;
+  listProductVariants(
+    productId: string,
+    params: StoreScopedParams,
+  ): Promise<ListProductVariantsResponse["data"]>;
+  createProductVariant(
+    productId: string,
+    input: CreateProductVariantRequest,
+    params: StoreScopedParams,
+  ): Promise<CreateProductVariantResponse["data"]>;
+  updateProductVariant(
+    productId: string,
+    variantId: string,
+    input: UpdateProductVariantRequest,
+    params: StoreScopedParams,
+  ): Promise<UpdateProductVariantResponse["data"]>;
+  deleteProductVariant(
+    productId: string,
+    variantId: string,
+    params: StoreScopedParams,
+  ): Promise<DeleteProductVariantResponse["data"]>;
 }
 
 export function createCatalogueClient(config: ApiClientConfig): CatalogueClient {
@@ -207,11 +233,7 @@ export function createCatalogueClient(config: ApiClientConfig): CatalogueClient 
 
     uploadProductMedia: (productId, input, params) => {
       const formData = new FormData();
-      formData.append(
-        "file",
-        input.file,
-        input.filename ?? "upload",
-      );
+      formData.append("file", input.file, input.filename ?? "upload");
       if (input.altText !== undefined) {
         formData.append("altText", input.altText);
       }
@@ -244,6 +266,36 @@ export function createCatalogueClient(config: ApiClientConfig): CatalogueClient 
         method: "PATCH",
         path: `/api/products/${productId}/media/order${toQueryString(params)}`,
         body: input,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    listProductVariants: (productId, params) =>
+      apiRequest<ListProductVariantsResponse["data"]>(config, {
+        method: "GET",
+        path: `/api/products/${productId}/variants${toQueryString(params)}`,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    createProductVariant: (productId, input, params) =>
+      apiRequest<CreateProductVariantResponse["data"]>(config, {
+        method: "POST",
+        path: `/api/products/${productId}/variants${toQueryString(params)}`,
+        body: input,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    updateProductVariant: (productId, variantId, input, params) =>
+      apiRequest<UpdateProductVariantResponse["data"]>(config, {
+        method: "PATCH",
+        path: `/api/products/${productId}/variants/${variantId}${toQueryString(params)}`,
+        body: input,
+        accessToken: config.getAccessToken?.(),
+      }),
+
+    deleteProductVariant: (productId, variantId, params) =>
+      apiRequest<DeleteProductVariantResponse["data"]>(config, {
+        method: "DELETE",
+        path: `/api/products/${productId}/variants/${variantId}${toQueryString(params)}`,
         accessToken: config.getAccessToken?.(),
       }),
   };

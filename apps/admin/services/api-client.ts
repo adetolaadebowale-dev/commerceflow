@@ -2,6 +2,7 @@ import axios, {
   AxiosError,
   type AxiosInstance,
   type AxiosRequestConfig,
+  type InternalAxiosRequestConfig,
 } from "axios";
 
 import {
@@ -9,11 +10,25 @@ import {
   type ApiErrorEnvelope,
   type ApiSuccessEnvelope,
 } from "@/types/api";
+import { refreshStoredAccessToken } from "@/services/token-refresh";
 import { getStoredAccessToken } from "@/services/token-storage";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ??
   "http://localhost:3000";
+
+const AUTH_PATHS_WITHOUT_REFRESH = [
+  "/api/auth/login",
+  "/api/auth/refresh",
+  "/api/auth/logout",
+  "/api/auth/register",
+  "/api/auth/forgot-password",
+  "/api/auth/reset-password",
+];
+
+type RetryAxiosRequestConfig = InternalAxiosRequestConfig & {
+  _authRetry?: boolean;
+};
 
 function isErrorEnvelope(payload: unknown): payload is ApiErrorEnvelope {
   return (
@@ -54,6 +69,13 @@ function toAdminApiError(error: unknown): AdminApiError {
   );
 }
 
+function shouldSkipAuthRefresh(url: string | undefined): boolean {
+  if (!url) {
+    return false;
+  }
+  return AUTH_PATHS_WITHOUT_REFRESH.some((path) => url.includes(path));
+}
+
 export const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -73,16 +95,43 @@ apiClient.interceptors.request.use((config) => {
 
 apiClient.interceptors.response.use(
   (response) => response,
-  (error: unknown) => Promise.reject(toAdminApiError(error)),
+  async (error: unknown) => {
+    if (!(error instanceof AxiosError) || error.response?.status !== 401) {
+      return Promise.reject(toAdminApiError(error));
+    }
+
+    const original = error.config as RetryAxiosRequestConfig | undefined;
+    if (
+      !original ||
+      original._authRetry ||
+      shouldSkipAuthRefresh(original.url)
+    ) {
+      return Promise.reject(toAdminApiError(error));
+    }
+
+    const refreshedAccessToken = await refreshStoredAccessToken();
+    if (!refreshedAccessToken) {
+      return Promise.reject(toAdminApiError(error));
+    }
+
+    original._authRetry = true;
+    original.headers = original.headers ?? {};
+    original.headers.Authorization = `Bearer ${refreshedAccessToken}`;
+    try {
+      return await apiClient.request(original);
+    } catch (retryError) {
+      return Promise.reject(toAdminApiError(retryError));
+    }
+  },
 );
 
 export async function apiRequest<T>(
   config: AxiosRequestConfig,
 ): Promise<T> {
   try {
-    const response = await apiClient.request<ApiSuccessEnvelope<T> | ApiErrorEnvelope>(
-      config,
-    );
+    const response = await apiClient.request<
+      ApiSuccessEnvelope<T> | ApiErrorEnvelope
+    >(config);
     const payload = response.data;
 
     if (isErrorEnvelope(payload)) {

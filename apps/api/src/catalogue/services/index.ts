@@ -5,3 +5,7 @@ export {
   ProductMediaService,
   productMediaService,
 } from "./product-media.service";
+export {
+  ProductVariantService,
+  productVariantService,
+} from "./product-variant.service";

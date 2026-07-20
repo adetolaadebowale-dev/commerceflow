@@ -22,6 +22,11 @@ import { useReorderProductMedia } from "@/features/products/media/use-reorder-pr
 import { useUploadProductMedia } from "@/features/products/media/use-upload-product-media";
 import { ProductEditForm } from "@/features/products/product-edit-form";
 import { useProduct } from "@/features/products/use-product";
+import { VariantList } from "@/features/products/variants/variant-list";
+import { useCreateVariant } from "@/features/products/variants/use-create-variant";
+import { useDeleteVariant } from "@/features/products/variants/use-delete-variant";
+import { useProductVariants } from "@/features/products/variants/use-product-variants";
+import { useUpdateVariant } from "@/features/products/variants/use-update-variant";
 import { useAuth } from "@/providers/auth-provider";
 import { useToast } from "@/providers/toast-provider";
 import { AdminApiError } from "@/types/api";
@@ -37,9 +42,13 @@ export function ProductDetail({ productId }: { readonly productId: string }) {
 
   const detail = useProduct(storeId, productId);
   const mediaQuery = useProductMedia(storeId, productId);
+  const variantsQuery = useProductVariants(storeId, productId);
   const upload = useUploadProductMedia(storeId, productId);
   const deleteMutation = useDeleteProductMedia(storeId, productId);
   const reorderMutation = useReorderProductMedia(storeId, productId);
+  const createVariant = useCreateVariant(storeId, productId);
+  const updateVariant = useUpdateVariant(storeId, productId);
+  const deleteVariant = useDeleteVariant(storeId, productId);
 
   function confirmLeave(): boolean {
     if (!isFormDirty) {
@@ -100,6 +109,14 @@ export function ProductDetail({ productId }: { readonly productId: string }) {
     mediaQuery.error instanceof AdminApiError
       ? mediaQuery.error.message
       : "Unable to load product media.";
+  const variantsError =
+    variantsQuery.error instanceof AdminApiError
+      ? variantsQuery.error.message
+      : "Unable to load product variants.";
+  const variantsSaving =
+    createVariant.isPending ||
+    updateVariant.isPending ||
+    deleteVariant.isPending;
 
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-6">
@@ -233,6 +250,83 @@ export function ProductDetail({ productId }: { readonly productId: string }) {
                     error instanceof AdminApiError
                       ? error.message
                       : "Delete failed",
+                    "error",
+                  );
+                  throw error;
+                }
+              }}
+            />
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base font-medium">Variants</CardTitle>
+          <CardDescription>
+            Manage purchasable SKUs, pricing, and attributes for this product.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {variantsQuery.isError ? (
+            <div className="space-y-3">
+              <ErrorState
+                title="Unable to load variants"
+                message={variantsError}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => variantsQuery.refetch()}
+              >
+                Retry
+              </Button>
+            </div>
+          ) : (
+            <VariantList
+              items={variantsQuery.data?.items ?? []}
+              isLoading={variantsQuery.isLoading}
+              isSaving={variantsSaving}
+              onCreate={async (values) => {
+                try {
+                  await createVariant.mutateAsync(values);
+                  toast("Variant created");
+                } catch (error) {
+                  toast(
+                    error instanceof AdminApiError
+                      ? error.message
+                      : "Unable to create variant",
+                    "error",
+                  );
+                  throw error;
+                }
+              }}
+              onUpdate={async (variantId, values) => {
+                try {
+                  await updateVariant.mutateAsync({
+                    variantId,
+                    input: values,
+                  });
+                  toast("Variant updated");
+                } catch (error) {
+                  toast(
+                    error instanceof AdminApiError
+                      ? error.message
+                      : "Unable to update variant",
+                    "error",
+                  );
+                  throw error;
+                }
+              }}
+              onDelete={async (variantId) => {
+                try {
+                  await deleteVariant.mutateAsync(variantId);
+                  toast("Variant deleted");
+                } catch (error) {
+                  toast(
+                    error instanceof AdminApiError
+                      ? error.message
+                      : "Unable to delete variant",
                     "error",
                   );
                   throw error;

@@ -4,6 +4,8 @@ import { ApiClientError } from "./api-error";
 export interface ApiClientConfig {
   readonly baseUrl: string;
   readonly getAccessToken?: () => string | null;
+  /** Optional single-flight refresh used once per request on HTTP 401. */
+  readonly refreshAccessToken?: () => Promise<string | null>;
 }
 
 interface RequestOptions {
@@ -13,6 +15,7 @@ interface RequestOptions {
   /** When true, body is sent as FormData and Content-Type is left unset. */
   readonly formData?: boolean;
   readonly accessToken?: string | null;
+  readonly hasRetried?: boolean;
 }
 
 function isErrorResponse<T>(
@@ -57,6 +60,21 @@ export async function apiRequest<T>(
   const payload = (await response.json()) as
     | ApiSuccessResponse<T>
     | ApiErrorResponse;
+
+  if (
+    response.status === 401 &&
+    !options.hasRetried &&
+    config.refreshAccessToken
+  ) {
+    const refreshedAccessToken = await config.refreshAccessToken();
+    if (refreshedAccessToken) {
+      return apiRequest<T>(config, {
+        ...options,
+        accessToken: refreshedAccessToken,
+        hasRetried: true,
+      });
+    }
+  }
 
   if (!response.ok || isErrorResponse(payload)) {
     const error = isErrorResponse(payload)

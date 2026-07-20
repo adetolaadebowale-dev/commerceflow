@@ -4,6 +4,8 @@ import type {
   Product,
   ProductMedia,
   ProductMediaListResponse,
+  ProductVariant,
+  ProductVariantListResponse,
   CatalogueListResult,
   CreateProductMediaRequest,
   ReorderProductMediaRequest,
@@ -12,9 +14,11 @@ import type {
   CreateBrandInput,
   CreateCategoryInput,
   CreateProductInput,
+  CreateProductVariantInput,
   UpdateBrandInput,
   UpdateCategoryInput,
   UpdateProductInput,
+  UpdateProductVariantInput,
 } from "@commerceflow/validation";
 
 import type { ApiSuccessResponse } from "../common/api-response";
@@ -92,6 +96,27 @@ export type DeleteProductMediaResponse = ApiSuccessResponse<{
 export type ReorderProductMediaClientRequest = ReorderProductMediaRequest;
 export type ReorderProductMediaResponse =
   ApiSuccessResponse<ProductMediaListResponse>;
+
+/** POST /products/:id/variants */
+export type CreateProductVariantRequest = CreateProductVariantInput;
+export type CreateProductVariantResponse = ApiSuccessResponse<{
+  variant: ProductVariant;
+}>;
+
+/** PATCH /products/:id/variants/:variantId */
+export type UpdateProductVariantRequest = UpdateProductVariantInput;
+export type UpdateProductVariantResponse = ApiSuccessResponse<{
+  variant: ProductVariant;
+}>;
+
+/** GET /products/:id/variants */
+export type ListProductVariantsResponse =
+  ApiSuccessResponse<ProductVariantListResponse>;
+
+/** DELETE /products/:id/variants/:variantId */
+export type DeleteProductVariantResponse = ApiSuccessResponse<{
+  variant: ProductVariant;
+}>;
 
 export interface StoreScopedParams {
   readonly storeId: string;

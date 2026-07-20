@@ -53,6 +53,12 @@ export type CreateCategoryInput = z.infer<typeof createCategorySchema>;
 export type UpdateCategoryInput = z.infer<typeof updateCategorySchema>;
 export type ListCategoriesQuery = z.infer<typeof listCategoriesQuerySchema>;
 
+const variantAttributesSchema = z
+  .record(z.string().trim().min(1), z.string().trim().min(1))
+  .refine((value) => Object.keys(value).length > 0, {
+    message: "At least one attribute is required",
+  });
+
 export const productVariantInputSchema = z.object({
   sku: z
     .string()
@@ -74,6 +80,18 @@ export const productVariantInputSchema = z.object({
     .length(3, "Currency must be a 3-letter ISO code")
     .transform((value) => value.toUpperCase()),
   attributes: z.record(z.string(), z.string()).optional(),
+});
+
+/** Dedicated create body for POST /products/:id/variants */
+export const createProductVariantSchema = productVariantInputSchema.extend({
+  attributes: variantAttributesSchema,
+});
+
+/** Dedicated update body for PATCH /products/:id/variants/:variantId */
+export const updateProductVariantSchema = createProductVariantSchema.partial();
+
+export const productVariantIdQuerySchema = z.object({
+  storeId: storeIdSchema,
 });
 
 export const createProductSchema = z.object({
@@ -111,3 +129,6 @@ export type CreateProductInput = z.infer<typeof createProductSchema>;
 export type UpdateProductInput = z.infer<typeof updateProductSchema>;
 export type ListProductsQuery = z.infer<typeof listProductsQuerySchema>;
 export type ProductVariantInput = z.infer<typeof productVariantInputSchema>;
+export type CreateProductVariantInput = z.infer<typeof createProductVariantSchema>;
+export type UpdateProductVariantInput = z.infer<typeof updateProductVariantSchema>;
+export type ProductVariantIdQuery = z.infer<typeof productVariantIdQuerySchema>;

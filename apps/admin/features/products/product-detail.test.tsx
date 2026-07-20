@@ -10,6 +10,7 @@ import {
   listBrands,
   listCategories,
   listProductMedia,
+  listProductVariants,
   updateProduct,
 } from "@/services/products.service";
 
@@ -18,10 +19,14 @@ vi.mock("@/services/products.service", () => ({
   listBrands: vi.fn(),
   listCategories: vi.fn(),
   listProductMedia: vi.fn(),
+  listProductVariants: vi.fn(),
   updateProduct: vi.fn(),
   uploadProductMedia: vi.fn(),
   deleteProductMedia: vi.fn(),
   reorderProductMedia: vi.fn(),
+  createProductVariant: vi.fn(),
+  updateProductVariant: vi.fn(),
+  deleteProductVariant: vi.fn(),
 }));
 
 const toastMock = vi.fn();
@@ -121,6 +126,7 @@ describe("ProductDetail", () => {
       totalPages: 1,
     });
     vi.mocked(listProductMedia).mockResolvedValue({ items: [] });
+    vi.mocked(listProductVariants).mockResolvedValue({ items: [] });
 
     renderDetail();
 
@@ -130,10 +136,12 @@ describe("ProductDetail", () => {
 
     expect(screen.getByText("Product Information")).toBeInTheDocument();
     expect(screen.getByText("Media Gallery")).toBeInTheDocument();
+    expect(screen.getByText("Variants")).toBeInTheDocument();
     expect(screen.getByLabelText("Product Name")).toHaveValue("Classic Tee");
     expect(screen.getByLabelText("Slug")).toHaveValue("classic-tee");
     expect(screen.getByRole("button", { name: "Save changes" })).toBeDisabled();
     expect(screen.getByText("No media yet")).toBeInTheDocument();
+    expect(screen.getByText("No variants yet")).toBeInTheDocument();
   });
 
   it("saves product edits via updateProduct", async () => {
@@ -197,6 +205,7 @@ describe("ProductDetail", () => {
       totalPages: 1,
     });
     vi.mocked(listProductMedia).mockResolvedValue({ items: [] });
+    vi.mocked(listProductVariants).mockResolvedValue({ items: [] });
     vi.mocked(updateProduct).mockResolvedValue({
       ...product,
       name: "Classic Tee Updated",

@@ -14,6 +14,7 @@ export type {
   ProductMediaListResponse,
   ProductMediaMimeType,
   ProductVariant,
+  ProductVariantListResponse,
   ProductStatus,
   ReorderProductMediaRequest,
 } from "./catalogue";

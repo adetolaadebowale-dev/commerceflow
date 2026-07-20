@@ -1,10 +1,12 @@
 import type {
   CreateProductRequest,
+  CreateProductVariantRequest,
   ListBrandsParams,
   ListCategoriesParams,
   ListProductsParams,
   ReorderProductMediaClientRequest,
   UpdateProductRequest,
+  UpdateProductVariantRequest,
   UploadProductMediaRequest,
 } from "@commerceflow/api-client";
 import type {
@@ -14,6 +16,8 @@ import type {
   Product,
   ProductMedia,
   ProductMediaListResponse,
+  ProductVariant,
+  ProductVariantListResponse,
 } from "@commerceflow/types";
 
 import { API_BASE_URL } from "@/services/api-client";
@@ -131,6 +135,70 @@ export async function reorderProductMedia(
 ): Promise<ProductMediaListResponse> {
   try {
     return await catalogueClient.reorderProductMedia(productId, input, params);
+  } catch (error) {
+    throw toAdminApiError(error);
+  }
+}
+
+export async function listProductVariants(
+  productId: string,
+  params: StoreScopedParams,
+): Promise<ProductVariantListResponse> {
+  try {
+    return await catalogueClient.listProductVariants(productId, params);
+  } catch (error) {
+    throw toAdminApiError(error);
+  }
+}
+
+export async function createProductVariant(
+  productId: string,
+  input: CreateProductVariantRequest,
+  params: StoreScopedParams,
+): Promise<ProductVariant> {
+  try {
+    const result = await catalogueClient.createProductVariant(
+      productId,
+      input,
+      params,
+    );
+    return result.variant;
+  } catch (error) {
+    throw toAdminApiError(error);
+  }
+}
+
+export async function updateProductVariant(
+  productId: string,
+  variantId: string,
+  input: UpdateProductVariantRequest,
+  params: StoreScopedParams,
+): Promise<ProductVariant> {
+  try {
+    const result = await catalogueClient.updateProductVariant(
+      productId,
+      variantId,
+      input,
+      params,
+    );
+    return result.variant;
+  } catch (error) {
+    throw toAdminApiError(error);
+  }
+}
+
+export async function deleteProductVariant(
+  productId: string,
+  variantId: string,
+  params: StoreScopedParams,
+): Promise<ProductVariant> {
+  try {
+    const result = await catalogueClient.deleteProductVariant(
+      productId,
+      variantId,
+      params,
+    );
+    return result.variant;
   } catch (error) {
     throw toAdminApiError(error);
   }
