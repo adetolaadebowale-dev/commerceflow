@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 
+import { REPORT_QUERY_STALE_TIME_MS } from "@/features/reports/report-query-options";
 import { executiveDashboardQueryKey } from "@/features/reports/report-query-keys";
 import {
   getExecutiveDashboard,
@@ -14,6 +15,7 @@ export function useExecutiveDashboard(filters: ReportDateFilter | null) {
       filters ?? { storeId: "" },
     ),
     enabled: Boolean(filters?.storeId),
+    staleTime: REPORT_QUERY_STALE_TIME_MS,
     queryFn: () => {
       if (!filters) {
         throw new Error("Report filters are required");

@@ -12,6 +12,7 @@ import { getPurchaseOrderRepository } from "@/purchase-orders/repositories";
 import { getInventoryReservationRepository } from "@/reservations/repositories";
 import { getReplenishmentRepository } from "@/replenishment/repositories";
 import { mapMovementToFact, mapItemToFact } from "../mappers/inventory-fact.mapper";
+import { PrismaInventoryReportRepository } from "./prisma-inventory-report.repository";
 import type {
   InventoryReportRepository,
   ListInventoryItemFactsQuery,
@@ -330,7 +331,7 @@ function computeItemOutgoing(
     );
 }
 
-const inventoryReportRepository = new DefaultInventoryReportRepository();
+const inventoryReportRepository = new PrismaInventoryReportRepository();
 
 export function getInventoryReportRepository(): InventoryReportRepository {
   return inventoryReportRepository;

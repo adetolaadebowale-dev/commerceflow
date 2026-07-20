@@ -108,7 +108,16 @@ export class ProcurementReportsService {
   }
 
   async getSummary(query: ProcurementSummaryQuery): Promise<ProcurementSummary> {
-    const facts = await this.loadFilteredFacts(query);
+    const facts = await this.loadFilteredFacts(query, {
+      purchaseOrders: true,
+      suppliers: true,
+      warehouses: true,
+      recommendations: true,
+      transfers: true,
+      movements: true,
+      inventory: true,
+      shipments: true,
+    });
     const generatedAt = new Date().toISOString();
 
     const summary: ProcurementSummary = {
@@ -158,7 +167,7 @@ export class ProcurementReportsService {
   async getPurchaseOrderAnalytics(
     query: PurchaseOrderAnalyticsQuery,
   ): Promise<PurchaseOrderAnalytics> {
-    const facts = await this.loadFilteredFacts(query);
+    const facts = await this.loadFilteredFacts(query, { purchaseOrders: true });
     const generatedAt = new Date().toISOString();
     const summary = buildPurchaseOrderAnalyticsSummary(
       facts.purchaseOrderFacts,
@@ -212,7 +221,10 @@ export class ProcurementReportsService {
   async getSupplierAnalytics(
     query: SupplierAnalyticsQuery,
   ): Promise<SupplierAnalytics> {
-    const facts = await this.loadFilteredFacts(query);
+    const facts = await this.loadFilteredFacts(query, {
+      purchaseOrders: true,
+      suppliers: true,
+    });
     const generatedAt = new Date().toISOString();
     const summary = buildSupplierAnalyticsSummary(
       facts.supplierFacts,
@@ -273,7 +285,14 @@ export class ProcurementReportsService {
   async getWarehouseAnalytics(
     query: WarehouseAnalyticsQuery,
   ): Promise<WarehouseAnalytics> {
-    const facts = await this.loadFilteredFacts(query);
+    const facts = await this.loadFilteredFacts(query, {
+      purchaseOrders: true,
+      warehouses: true,
+      transfers: true,
+      movements: true,
+      inventory: true,
+      shipments: true,
+    });
     const generatedAt = new Date().toISOString();
     const summary = buildWarehouseAnalyticsSummary(
       facts.warehouseFacts,
@@ -346,7 +365,9 @@ export class ProcurementReportsService {
   async getReplenishmentAnalytics(
     query: ReplenishmentAnalyticsQuery,
   ): Promise<ReplenishmentAnalytics> {
-    const facts = await this.loadFilteredFacts(query);
+    const facts = await this.loadFilteredFacts(query, {
+      recommendations: true,
+    });
     const generatedAt = new Date().toISOString();
     const summary = buildReplenishmentMetrics(facts.recommendationFacts);
     const sorted = sortItems(
@@ -398,6 +419,16 @@ export class ProcurementReportsService {
       | SupplierAnalyticsQuery
       | WarehouseAnalyticsQuery
       | ReplenishmentAnalyticsQuery,
+    needed: {
+      readonly purchaseOrders?: boolean;
+      readonly suppliers?: boolean;
+      readonly warehouses?: boolean;
+      readonly recommendations?: boolean;
+      readonly transfers?: boolean;
+      readonly movements?: boolean;
+      readonly inventory?: boolean;
+      readonly shipments?: boolean;
+    },
   ) {
     const context = await this.reportFoundationRepository.getStoreReportingContext(
       query.storeId,
@@ -420,34 +451,50 @@ export class ProcurementReportsService {
       inventoryFacts,
       shipmentFacts,
     ] = await Promise.all([
-      this.procurementReportRepository.listPurchaseOrderFacts({
-        storeId: query.storeId,
-        purchaseOrderStatus: query.purchaseOrderStatus,
-        supplierIds: query.supplierIds,
-        currency: query.currency,
-      }),
-      this.procurementReportRepository.listSupplierFacts({
-        storeId: query.storeId,
-      }),
-      this.procurementReportRepository.listWarehouseFacts({
-        storeId: query.storeId,
-      }),
-      this.procurementReportRepository.listReplenishmentRecommendationFacts({
-        storeId: query.storeId,
-        supplierIds: query.supplierIds,
-      }),
-      this.procurementReportRepository.listWarehouseTransferFacts({
-        storeId: query.storeId,
-      }),
-      this.procurementReportRepository.listStockMovementFacts({
-        storeId: query.storeId,
-      }),
-      this.procurementReportRepository.listInventoryFacts({
-        storeId: query.storeId,
-      }),
-      this.procurementReportRepository.listShipmentFacts({
-        storeId: query.storeId,
-      }),
+      needed.purchaseOrders
+        ? this.procurementReportRepository.listPurchaseOrderFacts({
+            storeId: query.storeId,
+            purchaseOrderStatus: query.purchaseOrderStatus,
+            supplierIds: query.supplierIds,
+            currency: query.currency,
+          })
+        : Promise.resolve([] as const),
+      needed.suppliers
+        ? this.procurementReportRepository.listSupplierFacts({
+            storeId: query.storeId,
+          })
+        : Promise.resolve([] as const),
+      needed.warehouses
+        ? this.procurementReportRepository.listWarehouseFacts({
+            storeId: query.storeId,
+          })
+        : Promise.resolve([] as const),
+      needed.recommendations
+        ? this.procurementReportRepository.listReplenishmentRecommendationFacts({
+            storeId: query.storeId,
+            supplierIds: query.supplierIds,
+          })
+        : Promise.resolve([] as const),
+      needed.transfers
+        ? this.procurementReportRepository.listWarehouseTransferFacts({
+            storeId: query.storeId,
+          })
+        : Promise.resolve([] as const),
+      needed.movements
+        ? this.procurementReportRepository.listStockMovementFacts({
+            storeId: query.storeId,
+          })
+        : Promise.resolve([] as const),
+      needed.inventory
+        ? this.procurementReportRepository.listInventoryFacts({
+            storeId: query.storeId,
+          })
+        : Promise.resolve([] as const),
+      needed.shipments
+        ? this.procurementReportRepository.listShipmentFacts({
+            storeId: query.storeId,
+          })
+        : Promise.resolve([] as const),
     ]);
 
     assertStoreScope(purchaseOrderFacts, query.storeId);

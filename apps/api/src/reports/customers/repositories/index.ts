@@ -9,4 +9,5 @@ export {
   DefaultCustomerReportRepository,
   getCustomerReportRepository,
 } from "./default-customer-report.repository";
+export { PrismaCustomerReportRepository } from "./prisma-customer-report.repository";
 export { MemoryCustomerReportRepository } from "./memory-customer-report.repository";

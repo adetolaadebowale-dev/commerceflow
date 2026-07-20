@@ -70,7 +70,7 @@ export class InventoryReportsService {
 
   async getSummary(query: InventorySummaryQuery): Promise<InventorySummary> {
     const { itemFacts, movementFacts, filter, timezone, currency } =
-      await this.loadFilteredFacts(query);
+      await this.loadFilteredFacts(query, { movements: true });
     const generatedAt = new Date().toISOString();
     const lowStockItems = buildLowStockItems(itemFacts);
     const outOfStockItems = buildOutOfStockItems(itemFacts);
@@ -139,7 +139,9 @@ export class InventoryReportsService {
   }
 
   async getLowStockReport(query: InventoryLowStockQuery): Promise<LowStockReport> {
-    const { itemFacts, filter, timezone } = await this.loadFilteredFacts(query);
+    const { itemFacts, filter, timezone } = await this.loadFilteredFacts(query, {
+      movements: false,
+    });
     const generatedAt = new Date().toISOString();
     const lowStockItems = buildLowStockItems(itemFacts);
     const outOfStockItems = buildOutOfStockItems(itemFacts);
@@ -170,7 +172,7 @@ export class InventoryReportsService {
     query: InventoryValuationQuery,
   ): Promise<InventoryValuationReport> {
     const { itemFacts, filter, timezone, currency } =
-      await this.loadFilteredFacts(query);
+      await this.loadFilteredFacts(query, { movements: false });
     const generatedAt = new Date().toISOString();
     const valuationItems = buildValuationItems(itemFacts);
     const sorted = sortItems(
@@ -217,6 +219,7 @@ export class InventoryReportsService {
       | InventorySummaryQuery
       | InventoryLowStockQuery
       | InventoryValuationQuery,
+    options: { readonly movements: boolean },
   ) {
     const context = await this.reportFoundationRepository.getStoreReportingContext(
       query.storeId,
@@ -235,11 +238,9 @@ export class InventoryReportsService {
     assertStoreScope(itemFacts, query.storeId);
 
     const filteredItems = this.applyInventoryFilters(itemFacts, query, filter);
-    const movementFacts = await this.loadFilteredMovementFacts(
-      query.storeId,
-      filter,
-      query,
-    );
+    const movementFacts = options.movements
+      ? await this.loadFilteredMovementFacts(query.storeId, filter, query)
+      : [];
 
     return {
       itemFacts: filteredItems,

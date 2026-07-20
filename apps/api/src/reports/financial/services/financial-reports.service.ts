@@ -83,7 +83,12 @@ export class FinancialReportsService {
       filter,
       timezone,
       currency,
-    } = await this.loadFilteredFacts(query);
+    } = await this.loadFilteredFacts(query, {
+      orders: true,
+      invoices: true,
+      payments: true,
+      refunds: true,
+    });
     const generatedAt = new Date().toISOString();
 
     const summary: FinancialSummary = {
@@ -120,7 +125,7 @@ export class FinancialReportsService {
     query: RevenueTimelineQuery,
   ): Promise<RevenueTimelineReport> {
     const { orderFacts, refundFacts, filter, timezone, currency } =
-      await this.loadFilteredFacts(query);
+      await this.loadFilteredFacts(query, { orders: true, refunds: true });
     const generatedAt = new Date().toISOString();
     const points = buildRevenueTimelinePoints(
       orderFacts,
@@ -151,7 +156,7 @@ export class FinancialReportsService {
 
   async getPaymentReport(query: PaymentReportQuery): Promise<PaymentReport> {
     const { paymentFacts, filter, timezone, currency } =
-      await this.loadFilteredFacts(query);
+      await this.loadFilteredFacts(query, { payments: true });
     const generatedAt = new Date().toISOString();
     const summary = buildPaymentSummary(paymentFacts, currency);
     const sorted = sortItems(
@@ -188,7 +193,7 @@ export class FinancialReportsService {
 
   async getInvoiceReport(query: InvoiceReportQuery): Promise<InvoiceReport> {
     const { invoiceFacts, filter, timezone, currency } =
-      await this.loadFilteredFacts(query);
+      await this.loadFilteredFacts(query, { invoices: true });
     const generatedAt = new Date().toISOString();
     const summary = buildInvoiceSummary(invoiceFacts, currency);
     const sorted = sortItems(
@@ -225,7 +230,7 @@ export class FinancialReportsService {
 
   async getRefundReport(query: RefundReportQuery): Promise<RefundReport> {
     const { refundFacts, filter, timezone, currency } =
-      await this.loadFilteredFacts(query);
+      await this.loadFilteredFacts(query, { refunds: true });
     const generatedAt = new Date().toISOString();
     const summary = buildRefundSummary(refundFacts, currency);
     const sorted = sortItems(
@@ -267,6 +272,12 @@ export class FinancialReportsService {
       | PaymentReportQuery
       | InvoiceReportQuery
       | RefundReportQuery,
+    needed: {
+      readonly orders?: boolean;
+      readonly invoices?: boolean;
+      readonly payments?: boolean;
+      readonly refunds?: boolean;
+    },
   ) {
     const context = await this.reportFoundationRepository.getStoreReportingContext(
       query.storeId,
@@ -279,25 +290,38 @@ export class FinancialReportsService {
     const timezone = filter.dateRange?.timezone ?? context.defaultTimezone;
     const currency = filter.currency ?? context.defaultCurrency;
 
-    const orderFacts = await this.financialReportRepository.listOrderFacts({
-      storeId: query.storeId,
-      orderStatus: "orderStatus" in query ? query.orderStatus : undefined,
-      currency: query.currency,
-    });
-    const invoiceFacts = await this.financialReportRepository.listInvoiceFacts({
-      storeId: query.storeId,
-      currency: query.currency,
-      invoiceStatus: "invoiceStatus" in query ? query.invoiceStatus : undefined,
-    });
-    const paymentFacts = await this.financialReportRepository.listPaymentFacts({
-      storeId: query.storeId,
-      currency: query.currency,
-      paymentStatus: "paymentStatus" in query ? query.paymentStatus : undefined,
-    });
-    const refundFacts = await this.financialReportRepository.listRefundFacts({
-      storeId: query.storeId,
-      currency: query.currency,
-    });
+    const [orderFacts, invoiceFacts, paymentFacts, refundFacts] =
+      await Promise.all([
+        needed.orders
+          ? this.financialReportRepository.listOrderFacts({
+              storeId: query.storeId,
+              orderStatus: "orderStatus" in query ? query.orderStatus : undefined,
+              currency: query.currency,
+            })
+          : Promise.resolve([] as const),
+        needed.invoices
+          ? this.financialReportRepository.listInvoiceFacts({
+              storeId: query.storeId,
+              currency: query.currency,
+              invoiceStatus:
+                "invoiceStatus" in query ? query.invoiceStatus : undefined,
+            })
+          : Promise.resolve([] as const),
+        needed.payments
+          ? this.financialReportRepository.listPaymentFacts({
+              storeId: query.storeId,
+              currency: query.currency,
+              paymentStatus:
+                "paymentStatus" in query ? query.paymentStatus : undefined,
+            })
+          : Promise.resolve([] as const),
+        needed.refunds
+          ? this.financialReportRepository.listRefundFacts({
+              storeId: query.storeId,
+              currency: query.currency,
+            })
+          : Promise.resolve([] as const),
+      ]);
 
     assertStoreScope(orderFacts, query.storeId);
     assertStoreScope(invoiceFacts, query.storeId);

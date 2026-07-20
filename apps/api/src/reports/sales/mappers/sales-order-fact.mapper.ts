@@ -10,7 +10,9 @@ const PAYMENT_STATUS_PRIORITY: Record<PaymentStatus, number> = {
   cancelled: 1,
 };
 
-export function derivePaymentStatus(payments: readonly Payment[]): string {
+export function derivePaymentStatus(
+  payments: readonly Pick<Payment, "status">[],
+): string {
   if (payments.length === 0) {
     return "none";
   }

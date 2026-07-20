@@ -12,6 +12,7 @@ import {
   mapPaymentToFact,
   mapRefundToFact,
 } from "../mappers/financial-fact.mapper";
+import { PrismaFinancialReportRepository } from "./prisma-financial-report.repository";
 import type {
   FinancialReportRepository,
   ListFinancialOrderFactsQuery,
@@ -207,7 +208,7 @@ export class DefaultFinancialReportRepository implements FinancialReportReposito
   }
 }
 
-const financialReportRepository = new DefaultFinancialReportRepository();
+const financialReportRepository = new PrismaFinancialReportRepository();
 
 export function getFinancialReportRepository(): FinancialReportRepository {
   return financialReportRepository;

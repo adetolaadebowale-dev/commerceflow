@@ -10,6 +10,7 @@ import {
   derivePaymentStatus,
 } from "../mappers/customer-order-fact.mapper";
 import { mapCustomerToProfileFact } from "../mappers/customer-fact.mapper";
+import { PrismaCustomerReportRepository } from "./prisma-customer-report.repository";
 import type {
   CustomerOrderFact,
   CustomerReportRepository,
@@ -185,7 +186,7 @@ export class DefaultCustomerReportRepository implements CustomerReportRepository
   }
 }
 
-const customerReportRepository = new DefaultCustomerReportRepository();
+const customerReportRepository = new PrismaCustomerReportRepository();
 
 export function getCustomerReportRepository(): CustomerReportRepository {
   return customerReportRepository;

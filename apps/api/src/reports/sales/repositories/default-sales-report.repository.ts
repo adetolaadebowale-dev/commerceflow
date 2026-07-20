@@ -4,6 +4,7 @@ import { getOrderRepository } from "@/orders/repositories";
 import { getPaymentRepository } from "@/payments/repositories";
 import { getShipmentRepository } from "@/shipments/repositories";
 import { mapOrderToSalesOrderFact } from "../mappers/sales-order-fact.mapper";
+import { PrismaSalesReportRepository } from "./prisma-sales-report.repository";
 import type {
   ListSalesOrderFactsQuery,
   SalesOrderFact,
@@ -92,7 +93,7 @@ export class DefaultSalesReportRepository implements SalesReportRepository {
   }
 }
 
-const salesReportRepository = new DefaultSalesReportRepository();
+const salesReportRepository = new PrismaSalesReportRepository();
 
 export function getSalesReportRepository(): SalesReportRepository {
   return salesReportRepository;
