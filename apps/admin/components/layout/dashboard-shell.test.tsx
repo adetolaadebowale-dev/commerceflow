@@ -56,6 +56,9 @@ describe("Dashboard layout", () => {
       screen.getByRole("link", { name: /Dashboard/i }),
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Products/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /Warehouses/i }),
+    ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Orders/i })).toBeInTheDocument();
     expect(screen.getByText("Platform")).toHaveAttribute(
       "aria-disabled",

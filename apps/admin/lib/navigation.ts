@@ -1,5 +1,6 @@
 import {
   BarChart3,
+  Building2,
   LayoutDashboard,
   Package,
   Server,
@@ -31,6 +32,12 @@ export const NAV_ITEMS: readonly NavItem[] = [
     icon: Package,
   },
   { label: "Categories", href: "/categories", enabled: false, icon: Tags },
+  {
+    label: "Warehouses",
+    href: "/dashboard/warehouses",
+    enabled: true,
+    icon: Building2,
+  },
   { label: "Inventory", href: "/inventory", enabled: true, icon: Warehouse },
   { label: "Orders", href: "/orders", enabled: true, icon: ShoppingCart },
   { label: "Customers", href: "/customers", enabled: true, icon: Users },
