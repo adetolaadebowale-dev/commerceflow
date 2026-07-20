@@ -63,10 +63,10 @@ describe("Dashboard layout", () => {
     expect(
       screen.getByRole("link", { name: /Customers/i }),
     ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Reports/i })).toBeInTheDocument();
     expect(screen.queryByText("Inventory")).not.toBeInTheDocument();
     expect(screen.queryByText("Categories")).not.toBeInTheDocument();
     expect(screen.queryByText("Platform")).not.toBeInTheDocument();
-    expect(screen.queryByText("Reports")).not.toBeInTheDocument();
   });
 
   it("does not mark Dashboard active on nested product routes", () => {

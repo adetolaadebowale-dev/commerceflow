@@ -1,4 +1,5 @@
 import {
+  BarChart3,
   Building2,
   LayoutDashboard,
   Package,
@@ -17,7 +18,6 @@ export interface NavItem {
 /**
  * Admin primary navigation.
  * Only `enabled: true` items are shown in the sidebar.
- * Unfinished modules stay here disabled so they can be re-enabled later.
  */
 export const NAV_ITEMS: readonly NavItem[] = [
   {
@@ -50,8 +50,12 @@ export const NAV_ITEMS: readonly NavItem[] = [
     enabled: true,
     icon: Users,
   },
-  // Hidden until dedicated admin surfaces ship:
-  // Categories, Inventory (product-scoped today), Reports, Platform
+  {
+    label: "Reports",
+    href: "/dashboard/reports",
+    enabled: true,
+    icon: BarChart3,
+  },
 ];
 
 /** Visible nav items only — use this for sidebar rendering. */
