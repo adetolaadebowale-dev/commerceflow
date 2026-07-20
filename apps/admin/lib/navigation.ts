@@ -4,6 +4,7 @@ import {
   FolderTree,
   LayoutDashboard,
   Package,
+  Settings,
   ShoppingCart,
   Tags,
   Users,
@@ -69,6 +70,12 @@ export const NAV_ITEMS: readonly NavItem[] = [
     href: "/dashboard/reports",
     enabled: true,
     icon: BarChart3,
+  },
+  {
+    label: "Settings",
+    href: "/dashboard/settings",
+    enabled: true,
+    icon: Settings,
   },
 ];
 

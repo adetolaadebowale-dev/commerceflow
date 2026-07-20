@@ -68,6 +68,7 @@ describe("Dashboard layout", () => {
       screen.getByRole("link", { name: /Customers/i }),
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Reports/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Settings/i })).toBeInTheDocument();
     expect(screen.queryByText("Inventory")).not.toBeInTheDocument();
     expect(screen.queryByText("Platform")).not.toBeInTheDocument();
   });
