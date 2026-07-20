@@ -24,6 +24,7 @@ import { ProductEditForm } from "@/features/products/product-edit-form";
 import { useProduct } from "@/features/products/use-product";
 import { InventoryTable } from "@/features/inventory/inventory-table";
 import { useAdjustInventory } from "@/features/inventory/use-adjust-inventory";
+import { useCreateInventoryItem } from "@/features/inventory/use-create-inventory-item";
 import { useInventory } from "@/features/inventory/use-inventory";
 import { VariantList } from "@/features/products/variants/variant-list";
 import { useCreateVariant } from "@/features/products/variants/use-create-variant";
@@ -58,6 +59,7 @@ export function ProductDetail({ productId }: { readonly productId: string }) {
     variantsQuery.data?.items ?? [],
   );
   const adjustInventory = useAdjustInventory(storeId, productId);
+  const createInventory = useCreateInventoryItem(storeId, productId);
 
   function confirmLeave(): boolean {
     if (!isFormDirty) {
@@ -376,9 +378,11 @@ export function ProductDetail({ productId }: { readonly productId: string }) {
           ) : (
             <InventoryTable
               storeId={storeId}
+              variants={variantsQuery.data?.items ?? []}
               rows={inventory.rows}
               isLoading={inventory.isLoading || variantsQuery.isLoading}
               isSaving={adjustInventory.isPending}
+              isCreating={createInventory.isPending}
               onAdjust={async (input) => {
                 try {
                   await adjustInventory.mutateAsync(input);
@@ -388,6 +392,20 @@ export function ProductDetail({ productId }: { readonly productId: string }) {
                     error instanceof AdminApiError
                       ? error.message
                       : "Unable to adjust inventory",
+                    "error",
+                  );
+                  throw error;
+                }
+              }}
+              onCreate={async (input) => {
+                try {
+                  await createInventory.mutateAsync(input);
+                  toast("Inventory created");
+                } catch (error) {
+                  toast(
+                    error instanceof AdminApiError
+                      ? error.message
+                      : "Unable to create inventory",
                     "error",
                   );
                   throw error;

@@ -42,6 +42,7 @@ vi.mock("@/services/inventory.service", () => ({
     lowStockItems: [],
     outOfStockItems: [],
   }),
+  createInventoryItem: vi.fn(),
   createInventoryAdjustment: vi.fn(),
   listInventoryAdjustments: vi.fn().mockResolvedValue({
     items: [],
@@ -55,6 +56,16 @@ vi.mock("@/services/inventory.service", () => ({
     total: 0,
     page: 1,
     limit: 10,
+    totalPages: 0,
+  }),
+}));
+
+vi.mock("@/services/warehouses.service", () => ({
+  listWarehouses: vi.fn().mockResolvedValue({
+    items: [],
+    total: 0,
+    page: 1,
+    limit: 100,
     totalPages: 0,
   }),
 }));

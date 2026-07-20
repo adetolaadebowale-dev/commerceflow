@@ -1,3 +1,4 @@
+import type { CreateInventoryItemRequest } from "@commerceflow/api-client";
 import type {
   CreateInventoryAdjustmentInput,
   ListInventoryAdjustmentsQuery,
@@ -21,6 +22,19 @@ import {
 
 export interface StoreScopedParams {
   readonly storeId: string;
+}
+
+export async function createInventoryItem(
+  input: CreateInventoryItemRequest,
+): Promise<{
+  readonly inventoryItem: InventoryItem;
+  readonly stockMovement: StockMovement;
+}> {
+  try {
+    return await inventoryClient.createInventoryItem(input);
+  } catch (error) {
+    throw toAdminApiError(error);
+  }
 }
 
 export async function listInventoryItems(params: {
