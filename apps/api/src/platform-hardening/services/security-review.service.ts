@@ -5,6 +5,10 @@ import type {
 } from "@commerceflow/types";
 
 import {
+  isInsecureJwtSecretPlaceholder,
+} from "@/auth/config/auth-env";
+
+import {
   RateLimitService,
   rateLimitService,
 } from "./rate-limit.service";
@@ -33,8 +37,7 @@ export class SecurityReviewService {
 
   getSecurityDiagnostics(): SecurityDiagnostics {
     const checks: SecurityCheck[] = [
-      this.checkSecret("JWT_ACCESS_SECRET"),
-      this.checkSecret("JWT_REFRESH_SECRET"),
+      this.checkAuthJwtSecret(),
       this.checkDatabaseUrl(),
       this.checkProductionHttpsHint(),
       this.checkRateLimitsEnabled(),
@@ -47,7 +50,8 @@ export class SecurityReviewService {
     };
   }
 
-  private checkSecret(key: string): SecurityCheck {
+  private checkAuthJwtSecret(): SecurityCheck {
+    const key = "AUTH_JWT_SECRET";
     const value = this.env[key];
 
     if (!value || value.trim().length === 0) {
@@ -66,7 +70,23 @@ export class SecurityReviewService {
       };
     }
 
-    if (value.length < 16) {
+    if (isInsecureJwtSecretPlaceholder(value)) {
+      if (this.environment === "production") {
+        return {
+          name: key,
+          status: "fail",
+          message: `${key} uses an insecure placeholder value`,
+        };
+      }
+
+      return {
+        name: key,
+        status: "warn",
+        message: `${key} uses a documented placeholder; change before production`,
+      };
+    }
+
+    if (value.trim().length < 16) {
       return {
         name: key,
         status: "warn",

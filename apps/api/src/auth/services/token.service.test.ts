@@ -73,4 +73,26 @@ describe("TokenService", () => {
       tokenService.verifyRefreshToken("not-a-valid-token"),
     ).rejects.toThrow();
   });
+
+  it("fails to issue tokens when AUTH_JWT_SECRET is missing", async () => {
+    const previous = process.env.AUTH_JWT_SECRET;
+    delete process.env.AUTH_JWT_SECRET;
+
+    try {
+      await expect(
+        tokenService.issueTokenPair({
+          userId: "user-1",
+          sessionId: "session-1",
+          role: "customer",
+          refreshTokenId: "refresh-id-1",
+        }),
+      ).rejects.toThrow(/AUTH_JWT_SECRET is required/);
+    } finally {
+      if (previous === undefined) {
+        delete process.env.AUTH_JWT_SECRET;
+      } else {
+        process.env.AUTH_JWT_SECRET = previous;
+      }
+    }
+  });
 });

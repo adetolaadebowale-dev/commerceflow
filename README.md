@@ -90,9 +90,7 @@ pnpm install
 2. Set at least:
 
    - `DATABASE_URL`
-   - `AUTH_JWT_SECRET`
-   - `JWT_ACCESS_SECRET`
-   - `JWT_REFRESH_SECRET`
+   - `AUTH_JWT_SECRET` (required — API fails to start if missing)
 
 3. See [`.env.example`](.env.example) for the full variable list and [docs/deployment.md](docs/deployment.md) for production notes.
 

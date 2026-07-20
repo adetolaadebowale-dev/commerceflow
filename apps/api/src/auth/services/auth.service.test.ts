@@ -117,6 +117,30 @@ describe("AuthService", () => {
     expect(currentUser.user.email).toBe(email);
   });
 
+  it("revokes the session when a rotated refresh token is reused", async () => {
+    const { authService } = createMemoryAuthService();
+    const email = uniqueEmail();
+    const { tokens } = await authService.register(validRegisterInput(email));
+
+    const rotated = await authService.refreshToken({
+      refreshToken: tokens.refreshToken,
+    });
+
+    await expect(
+      authService.refreshToken({ refreshToken: tokens.refreshToken }),
+    ).rejects.toMatchObject({
+      code: AUTH_ERROR_CODES.INVALID_TOKEN,
+      status: 401,
+    });
+
+    await expect(
+      authService.getCurrentUser(rotated.tokens.accessToken),
+    ).rejects.toMatchObject({
+      code: AUTH_ERROR_CODES.SESSION_REVOKED,
+      status: 401,
+    });
+  });
+
   it("returns the current user", async () => {
     const { authService } = createMemoryAuthService();
     const email = uniqueEmail();

@@ -1,13 +1,21 @@
 import type { LoginResponse } from "@commerceflow/api-client";
 import { loginSchema } from "@commerceflow/validation";
 
+import { rateLimitService } from "@/platform-hardening/services/rate-limit.service";
+
 import { AUTH_ERROR_CODES, AuthError } from "../errors";
 import { authService } from "../services";
 import { handleAuthRouteError, jsonSuccess } from "./http-response";
-import { getRequestContext } from "./request-utils";
+import { getRateLimitIdentity, getRequestContext } from "./request-utils";
 
 export async function handleLogin(request: Request): Promise<Response> {
   try {
+    // Rate limit before credential validation / authentication.
+    rateLimitService.assertAllowed(
+      "auth.login",
+      getRateLimitIdentity(request),
+    );
+
     const body: unknown = await request.json();
     const parsed = loginSchema.safeParse(body);
 

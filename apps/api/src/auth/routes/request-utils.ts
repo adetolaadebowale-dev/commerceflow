@@ -10,6 +10,12 @@ export function getRequestContext(request: Request): RequestContext {
   };
 }
 
+/** Stable client identity for auth rate limiting (IP when available). */
+export function getRateLimitIdentity(request: Request): string {
+  const context = getRequestContext(request);
+  return context.ipAddress ?? "anonymous";
+}
+
 export function getBearerToken(request: Request): string | null {
   const authorization = request.headers.get("authorization");
 

@@ -15,8 +15,7 @@ describe("PlatformHardeningFacade", () => {
     expect(security.status).toBe("secure");
     expect(security.checks.map((check) => check.name)).toEqual(
       expect.arrayContaining([
-        "JWT_ACCESS_SECRET",
-        "JWT_REFRESH_SECRET",
+        "AUTH_JWT_SECRET",
         "DATABASE_URL",
         "rate_limits",
       ]),
@@ -34,7 +33,7 @@ describe("PlatformHardeningFacade", () => {
     expect(security.checks).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          name: "JWT_ACCESS_SECRET",
+          name: "AUTH_JWT_SECRET",
           status: "fail",
         }),
       ]),

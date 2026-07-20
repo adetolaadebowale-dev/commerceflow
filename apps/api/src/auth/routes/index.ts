@@ -5,6 +5,7 @@ export { handleRefresh } from "./refresh.route";
 export { handleRegister } from "./register.route";
 export {
   getBearerToken,
+  getRateLimitIdentity,
   getRequestContext,
 } from "./request-utils";
 export {

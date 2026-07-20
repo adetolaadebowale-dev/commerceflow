@@ -34,8 +34,7 @@ export function createMemoryPlatformOperationsModule(options: {
     env: options.env ?? {
       NODE_ENV: "test",
       DATABASE_URL: "postgresql://localhost:5432/commerceflow",
-      JWT_ACCESS_SECRET: "test-access",
-      JWT_REFRESH_SECRET: "test-refresh",
+      AUTH_JWT_SECRET: "test-auth-jwt-secret-value-32b",
     },
   });
 

@@ -29,9 +29,7 @@ Copy [`.env.example`](../.env.example) and supply production values.
 | `DATABASE_URL` | Yes | Prisma datasource |
 | `NODE_ENV` | Yes | Use `production` |
 | `PORT` | Recommended | Defaults depend on process manager / Next.js |
-| `AUTH_JWT_SECRET` | Yes | Signs access and refresh tokens |
-| `JWT_ACCESS_SECRET` | Yes (diagnostics) | Required by deployment/security readiness checks |
-| `JWT_REFRESH_SECRET` | Yes (diagnostics) | Required by deployment/security readiness checks |
+| `AUTH_JWT_SECRET` | Yes | Signs access and refresh tokens; API fails to start if missing/empty. Must not use documented placeholders in production. |
 | `APP_URL` / `PUBLIC_API_URL` | Recommended | HTTPS readiness checks for staging/production |
 | `LOG_LEVEL` | Optional | Prefer `info` or `warn` in production |
 | `BUILD_ID` | Optional | Surfaced in release metadata |
@@ -151,7 +149,7 @@ Ensure:
 |---------|--------------|--------|
 | Prisma P1001 / connection errors | Database unreachable or bad `DATABASE_URL` | Verify host, port, credentials, network, SSL mode |
 | Tokens invalid after deploy | `AUTH_JWT_SECRET` changed or missing | Restore prior secret or force re-login after intentional rotation |
-| Deployment readiness blocked | Missing `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET`, HTTP public URL, or Node version | Align env with `.env.example` and checklist |
+| Deployment readiness blocked | Missing `AUTH_JWT_SECRET`, HTTP public URL, or Node version | Align env with `.env.example` and checklist |
 | Schema drift concerns | Manual DB edits outside migrations | Compare schema with migrations; restore from backup if needed |
 | Build fails on generate | Prisma client out of date | Run `pnpm --filter api db:generate` then rebuild |
 

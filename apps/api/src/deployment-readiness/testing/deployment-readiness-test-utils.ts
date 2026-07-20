@@ -18,8 +18,7 @@ export function createMemoryDeploymentReadinessModule(options: {
   const env: NodeJS.ProcessEnv = options.env ?? {
     NODE_ENV: "production",
     DATABASE_URL: "postgresql://localhost:5432/commerceflow",
-    JWT_ACCESS_SECRET: "test-access-secret-value",
-    JWT_REFRESH_SECRET: "test-refresh-secret-value",
+    AUTH_JWT_SECRET: "test-auth-jwt-secret-value-32b",
     PUBLIC_API_URL: "https://api.example.com",
   };
   const environmentDiagnosticsService = new EnvironmentDiagnosticsService({

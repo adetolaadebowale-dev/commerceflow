@@ -60,8 +60,7 @@ export class DiagnosticsService {
   validateConfiguration(): ConfigurationValidationSummary {
     const items = [
       this.validateEnv("DATABASE_URL"),
-      this.validateEnv("JWT_ACCESS_SECRET", { optionalInTest: true }),
-      this.validateEnv("JWT_REFRESH_SECRET", { optionalInTest: true }),
+      this.validateEnv("AUTH_JWT_SECRET", { optionalInTest: true }),
     ];
 
     return {

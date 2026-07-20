@@ -61,8 +61,7 @@ export class EnvironmentDiagnosticsService {
   ): EnvironmentCheck[] {
     return [
       this.checkEnv("DATABASE_URL", true),
-      this.checkEnv("JWT_ACCESS_SECRET", this.environment !== "test"),
-      this.checkEnv("JWT_REFRESH_SECRET", this.environment !== "test"),
+      this.checkEnv("AUTH_JWT_SECRET", this.environment !== "test"),
       this.checkHttps(configuration),
       this.checkNodeVersion(configuration.minimumNodeVersion),
     ];

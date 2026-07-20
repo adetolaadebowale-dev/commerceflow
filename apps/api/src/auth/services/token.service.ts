@@ -1,5 +1,7 @@
-import type { AuthTokens, UserRole } from "@commerceflow/types";
 import { SignJWT, jwtVerify } from "jose";
+import type { AuthTokens, UserRole } from "@commerceflow/types";
+
+import { resolveAuthJwtSecret } from "../config/auth-env";
 
 const ACCESS_TOKEN_TTL_SECONDS = 15 * 60;
 const REFRESH_TOKEN_TTL_SECONDS = 7 * 24 * 60 * 60;
@@ -19,11 +21,7 @@ export interface RefreshTokenPayload {
 }
 
 function getJwtSecret(): Uint8Array {
-  const secret =
-    process.env.AUTH_JWT_SECRET ??
-    "commerceflow-dev-secret-change-in-production";
-
-  return new TextEncoder().encode(secret);
+  return new TextEncoder().encode(resolveAuthJwtSecret());
 }
 
 function toIsoExpiry(ttlSeconds: number): string {

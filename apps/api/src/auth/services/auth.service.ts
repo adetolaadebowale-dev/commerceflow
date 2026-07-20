@@ -183,6 +183,8 @@ export class AuthService {
     assertActiveSession(session);
 
     if (session.refreshTokenId !== payload.jti) {
+      // Refresh-token reuse detection: revoke the session family.
+      await this.sessionRepository.revoke(session.id);
       throw new AuthError(
         AUTH_ERROR_CODES.INVALID_TOKEN,
         "Invalid refresh token",
