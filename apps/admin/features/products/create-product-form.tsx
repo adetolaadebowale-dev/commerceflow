@@ -99,15 +99,17 @@ export function CreateProductForm() {
 
   const mutation = useMutation({
     mutationFn: createProduct,
-    onSuccess: async () => {
+    onSuccess: async (product) => {
       allowNavigation.current = true;
       if (storeId) {
         await queryClient.invalidateQueries({ queryKey: ["products", storeId] });
       } else {
         await queryClient.invalidateQueries({ queryKey: ["products"] });
       }
-      toast("Product created successfully");
-      router.push("/dashboard/products");
+      toast(
+        "Product created successfully. Continue by uploading images or editing product details.",
+      );
+      router.push(`/dashboard/products/${product.id}`);
     },
   });
 

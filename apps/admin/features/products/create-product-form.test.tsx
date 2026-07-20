@@ -70,7 +70,7 @@ describe("CreateProductForm", () => {
     vi.clearAllMocks();
   });
 
-  it("submits a product and navigates to the list", async () => {
+  it("submits a product and navigates to the product detail page", async () => {
     useAuthMock.mockReturnValue({
       user: null,
       isAuthenticated: true,
@@ -162,7 +162,9 @@ describe("CreateProductForm", () => {
         ],
       }),
     );
-    expect(toastMock).toHaveBeenCalledWith("Product created successfully");
-    expect(pushMock).toHaveBeenCalledWith("/dashboard/products");
+    expect(toastMock).toHaveBeenCalledWith(
+      "Product created successfully. Continue by uploading images or editing product details.",
+    );
+    expect(pushMock).toHaveBeenCalledWith("/dashboard/products/product-new");
   });
 });
