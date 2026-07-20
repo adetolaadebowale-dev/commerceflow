@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
-import { hashPassword } from "../src/auth/services/password.service";
+import { hashPassword } from "../src/auth/services/password.service.ts";
 
 const prisma = new PrismaClient();
 
@@ -39,23 +39,35 @@ const ADMIN_EMAIL = seedUsers[0]!.email;
 
 async function seedIdentityUsers(passwordHash: string): Promise<void> {
   for (const user of seedUsers) {
-    await prisma.user.upsert({
+    // Email uniqueness is a partial index (active rows only); Prisma Client
+    // cannot upsert on it — use findFirst + create/update instead.
+    const existing = await prisma.user.findFirst({
       where: { email: user.email },
-      update: {
+    });
+
+    if (!existing) {
+      await prisma.user.create({
+        data: {
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role,
+          emailVerified: true,
+          passwordHash,
+        },
+      });
+      continue;
+    }
+
+    await prisma.user.update({
+      where: { id: existing.id },
+      data: {
         firstName: user.firstName,
         lastName: user.lastName,
         role: user.role,
         passwordHash,
         emailVerified: true,
         deletedAt: null,
-      },
-      create: {
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-        emailVerified: true,
-        passwordHash,
       },
     });
   }
@@ -116,20 +128,19 @@ async function seedDevelopmentTenant(): Promise<{
     });
   }
 
-  const adminUser = await prisma.user.findUnique({
-    where: { email: ADMIN_EMAIL },
+  const adminUser = await prisma.user.findFirst({
+    where: { email: ADMIN_EMAIL, deletedAt: null },
   });
 
   if (!adminUser) {
     throw new Error(`Expected seeded admin user ${ADMIN_EMAIL} to exist`);
   }
 
-  const existingMembership = await prisma.storeMember.findUnique({
+  // storeId+userId uniqueness is a partial index (active memberships only).
+  const existingMembership = await prisma.storeMember.findFirst({
     where: {
-      storeId_userId: {
-        storeId: SEED_STORE_ID,
-        userId: adminUser.id,
-      },
+      storeId: SEED_STORE_ID,
+      userId: adminUser.id,
     },
   });
 

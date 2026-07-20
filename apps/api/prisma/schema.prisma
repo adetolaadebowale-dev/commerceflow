@@ -1,6 +1,12 @@
 // CommerceFlow production schema — Identity and Organization domains.
 // User/Session fields align with @commerceflow/types contracts.
-// Organization models are persistence-only until shared contracts are introduced.
+//
+// Soft-delete uniqueness (Sprint 15.2):
+// Models with deletedAt that need reusable business keys use PostgreSQL
+// PARTIAL unique indexes (WHERE deleted_at IS NULL) defined in migrations.
+// Prisma 6 cannot express partial unique indexes in PSL — do not re-add
+// matching @@unique/@unique attributes or `prisma migrate` / `db push` may
+// recreate hard uniques that block soft-delete key reuse.
 
 generator client {
   provider = "prisma-client-js"
@@ -291,9 +297,10 @@ enum ShippingMethodStatus {
 }
 
 /// Persists User contract fields plus passwordHash (API-internal).
+/// Active-email uniqueness: users_email_active_key (partial, deleted_at IS NULL).
 model User {
   id              String        @id @default(uuid()) @db.Uuid
-  email           String        @unique
+  email           String
   emailVerified   Boolean       @default(false) @map("email_verified")
   firstName       String        @map("first_name")
   lastName        String        @map("last_name")
@@ -335,10 +342,11 @@ model Session {
 }
 
 /// Tenant boundary for multi-store commerce operations.
+/// Active-slug uniqueness: organizations_slug_active_key (partial, deleted_at IS NULL).
 model Organization {
   id        String    @id @default(uuid()) @db.Uuid
   name      String
-  slug      String    @unique
+  slug      String
   settings  Json      @default("{}")
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
@@ -409,13 +417,14 @@ model Store {
   webhookEndpoints             WebhookEndpoint[]
   featureFlags                 FeatureFlag[]
 
-  @@unique([organizationId, slug])
+  /// Active uniqueness: stores_organization_id_slug_active_key (partial, deleted_at IS NULL).
   @@index([organizationId])
   @@index([deletedAt])
   @@map("stores")
 }
 
 /// Links a user to a store with a store-scoped role.
+/// Active uniqueness: store_members_store_id_user_id_active_key (partial, deleted_at IS NULL).
 model StoreMember {
   id        String     @id @default(uuid()) @db.Uuid
   storeId   String     @map("store_id") @db.Uuid
@@ -427,13 +436,13 @@ model StoreMember {
   updatedAt DateTime   @updatedAt @map("updated_at")
   deletedAt DateTime?  @map("deleted_at")
 
-  @@unique([storeId, userId])
   @@index([userId])
   @@index([deletedAt])
   @@map("store_members")
 }
 
 /// Product brand used for catalog merchandising.
+/// Active uniqueness: brands_store_id_slug_active_key (partial, deleted_at IS NULL).
 model Brand {
   id          String    @id @default(uuid()) @db.Uuid
   storeId     String    @map("store_id") @db.Uuid
@@ -453,6 +462,7 @@ model Brand {
 }
 
 /// Product category within the catalog hierarchy.
+/// Active uniqueness: categories_store_id_slug_active_key (partial, deleted_at IS NULL).
 model Category {
   id          String     @id @default(uuid()) @db.Uuid
   storeId     String     @map("store_id") @db.Uuid
@@ -468,7 +478,6 @@ model Category {
   deletedAt   DateTime?  @map("deleted_at")
   products    Product[]
 
-  @@unique([storeId, slug])
   @@index([storeId])
   @@index([parentId])
   @@index([storeId, parentId])
@@ -496,7 +505,7 @@ model Product {
   variants    ProductVariant[]
   media       ProductMedia[]
 
-  @@unique([storeId, slug])
+  /// Active uniqueness: products_store_id_slug_active_key (partial, deleted_at IS NULL).
   @@index([storeId])
   @@index([categoryId])
   @@index([brandId])
@@ -555,7 +564,7 @@ model ProductVariant {
   replenishmentRules ReplenishmentRule[]
   replenishmentRecommendations ReplenishmentRecommendation[]
 
-  @@unique([storeId, sku])
+  /// Active uniqueness: product_variants_store_id_sku_active_key (partial, deleted_at IS NULL).
   @@index([storeId])
   @@index([productId])
   @@index([deletedAt])
@@ -592,7 +601,7 @@ model Warehouse {
   replenishmentRules       ReplenishmentRule[]
   replenishmentRecommendations ReplenishmentRecommendation[]
 
-  @@unique([storeId, code])
+  /// Active uniqueness: warehouses_store_id_code_active_key (partial, deleted_at IS NULL).
   @@index([storeId])
   @@index([status])
   @@index([storeId, status])
@@ -623,7 +632,7 @@ model InventoryItem {
   cycleCountItems         CycleCountItem[]
   warehouseTransferItems  WarehouseTransferItem[]
 
-  @@unique([storeId, warehouseId, productVariantId])
+  /// Active uniqueness: inventory_items_store_warehouse_variant_active_key (partial, deleted_at IS NULL).
   @@index([storeId])
   @@index([warehouseId])
   @@index([storeId, warehouseId])
@@ -862,6 +871,8 @@ model Refund {
 }
 
 /// Merchant-managed discount promotion.
+/// Active uniqueness among active promotions: promotions_store_id_code_active_key
+/// (partial: status = 'active' AND deleted_at IS NULL).
 model Promotion {
   id          String           @id @default(uuid()) @db.Uuid
   storeId     String           @map("store_id") @db.Uuid
@@ -890,6 +901,8 @@ model Promotion {
 }
 
 /// Store-scoped tax rate configuration.
+/// At most one active tax rate per store: tax_rates_store_id_active_key
+/// (partial: status = 'active' AND deleted_at IS NULL).
 model TaxRate {
   id          String        @id @default(uuid()) @db.Uuid
   storeId     String        @map("store_id") @db.Uuid
@@ -936,6 +949,7 @@ model AuditLog {
 }
 
 /// Store-scoped customer profile independent of platform User identity.
+/// Active uniqueness: customers_store_id_email_active_key (partial, deleted_at IS NULL).
 model Customer {
   id        String         @id @default(uuid()) @db.Uuid
   storeId   String         @map("store_id") @db.Uuid
@@ -1456,7 +1470,7 @@ model Supplier {
   replenishmentRules ReplenishmentRule[]
   replenishmentRecommendations ReplenishmentRecommendation[]
 
-  @@unique([storeId, code])
+  /// Active uniqueness: suppliers_store_id_code_active_key (partial, deleted_at IS NULL).
   @@index([storeId])
   @@index([status])
   @@index([storeId, status])

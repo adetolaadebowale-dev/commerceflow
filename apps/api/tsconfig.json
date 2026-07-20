@@ -5,5 +5,10 @@
     "paths": { "@/*": ["./src/*"] }
   },
   "include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx", "prisma/**/*.ts", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    // Seed runs under Node ESM (`--experimental-strip-types`) and must use a
+    // `.ts` import extension that `tsc` rejects without allowImportingTsExtensions.
+    "prisma/seed.ts"
+  ]
 }
