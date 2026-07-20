@@ -32,6 +32,11 @@ import { useCustomer } from "@/features/customers/use-customer";
 import { useUpdateCustomer } from "@/features/customers/use-update-customer";
 import { OrderStatusBadge } from "@/features/orders/order-status-badge";
 import { formatCurrency, formatDateTime, formatNumber } from "@/lib/format";
+import {
+  storeNotConfiguredMessage,
+  unableToLoadMessage,
+  unableToLoadTitle,
+} from "@/lib/ui-messages";
 import { useAuth } from "@/providers/auth-provider";
 import { useToast } from "@/providers/toast-provider";
 import { formatCustomerFullName } from "@/services/customers.service";
@@ -154,13 +159,13 @@ function RecentOrdersCard({
       <CardContent>
         {isError ? (
           <ErrorState
-            title="Unable to load recent orders"
-            message="Order history could not be loaded for this customer."
+            title={unableToLoadTitle("recent orders")}
+            message={unableToLoadMessage("order history for this customer")}
           />
         ) : orders.length === 0 ? (
           <EmptyState
             title="No recent orders"
-            description="Orders linked to this customer will appear here."
+            description="Orders linked to this customer will appear here once they check out."
           />
         ) : (
           <Table>
@@ -218,7 +223,7 @@ export function CustomerDetail({
     return (
       <ErrorState
         title="Store not configured"
-        message="Set NEXT_PUBLIC_DEFAULT_STORE_ID to a valid store UUID to load this customer."
+        message={storeNotConfiguredMessage("this customer")}
       />
     );
   }
@@ -237,18 +242,28 @@ export function CustomerDetail({
     const message =
       detail.error instanceof AdminApiError
         ? detail.error.message
-        : "Unable to load customer.";
+        : unableToLoadMessage("customer");
     return (
       <div className="mx-auto flex max-w-7xl flex-col gap-4">
-        <ErrorState title="Unable to load customer" message={message} />
-        <div className="flex gap-2">
-          <Button type="button" variant="outline" onClick={() => detail.refetch()}>
-            Retry
-          </Button>
-          <Button type="button" variant="outline" asChild>
-            <Link href="/dashboard/customers">Back to customers</Link>
-          </Button>
-        </div>
+        <ErrorState
+          title={unableToLoadTitle("customer")}
+          message={message}
+          action={
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => detail.refetch()}
+              >
+                Retry
+              </Button>
+              <Button type="button" variant="outline" size="sm" asChild>
+                <Link href="/dashboard/customers">Back to customers</Link>
+              </Button>
+            </div>
+          }
+        />
       </div>
     );
   }

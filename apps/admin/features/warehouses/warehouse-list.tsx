@@ -30,6 +30,12 @@ import { WarehouseListToolbar } from "@/features/warehouses/warehouse-list-toolb
 import { WarehouseTable } from "@/features/warehouses/warehouse-table";
 import { WarehouseTableSkeleton } from "@/features/warehouses/warehouse-table-skeleton";
 import { formatNumber } from "@/lib/format";
+import {
+  LIST_REFETCH_CLASS,
+  storeNotConfiguredMessage,
+  unableToLoadMessage,
+  unableToLoadTitle,
+} from "@/lib/ui-messages";
 import { useAuth } from "@/providers/auth-provider";
 import { useToast } from "@/providers/toast-provider";
 import { AdminApiError } from "@/types/api";
@@ -51,11 +57,16 @@ export function WarehouseList() {
     updateMutation.isPending ||
     deleteMutation.isPending;
 
+  function openCreate() {
+    setEditing(null);
+    setDialogMode("create");
+  }
+
   if (!storeId) {
     return (
       <ErrorState
         title="Store not configured"
-        message="Set NEXT_PUBLIC_DEFAULT_STORE_ID to a valid store UUID to load warehouses."
+        message={storeNotConfiguredMessage("warehouses")}
       />
     );
   }
@@ -63,7 +74,10 @@ export function WarehouseList() {
   const errorMessage =
     list.error instanceof AdminApiError
       ? list.error.message
-      : "Unable to load warehouses.";
+      : unableToLoadMessage("warehouses");
+
+  const hasFilters =
+    list.filters.search.trim().length > 0 || list.filters.status !== "all";
 
   async function handleSubmit(values: WarehouseFormValues) {
     try {
@@ -118,13 +132,7 @@ export function WarehouseList() {
               : `${formatNumber(list.total)} warehouse${list.total === 1 ? "" : "s"}`}
           </p>
         </div>
-        <Button
-          type="button"
-          onClick={() => {
-            setEditing(null);
-            setDialogMode("create");
-          }}
-        >
+        <Button type="button" onClick={openCreate}>
           Add Warehouse
         </Button>
       </div>
@@ -142,30 +150,40 @@ export function WarehouseList() {
           {list.isLoading ? (
             <WarehouseTableSkeleton />
           ) : list.isError ? (
-            <div className="space-y-3">
-              <ErrorState
-                title="Unable to load warehouses"
-                message={errorMessage}
-              />
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => list.refetch()}
-              >
-                Retry
-              </Button>
-            </div>
+            <ErrorState
+              title={unableToLoadTitle("warehouses")}
+              message={errorMessage}
+              action={
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => list.refetch()}
+                >
+                  Retry
+                </Button>
+              }
+            />
           ) : list.items.length === 0 ? (
             <EmptyState
               title="No warehouses found"
-              description="Create a warehouse before initializing inventory."
+              description={
+                hasFilters
+                  ? "No warehouses match your search or filters. Try adjusting them, or add a warehouse."
+                  : "Create a warehouse before initializing inventory on products."
+              }
+              action={
+                <Button type="button" onClick={openCreate}>
+                  Add Warehouse
+                </Button>
+              }
             />
           ) : (
             <>
               <div
                 className={
                   list.isFetching && !list.isLoading
-                    ? "opacity-70 transition-opacity"
+                    ? LIST_REFETCH_CLASS
                     : undefined
                 }
               >

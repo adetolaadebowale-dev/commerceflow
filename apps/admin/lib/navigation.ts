@@ -1,13 +1,9 @@
 import {
-  BarChart3,
   Building2,
   LayoutDashboard,
   Package,
-  Server,
   ShoppingCart,
-  Tags,
   Users,
-  Warehouse,
   type LucideIcon,
 } from "lucide-react";
 
@@ -18,6 +14,11 @@ export interface NavItem {
   readonly icon: LucideIcon;
 }
 
+/**
+ * Admin primary navigation.
+ * Only `enabled: true` items are shown in the sidebar.
+ * Unfinished modules stay here disabled so they can be re-enabled later.
+ */
 export const NAV_ITEMS: readonly NavItem[] = [
   {
     label: "Dashboard",
@@ -31,14 +32,12 @@ export const NAV_ITEMS: readonly NavItem[] = [
     enabled: true,
     icon: Package,
   },
-  { label: "Categories", href: "/categories", enabled: false, icon: Tags },
   {
     label: "Warehouses",
     href: "/dashboard/warehouses",
     enabled: true,
     icon: Building2,
   },
-  { label: "Inventory", href: "/inventory", enabled: true, icon: Warehouse },
   {
     label: "Orders",
     href: "/dashboard/orders",
@@ -51,6 +50,9 @@ export const NAV_ITEMS: readonly NavItem[] = [
     enabled: true,
     icon: Users,
   },
-  { label: "Reports", href: "/reports", enabled: false, icon: BarChart3 },
-  { label: "Platform", href: "/platform", enabled: false, icon: Server },
+  // Hidden until dedicated admin surfaces ship:
+  // Categories, Inventory (product-scoped today), Reports, Platform
 ];
+
+/** Visible nav items only — use this for sidebar rendering. */
+export const VISIBLE_NAV_ITEMS = NAV_ITEMS.filter((item) => item.enabled);

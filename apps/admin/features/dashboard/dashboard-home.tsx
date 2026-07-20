@@ -16,6 +16,11 @@ import {
   fetchDashboardRecentActivity,
   fetchDashboardRecentOrders,
 } from "@/services/dashboard.service";
+import {
+  storeNotConfiguredMessage,
+  unableToLoadMessage,
+  unableToLoadTitle,
+} from "@/lib/ui-messages";
 import { AdminApiError } from "@/types/api";
 
 function widgetErrorMessage(error: unknown, fallback: string): string {
@@ -81,7 +86,7 @@ export function DashboardHome() {
     return (
       <ErrorState
         title="Store not configured"
-        message="Set NEXT_PUBLIC_DEFAULT_STORE_ID to a valid store UUID to load dashboard data."
+        message={storeNotConfiguredMessage("dashboard data")}
       />
     );
   }
@@ -103,10 +108,10 @@ export function DashboardHome() {
         </div>
       ) : kpisQuery.isError ? (
         <ErrorState
-          title="Unable to load KPIs"
+          title={unableToLoadTitle("KPIs")}
           message={widgetErrorMessage(
             kpisQuery.error,
-            "Unable to load dashboard KPIs.",
+            unableToLoadMessage("dashboard KPIs"),
           )}
         />
       ) : (
@@ -123,7 +128,7 @@ export function DashboardHome() {
             ordersQuery.isError
               ? widgetErrorMessage(
                   ordersQuery.error,
-                  "Unable to load recent orders.",
+                  unableToLoadMessage("recent orders"),
                 )
               : null
           }
@@ -135,7 +140,7 @@ export function DashboardHome() {
             lowStockQuery.isError
               ? widgetErrorMessage(
                   lowStockQuery.error,
-                  "Unable to load low stock items.",
+                  unableToLoadMessage("low stock items"),
                 )
               : null
           }
@@ -149,7 +154,7 @@ export function DashboardHome() {
           activityQuery.isError
             ? widgetErrorMessage(
                 activityQuery.error,
-                "Unable to load recent activity.",
+                unableToLoadMessage("recent activity"),
               )
             : null
         }

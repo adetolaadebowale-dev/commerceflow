@@ -23,6 +23,12 @@ import { useCreateCustomer } from "@/features/customers/use-create-customer";
 import { useCustomers } from "@/features/customers/use-customers";
 import { useUpdateCustomer } from "@/features/customers/use-update-customer";
 import { formatNumber } from "@/lib/format";
+import {
+  LIST_REFETCH_CLASS,
+  storeNotConfiguredMessage,
+  unableToLoadMessage,
+  unableToLoadTitle,
+} from "@/lib/ui-messages";
 import { useAuth } from "@/providers/auth-provider";
 import { useToast } from "@/providers/toast-provider";
 import { AdminApiError } from "@/types/api";
@@ -39,11 +45,16 @@ export function CustomerList() {
 
   const isSaving = createMutation.isPending || updateMutation.isPending;
 
+  function openCreate() {
+    setEditing(null);
+    setDialogMode("create");
+  }
+
   if (!storeId) {
     return (
       <ErrorState
         title="Store not configured"
-        message="Set NEXT_PUBLIC_DEFAULT_STORE_ID to a valid store UUID to load customers."
+        message={storeNotConfiguredMessage("customers")}
       />
     );
   }
@@ -51,7 +62,10 @@ export function CustomerList() {
   const errorMessage =
     list.error instanceof AdminApiError
       ? list.error.message
-      : "Unable to load customers.";
+      : unableToLoadMessage("customers");
+
+  const hasFilters =
+    list.filters.search.trim().length > 0 || list.filters.status !== "all";
 
   async function handleSubmit(values: CustomerFormValues) {
     const payload = toCreatePayload(values);
@@ -89,13 +103,7 @@ export function CustomerList() {
               : `${formatNumber(list.total)} customer${list.total === 1 ? "" : "s"}`}
           </p>
         </div>
-        <Button
-          type="button"
-          onClick={() => {
-            setEditing(null);
-            setDialogMode("create");
-          }}
-        >
+        <Button type="button" onClick={openCreate}>
           Add Customer
         </Button>
       </div>
@@ -113,30 +121,40 @@ export function CustomerList() {
           {list.isLoading ? (
             <CustomerTableSkeleton />
           ) : list.isError ? (
-            <div className="space-y-3">
-              <ErrorState
-                title="Unable to load customers"
-                message={errorMessage}
-              />
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => list.refetch()}
-              >
-                Retry
-              </Button>
-            </div>
+            <ErrorState
+              title={unableToLoadTitle("customers")}
+              message={errorMessage}
+              action={
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => list.refetch()}
+                >
+                  Retry
+                </Button>
+              }
+            />
           ) : list.items.length === 0 ? (
             <EmptyState
               title="No customers found"
-              description="Create a customer or adjust search filters."
+              description={
+                hasFilters
+                  ? "No customers match your search or filters. Try adjusting them, or add a new customer."
+                  : "Create a customer profile to start associating orders and contact details."
+              }
+              action={
+                <Button type="button" onClick={openCreate}>
+                  Add Customer
+                </Button>
+              }
             />
           ) : (
             <>
               <div
                 className={
                   list.isFetching && !list.isLoading
-                    ? "opacity-70 transition-opacity"
+                    ? LIST_REFETCH_CLASS
                     : undefined
                 }
               >

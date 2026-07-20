@@ -17,6 +17,12 @@ import { ProductTable } from "@/features/products/product-table";
 import { ProductTableSkeleton } from "@/features/products/product-table-skeleton";
 import { useProductList } from "@/features/products/use-product-list";
 import { formatNumber } from "@/lib/format";
+import {
+  LIST_REFETCH_CLASS,
+  storeNotConfiguredMessage,
+  unableToLoadMessage,
+  unableToLoadTitle,
+} from "@/lib/ui-messages";
 import { useAuth } from "@/providers/auth-provider";
 import { AdminApiError } from "@/types/api";
 
@@ -28,7 +34,7 @@ export function ProductList() {
     return (
       <ErrorState
         title="Store not configured"
-        message="Set NEXT_PUBLIC_DEFAULT_STORE_ID to a valid store UUID to load products."
+        message={storeNotConfiguredMessage("products")}
       />
     );
   }
@@ -36,7 +42,7 @@ export function ProductList() {
   const errorMessage =
     list.error instanceof AdminApiError
       ? list.error.message
-      : "Unable to load products.";
+      : unableToLoadMessage("products");
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6">
@@ -45,7 +51,7 @@ export function ProductList() {
           <h1 className="text-2xl font-semibold tracking-tight">Products</h1>
           <p className="mt-1 text-sm text-[var(--color-muted-foreground)]">
             {list.isLoading
-              ? "Loading catalogue…"
+              ? "Loading products…"
               : `${formatNumber(list.total)} product${list.total === 1 ? "" : "s"}`}
           </p>
         </div>
@@ -71,23 +77,36 @@ export function ProductList() {
           {list.isLoading ? (
             <ProductTableSkeleton />
           ) : list.isError ? (
-            <div className="space-y-3">
-              <ErrorState title="Unable to load products" message={errorMessage} />
-              <Button type="button" variant="outline" onClick={() => list.refetch()}>
-                Retry
-              </Button>
-            </div>
+            <ErrorState
+              title={unableToLoadTitle("products")}
+              message={errorMessage}
+              action={
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => list.refetch()}
+                >
+                  Retry
+                </Button>
+              }
+            />
           ) : list.rows.length === 0 ? (
             <EmptyState
               title="No products found"
-              description="Try adjusting search or filters, or add a new product."
+              description="Try adjusting search or filters, or add a new product to get started."
+              action={
+                <Button asChild>
+                  <Link href="/dashboard/products/new">Add Product</Link>
+                </Button>
+              }
             />
           ) : (
             <>
               <div
                 className={
                   list.isFetching && !list.isLoading
-                    ? "opacity-70 transition-opacity"
+                    ? LIST_REFETCH_CLASS
                     : undefined
                 }
               >

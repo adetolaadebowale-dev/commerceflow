@@ -126,10 +126,12 @@ describe("InventoryTable", () => {
     );
 
     expect(
-      screen.getByText("No inventory exists for this variant."),
+      screen.getByText("No inventory yet"),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Create inventory to begin tracking stock."),
+      screen.getByText(
+        "Create inventory for a variant and warehouse to begin tracking stock.",
+      ),
     ).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Create Inventory" }));

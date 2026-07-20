@@ -49,7 +49,7 @@ describe("Dashboard layout", () => {
     pathnameMock.mockReturnValue("/dashboard");
   });
 
-  it("renders navigation with dashboard and commerce areas enabled", () => {
+  it("renders only finished navigation destinations", () => {
     render(<Sidebar open />);
 
     expect(
@@ -60,10 +60,13 @@ describe("Dashboard layout", () => {
       screen.getByRole("link", { name: /Warehouses/i }),
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Orders/i })).toBeInTheDocument();
-    expect(screen.getByText("Platform")).toHaveAttribute(
-      "aria-disabled",
-      "true",
-    );
+    expect(
+      screen.getByRole("link", { name: /Customers/i }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("Inventory")).not.toBeInTheDocument();
+    expect(screen.queryByText("Categories")).not.toBeInTheDocument();
+    expect(screen.queryByText("Platform")).not.toBeInTheDocument();
+    expect(screen.queryByText("Reports")).not.toBeInTheDocument();
   });
 
   it("does not mark Dashboard active on nested product routes", () => {

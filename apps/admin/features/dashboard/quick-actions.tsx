@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Package, ShoppingCart, Users, Warehouse } from "lucide-react";
+import { Building2, Package, ShoppingCart, Users } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,9 +17,9 @@ const QUICK_ACTIONS = [
     icon: Package,
   },
   {
-    label: "Create Order",
+    label: "View Orders",
     href: "/dashboard/orders",
-    description: "Start a new customer order",
+    description: "Review and manage orders",
     icon: ShoppingCart,
   },
   {
@@ -29,10 +29,10 @@ const QUICK_ACTIONS = [
     icon: Users,
   },
   {
-    label: "View Inventory",
-    href: "/inventory",
-    description: "Review stock levels",
-    icon: Warehouse,
+    label: "Warehouses",
+    href: "/dashboard/warehouses",
+    description: "Manage fulfillment locations",
+    icon: Building2,
   },
 ] as const;
 
@@ -56,7 +56,7 @@ export function QuickActions() {
                 <Link href={action.href}>
                   <span className="flex flex-col items-start gap-1 text-left">
                     <span className="flex items-center gap-2 font-medium">
-                      <Icon className="h-4 w-4" />
+                      <Icon className="h-4 w-4" aria-hidden="true" />
                       {action.label}
                     </span>
                     <span className="text-xs font-normal text-[var(--color-muted-foreground)]">

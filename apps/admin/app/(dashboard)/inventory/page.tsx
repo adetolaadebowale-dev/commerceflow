@@ -1,5 +1,9 @@
-import { ComingSoonPage } from "@/features/common/coming-soon-page";
+import { redirect } from "next/navigation";
 
+/**
+ * Standalone inventory admin is not ready. Inventory is managed on product detail.
+ * Keep this route so old bookmarks do not 404.
+ */
 export default function InventoryPage() {
-  return <ComingSoonPage title="Inventory" />;
+  redirect("/dashboard/products");
 }

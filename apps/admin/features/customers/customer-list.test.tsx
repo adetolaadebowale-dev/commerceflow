@@ -178,7 +178,7 @@ describe("CustomerList", () => {
     renderList();
 
     await screen.findByText("No customers found");
-    await user.click(screen.getByRole("button", { name: "Add Customer" }));
+    await user.click(screen.getAllByRole("button", { name: "Add Customer" })[0]!);
 
     await user.type(screen.getByLabelText("First name"), "Alex");
     await user.type(screen.getByLabelText("Last name"), "Rivera");

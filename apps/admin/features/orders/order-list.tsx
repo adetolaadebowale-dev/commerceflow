@@ -15,6 +15,12 @@ import { OrderTable } from "@/features/orders/order-table";
 import { OrderTableSkeleton } from "@/features/orders/order-table-skeleton";
 import { useOrders } from "@/features/orders/use-orders";
 import { formatNumber } from "@/lib/format";
+import {
+  LIST_REFETCH_CLASS,
+  storeNotConfiguredMessage,
+  unableToLoadMessage,
+  unableToLoadTitle,
+} from "@/lib/ui-messages";
 import { useAuth } from "@/providers/auth-provider";
 import { AdminApiError } from "@/types/api";
 
@@ -26,7 +32,7 @@ export function OrderList() {
     return (
       <ErrorState
         title="Store not configured"
-        message="Set NEXT_PUBLIC_DEFAULT_STORE_ID to a valid store UUID to load orders."
+        message={storeNotConfiguredMessage("orders")}
       />
     );
   }
@@ -34,7 +40,9 @@ export function OrderList() {
   const errorMessage =
     list.error instanceof AdminApiError
       ? list.error.message
-      : "Unable to load orders.";
+      : unableToLoadMessage("orders");
+
+  const hasFilters = list.filters.status !== "all";
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-6">
@@ -59,23 +67,35 @@ export function OrderList() {
           {list.isLoading ? (
             <OrderTableSkeleton />
           ) : list.isError ? (
-            <div className="space-y-3">
-              <ErrorState title="Unable to load orders" message={errorMessage} />
-              <Button type="button" variant="outline" onClick={() => list.refetch()}>
-                Retry
-              </Button>
-            </div>
+            <ErrorState
+              title={unableToLoadTitle("orders")}
+              message={errorMessage}
+              action={
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => list.refetch()}
+                >
+                  Retry
+                </Button>
+              }
+            />
           ) : list.rows.length === 0 ? (
             <EmptyState
               title="No orders found"
-              description="Orders will appear here once customers check out."
+              description={
+                hasFilters
+                  ? "No orders match the selected status. Try clearing the filter."
+                  : "Orders will appear here once customers check out."
+              }
             />
           ) : (
             <>
               <div
                 className={
                   list.isFetching && !list.isLoading
-                    ? "opacity-70 transition-opacity"
+                    ? LIST_REFETCH_CLASS
                     : undefined
                 }
               >

@@ -15,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { unableToLoadTitle } from "@/lib/ui-messages";
 import type { DashboardActivityRow } from "@/types/dashboard";
 
 interface RecentActivityTableProps {
@@ -39,7 +40,7 @@ export function RecentActivityTable({
             <LoadingSpinner label="Loading activity..." />
           </div>
         ) : error ? (
-          <ErrorState title="Unable to load recent activity" message={error} />
+          <ErrorState title={unableToLoadTitle("recent activity")} message={error} />
         ) : activity.length === 0 ? (
           <EmptyState
             title="No recent activity"

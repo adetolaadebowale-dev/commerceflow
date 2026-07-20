@@ -15,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { unableToLoadTitle } from "@/lib/ui-messages";
 import type { DashboardOrderRow } from "@/types/dashboard";
 
 interface RecentOrdersTableProps {
@@ -39,11 +40,11 @@ export function RecentOrdersTable({
             <LoadingSpinner label="Loading orders..." />
           </div>
         ) : error ? (
-          <ErrorState title="Unable to load recent orders" message={error} />
+          <ErrorState title={unableToLoadTitle("recent orders")} message={error} />
         ) : orders.length === 0 ? (
           <EmptyState
             title="No recent orders"
-            description="Orders will appear here once customers start checking out."
+            description="Orders will appear here once customers check out."
           />
         ) : (
           <Table>

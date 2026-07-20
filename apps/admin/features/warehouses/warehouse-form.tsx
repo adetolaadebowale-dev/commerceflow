@@ -354,7 +354,7 @@ export function WarehouseForm({
         >
           Cancel
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" disabled={isSubmitting} aria-busy={isSubmitting}>
           {isSubmitting ? "Saving…" : submitLabel}
         </Button>
       </div>

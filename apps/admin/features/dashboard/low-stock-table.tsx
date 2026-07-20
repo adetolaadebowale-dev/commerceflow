@@ -15,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { unableToLoadTitle } from "@/lib/ui-messages";
 import type { DashboardLowStockRow } from "@/types/dashboard";
 
 interface LowStockTableProps {
@@ -39,7 +40,7 @@ export function LowStockTable({
             <LoadingSpinner label="Loading low stock..." />
           </div>
         ) : error ? (
-          <ErrorState title="Unable to load low stock" message={error} />
+          <ErrorState title={unableToLoadTitle("low stock")} message={error} />
         ) : items.length === 0 ? (
           <EmptyState
             title="No low stock items"
