@@ -12,7 +12,8 @@
     "clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\"",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate deploy",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "seed:demo-order": "node scripts/seed-demo-order.mjs"
   },
   "prisma": {
     "seed": "node --experimental-strip-types prisma/seed.ts"

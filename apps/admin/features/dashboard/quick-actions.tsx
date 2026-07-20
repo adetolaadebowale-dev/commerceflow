@@ -18,7 +18,7 @@ const QUICK_ACTIONS = [
   },
   {
     label: "Create Order",
-    href: "/orders",
+    href: "/dashboard/orders",
     description: "Start a new customer order",
     icon: ShoppingCart,
   },

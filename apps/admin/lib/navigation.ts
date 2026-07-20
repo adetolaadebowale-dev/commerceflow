@@ -39,7 +39,12 @@ export const NAV_ITEMS: readonly NavItem[] = [
     icon: Building2,
   },
   { label: "Inventory", href: "/inventory", enabled: true, icon: Warehouse },
-  { label: "Orders", href: "/orders", enabled: true, icon: ShoppingCart },
+  {
+    label: "Orders",
+    href: "/dashboard/orders",
+    enabled: true,
+    icon: ShoppingCart,
+  },
   { label: "Customers", href: "/customers", enabled: true, icon: Users },
   { label: "Reports", href: "/reports", enabled: false, icon: BarChart3 },
   { label: "Platform", href: "/platform", enabled: false, icon: Server },

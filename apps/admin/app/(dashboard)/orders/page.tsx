@@ -1,5 +1,5 @@
-import { ComingSoonPage } from "@/features/common/coming-soon-page";
+import { redirect } from "next/navigation";
 
-export default function OrdersPage() {
-  return <ComingSoonPage title="Orders" />;
+export default function OrdersRedirectPage() {
+  redirect("/dashboard/orders");
 }
