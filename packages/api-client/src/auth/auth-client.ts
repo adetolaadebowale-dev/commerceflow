@@ -1,6 +1,8 @@
 import type { AuthenticatedUser } from "@commerceflow/types";
 
 import type {
+  ForgotPasswordRequest,
+  ForgotPasswordResponseData,
   GetMeResponse,
   LoginRequest,
   LoginResponseData,
@@ -16,6 +18,9 @@ export interface AuthClient {
   login(input: LoginRequest): Promise<LoginResponseData>;
   logout(input?: LogoutRequest): Promise<LogoutResponseData>;
   refresh(input: RefreshTokenRequest): Promise<RefreshTokenResponseData>;
+  forgotPassword(
+    input: ForgotPasswordRequest,
+  ): Promise<ForgotPasswordResponseData>;
   getMe(accessToken?: string): Promise<AuthenticatedUser>;
 }
 
@@ -40,6 +45,13 @@ export function createAuthClient(config: ApiClientConfig): AuthClient {
       apiRequest<RefreshTokenResponseData>(config, {
         method: "POST",
         path: "/api/auth/refresh",
+        body: input,
+      }),
+
+    forgotPassword: (input) =>
+      apiRequest<ForgotPasswordResponseData>(config, {
+        method: "POST",
+        path: "/api/auth/forgot-password",
         body: input,
       }),
 

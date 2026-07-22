@@ -1,11 +1,15 @@
 import {
-  apiRequest,
   ApiClientError,
+  apiRequest,
   createAuthClient,
   type RegisterResponseData,
 } from "@commerceflow/api-client";
 import type { AuthenticatedUser } from "@commerceflow/types";
-import type { LoginInput, RegisterInput } from "@commerceflow/validation";
+import type {
+  ForgotPasswordInput,
+  LoginInput,
+  RegisterInput,
+} from "@commerceflow/validation";
 import {
   createContext,
   useCallback,
@@ -16,7 +20,6 @@ import {
   type ReactNode,
 } from "react";
 
-import { API_BASE_URL } from "@/lib/env";
 import {
   clearStoredTokens,
   getStoredAccessToken,
@@ -26,16 +29,18 @@ import {
   setStoredTokens,
 } from "@/features/auth/auth-storage";
 import { refreshStoredAccessToken } from "@/features/auth/token-refresh";
+import { config } from "@/lib/config";
 
 export interface AuthContextValue {
   readonly user: AuthenticatedUser | null;
   readonly isAuthenticated: boolean;
   readonly isBootstrapping: boolean;
   readonly error: string | null;
-  /** Infrastructure only — no login UI in M1.0. */
   readonly login: (input: LoginInput) => Promise<void>;
-  /** Infrastructure only — no register UI in M1.0. */
   readonly register: (input: RegisterInput) => Promise<void>;
+  readonly forgotPassword: (
+    input: ForgotPasswordInput,
+  ) => Promise<{ message: string }>;
   readonly logout: () => Promise<void>;
   readonly clearError: () => void;
 }
@@ -54,7 +59,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const authClient = useMemo(
     () =>
       createAuthClient({
-        baseUrl: API_BASE_URL,
+        baseUrl: config.apiBaseUrl,
         getAccessToken: getStoredAccessToken,
         refreshAccessToken: refreshStoredAccessToken,
       }),
@@ -144,7 +149,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setError(null);
       const result = await apiRequest<RegisterResponseData>(
         {
-          baseUrl: API_BASE_URL,
+          baseUrl: config.apiBaseUrl,
           getAccessToken: getStoredAccessToken,
           refreshAccessToken: refreshStoredAccessToken,
         },
@@ -160,6 +165,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
       );
     },
     [establishSession],
+  );
+
+  const forgotPassword = useCallback(
+    async (input: ForgotPasswordInput): Promise<{ message: string }> => {
+      setError(null);
+      return authClient.forgotPassword(input);
+    },
+    [authClient],
   );
 
   const logout = useCallback(async (): Promise<void> => {
@@ -186,6 +199,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     error,
     login,
     register,
+    forgotPassword,
     logout,
     clearError,
   };

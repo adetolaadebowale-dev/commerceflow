@@ -1,17 +1,9 @@
-import { describe, expect, it, vi } from "vitest";
-
-vi.mock("expo-constants", () => ({
-  default: {
-    expoConfig: {
-      extra: { apiBaseUrl: "http://localhost:3000" },
-    },
-  },
-}));
+import { describe, expect, it } from "vitest";
 
 import { darkColors, lightColors } from "./colors";
 import { radii } from "./radii";
 import { spacing } from "./spacing";
-import { appEnvironment } from "../lib/env";
+import { config } from "../lib/config";
 
 describe("mobile theme tokens", () => {
   it("exposes light and dark palettes with matching keys", () => {
@@ -27,8 +19,13 @@ describe("mobile theme tokens", () => {
   });
 });
 
-describe("mobile env", () => {
+describe("mobile config", () => {
   it("resolves an app environment", () => {
-    expect(["development", "production"]).toContain(appEnvironment);
+    expect(["development", "production"]).toContain(config.appEnvironment);
+  });
+
+  it("exposes a non-empty apiBaseUrl", () => {
+    expect(config.apiBaseUrl.length).toBeGreaterThan(0);
+    expect(config.apiBaseUrl.endsWith("/")).toBe(false);
   });
 });

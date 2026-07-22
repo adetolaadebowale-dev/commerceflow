@@ -5,7 +5,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useAuth } from "@/features/auth";
 
 /**
- * Entry redirect: bootstrap → splash → onboarding/auth/tabs.
+ * Entry redirect: bootstrap → splash → auth welcome / main tabs.
  */
 export default function Index() {
   const { isBootstrapping, isAuthenticated } = useAuth();
@@ -24,5 +24,5 @@ export default function Index() {
     return <Redirect href="/(tabs)" />;
   }
 
-  return <Redirect href="/onboarding" />;
+  return <Redirect href="/(auth)" />;
 }

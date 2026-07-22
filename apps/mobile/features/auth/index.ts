@@ -9,3 +9,4 @@ export {
   type StoredTokens,
 } from "./auth-storage";
 export { refreshStoredAccessToken } from "./token-refresh";
+export { applyAuthFormError } from "./map-auth-error";

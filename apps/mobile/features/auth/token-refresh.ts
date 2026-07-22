@@ -1,6 +1,6 @@
 import { createAuthClient } from "@commerceflow/api-client";
 
-import { API_BASE_URL } from "@/lib/env";
+import { config } from "@/lib/config";
 import {
   clearStoredTokens,
   getStoredAccessToken,
@@ -12,7 +12,7 @@ import {
 let refreshInFlight: Promise<string | null> | null = null;
 
 const authClient = createAuthClient({
-  baseUrl: API_BASE_URL,
+  baseUrl: config.apiBaseUrl,
   getAccessToken: getStoredAccessToken,
 });
 

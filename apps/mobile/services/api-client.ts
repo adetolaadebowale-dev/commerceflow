@@ -5,13 +5,13 @@ import {
   type ApiClientConfig,
 } from "@commerceflow/api-client";
 
-import { API_BASE_URL } from "@/lib/env";
+import { config } from "@/lib/config";
 import { getStoredAccessToken } from "@/features/auth/auth-storage";
 import { refreshStoredAccessToken } from "@/features/auth/token-refresh";
 
 /** Shared API client config — do not duplicate request logic. */
 export const mobileApiConfig: ApiClientConfig = {
-  baseUrl: API_BASE_URL,
+  baseUrl: config.apiBaseUrl,
   getAccessToken: getStoredAccessToken,
   refreshAccessToken: refreshStoredAccessToken,
 };

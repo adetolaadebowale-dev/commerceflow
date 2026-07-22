@@ -45,7 +45,10 @@
       "typedRoutes": true
     },
     "extra": {
-      "apiBaseUrl": "http://localhost:3000"
+      "router": {},
+      "eas": {
+        "projectId": "41bab8f4-0dbc-4269-b062-3ea9d0c9fd49"
+      }
     }
   }
 }
